@@ -1,10 +1,11 @@
-import Posts from "./components/pages/Posts/Posts";
+import { BrowserRouter } from "react-router-dom";
+import AppRouter from "./router/AppRouter/AppRouter";
 
 function App() {
   return (
-    <div>
-      <Posts />
-    </div>
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
   );
 }
 

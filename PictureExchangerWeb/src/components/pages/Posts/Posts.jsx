@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
+import { Link } from "react-router-dom";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -18,7 +19,7 @@ const Posts = () => {
   const [postsCount, postsCountChange] = useState([]); // Количество постов
   const [page, pageChange] = useState(basePage); // Страница
   const [params, paramsChange] = useState({ ...baseParams }); // Параметры плучения постов
-  const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры плучения постов
+  const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
@@ -107,9 +108,12 @@ const Posts = () => {
           <div>{post.date}</div>
           <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
           <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
+          <div>
+            <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
+          </div>
           <div>{"#" + post.tags.join(" #")}</div>
           <div>{post.images.join(", ")}</div>
-          <div>{post.user.name}</div>
+          <Link to={`${post.id}`}>Открыть</Link>
         </div>
       ))}
     </div>
