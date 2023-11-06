@@ -14,7 +14,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// Получить список постов
         /// </summary>
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
-        /// <returns>Список с Id, названием, датой, приватностью, забанен ли, тегами, картинками, пользователем</returns>
+        /// <returns>Список постов</returns>
         [HttpPost("")]
         public IActionResult Get(GetPostsDto model)
         {
@@ -65,6 +65,33 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             var count = 31;
             return Ok(count);
+        }
+
+        /// <summary>
+        /// Получить пост по id
+        /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <returns>Пост</returns>
+        [HttpGet("{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            var post = new
+            {
+                Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                Name = "CS GO",
+                Date = new DateTime(2023, 6, 13, 20, 30, 59),
+                IsPrivate = false,
+                IsBanned = false,
+                Tags = new List<object>() { "cs go", "cs", "go" },
+                Images = new List<object>() { 1, 2 },
+                User = new
+                {
+                    Id = new Guid("00000000-0000-0000-0000-000000000000"),
+                    Name = "Vasya000",
+                },
+            };
+
+            return Ok(post);
         }
     }
 }
