@@ -54,5 +54,17 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             return Ok(posts);
         }
+
+        /// <summary>
+        /// Получить количество постов
+        /// </summary>
+        /// <param name="model">Название</param>
+        /// <returns>Количество постов</returns>
+        [HttpPost("count")]
+        public IActionResult Count(GetPostsCountDto model)
+        {
+            var count = 31;
+            return Ok(count);
+        }
     }
 }
