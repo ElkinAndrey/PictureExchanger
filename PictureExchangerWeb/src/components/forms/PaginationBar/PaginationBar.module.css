@@ -1,0 +1,45 @@
+.body {
+  display: flex;
+}
+
+.basePage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px;
+  min-width: 30px;
+  border: 0px;
+  border-radius: 3px;
+}
+
+.page {
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.page:hover {
+  background-color: #e6e6e6;
+}
+
+.selectPage {
+  cursor: pointer;
+  background-color: #57c49e;
+  color: #ffffff;
+}
+
+.missing {
+  background-color: rgba(0, 0, 0, 0);
+  color: #000000;
+}
+
+.switch {
+  cursor: pointer;
+  background-color: #e6e6e6;
+  color: #000000;
+}
+
+.switch:hover {
+  background-color: #57c49e;
+  color: #ffffff;
+}
