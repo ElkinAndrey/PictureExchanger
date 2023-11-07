@@ -91,6 +91,7 @@ const User = () => {
 
   return (
     <div>
+      <h1>Пользователь</h1>
       <div>
         {user && (
           <div>

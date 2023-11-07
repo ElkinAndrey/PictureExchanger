@@ -26,6 +26,7 @@ const Post = () => {
   return (
     post && (
       <div>
+        <h1>Пост</h1>
         <div>{post.name}</div>
         <div>{post.date}</div>
         <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>

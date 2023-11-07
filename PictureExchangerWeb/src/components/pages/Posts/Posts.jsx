@@ -82,6 +82,7 @@ const Posts = () => {
 
   return (
     <div>
+      <h1>Главная</h1>
       <input
         value={newParams.name}
         onChange={(e) => {
