@@ -96,5 +96,16 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             return Ok(post);
         }
+
+        /// <summary>
+        /// Добавить файл
+        /// </summary>
+        /// <param name="model">Данные для добавления модели</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPost("add")]
+        public IActionResult Add([FromForm] AddPostDto model)
+        {
+            return Ok();
+        }
     }
 }
