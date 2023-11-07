@@ -10,17 +10,18 @@ namespace PictureExchangerAPI.Presentation.Controllers
     public class UserController : ControllerBase
     {
         /// <summary>
-        /// Получить пользователя по id
+        /// Получить пользователя по имени
         /// </summary>
-        /// <param name="id">Id пользователя</param>
+        /// <param name="name">Имя пользователя</param>
         /// <returns>Пользователь</returns>
-        [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        [HttpGet("{name}")]
+        public IActionResult GetByName(string name)
         {
             var user = new
             {
                 Id = new Guid("00000000-0000-0000-0000-000000000000"),
                 Name = "Vasya000",
+                Email = "1@2.3",
                 IsBanned = false,
             };
 
