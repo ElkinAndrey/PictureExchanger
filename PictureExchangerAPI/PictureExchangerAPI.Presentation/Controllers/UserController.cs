@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PictureExchangerAPI.Presentation.DTO.Posts;
+using PictureExchangerAPI.Presentation.DTO.User;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -23,6 +25,42 @@ namespace PictureExchangerAPI.Presentation.Controllers
             };
 
             return Ok(user);
+        }
+
+        /// <summary>
+        /// Получить список постов у пользователя
+        /// </summary>
+        /// <param name="name">Имя пользователя</param>
+        /// <param name="model">Начало отчета, конец отчета, часть названия</param>
+        /// <returns>Список постов</returns>
+        [HttpPost("{name}/posts")]
+        public IActionResult GetPosts(string name, GetPostsByUserNameDto model)
+        {
+            var posts = new List<object>()
+            {
+                new
+                {
+                    Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                    Name = "Аниме картинки",
+                    Date = new DateTime(2023, 6, 13, 20, 30, 59),
+                    IsPrivate = false,
+                    IsBanned = false,
+                    Tags = new List<object>() { "аниме", "картинка" },
+                    Images = new List<object>() { 1, 2, 3 },
+                },
+                new
+                {
+                    Id = new Guid("00000000-0000-0000-0000-000000000002"),
+                    Name = "CS GO",
+                    Date = new DateTime(2023, 6, 13, 20, 30, 59),
+                    IsPrivate = false,
+                    IsBanned = false,
+                    Tags = new List<object>() { "cs go", "cs", "go" },
+                    Images = new List<object>() { 1, 2 },
+                },
+            };
+
+            return Ok(posts);
         }
     }
 }
