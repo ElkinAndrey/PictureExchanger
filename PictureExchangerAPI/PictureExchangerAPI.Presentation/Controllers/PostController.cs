@@ -107,5 +107,17 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             return Ok();
         }
+
+        /// <summary>
+        /// Изменить пост
+        /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <param name="model">Название, приватный ли пост, теги</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPut("{id}/change")]
+        public IActionResult Change(Guid id, ChangePostDto model)
+        {
+            return Ok();
+        }
     }
 }
