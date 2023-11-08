@@ -15,7 +15,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="name">Имя пользователя</param>
         /// <returns>Пользователь</returns>
         [HttpGet("{name}")]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name)
         {
             var user = new
             {
@@ -35,7 +35,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
         /// <returns>Список постов</returns>
         [HttpPost("{name}/posts")]
-        public IActionResult GetPosts(string name, GetPostsByUserNameDto model)
+        public async Task<IActionResult> GetPosts(string name, GetPostsByUserNameDto model)
         {
             var posts = new List<object>()
             {
@@ -71,7 +71,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Часть названия</param>
         /// <returns>Количество постов</returns>
         [HttpPost("{name}/posts/count")]
-        public IActionResult GetPostsCount(string name, GetPostsCountByUserNameDto model)
+        public async Task<IActionResult> GetPostsCount(string name, GetPostsCountByUserNameDto model)
         {
             var count = 13;
             return Ok(count);

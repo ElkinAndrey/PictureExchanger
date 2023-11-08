@@ -17,7 +17,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
         /// <returns>Список постов</returns>
         [HttpPost("")]
-        public IActionResult Get(GetPostsDto model)
+        public async Task<IActionResult> Get(GetPostsDto model)
         {
             var posts = new List<object>()
             {
@@ -64,7 +64,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Название</param>
         /// <returns>Количество постов</returns>
         [HttpPost("count")]
-        public IActionResult Count(GetPostsCountDto model)
+        public async Task<IActionResult> Count(GetPostsCountDto model)
         {
             var count = 31;
             return Ok(count);
@@ -76,7 +76,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="id">Id поста</param>
         /// <returns>Пост</returns>
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var post = new
             {
@@ -104,7 +104,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Данные для добавления модели</param>
         /// <returns>Все хорошо</returns>
         [HttpPost("add")]
-        public IActionResult Add([FromForm] AddPostDto model)
+        public async Task<IActionResult> Add([FromForm] AddPostDto model)
         {
             return Ok();
         }
@@ -116,7 +116,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Название, приватный ли пост, теги</param>
         /// <returns>Все хорошо</returns>
         [HttpPut("{id}/change")]
-        public IActionResult Change(Guid id, ChangePostDto model)
+        public async Task<IActionResult> Change(Guid id, ChangePostDto model)
         {
             return Ok();
         }
