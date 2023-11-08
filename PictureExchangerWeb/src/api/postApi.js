@@ -41,6 +41,10 @@ class PostApi {
   static async change(id, params) {
     await axios.put(`${URL}/${id}/change`, params);
   }
+
+  static getPicture(id, number) {
+    return `${URL}/${id}/${number}`;
+  }
 }
 
 export default PostApi;

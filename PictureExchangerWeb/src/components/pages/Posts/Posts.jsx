@@ -113,7 +113,16 @@ const Posts = () => {
             <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
           </div>
           <div>{"#" + post.tags.join(" #")}</div>
-          <div>{post.images.join(", ")}</div>
+          <div>
+            {post.images.map((image, index) => (
+              <img
+                key={index}
+                src={PostApi.getPicture(post.id, image)}
+                alt=""
+                style={{ width: "100px" }}
+              />
+            ))}
+          </div>
           <Link to={`/${post.id}`}>Открыть</Link>
           <Link to={`/${post.id}/change`}>Изменить</Link>
         </div>
