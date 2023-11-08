@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Presentation.DTO.Posts;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -118,6 +119,16 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public IActionResult Change(Guid id, ChangePostDto model)
         {
             return Ok();
+        }
+
+        /// <summary>
+        /// Получить обложку языка издания по Id
+        /// </summary>
+        [HttpGet("{id}/{number}")]
+        public async Task<IActionResult> GetPicture(Guid id, int number)
+        {
+            var image = new FileStream($"HelpFiles\\picture.png", FileMode.Open, FileAccess.Read, FileShare.Read);
+            return File(image, "image/png");
         }
     }
 }
