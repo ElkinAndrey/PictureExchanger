@@ -122,13 +122,38 @@ namespace PictureExchangerAPI.Presentation.Controllers
         }
 
         /// <summary>
-        /// Получить обложку языка издания по Id
+        /// Получить картинку по посту и номеру
         /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <param name="number">Номер картинки</param>
+        /// <returns>Картинка</returns>
         [HttpGet("{id}/{number}")]
-        public async Task<IActionResult> GetPicture(Guid id, int number)
+        public async Task<IActionResult> GetImage(Guid id, int number)
         {
             var image = new FileStream($"HelpFiles\\picture.png", FileMode.Open, FileAccess.Read, FileShare.Read);
             return File(image, "image/png");
+        }
+
+        /// <summary>
+        /// Забанить пост
+        /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPut("{id}/banned")]
+        public async Task<IActionResult> Banned(Guid id)
+        {
+            return Ok();
+        }
+
+        /// <summary>
+        /// Разбанить пост
+        /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPut("{id}/unbanned")]
+        public async Task<IActionResult> Unbanned(Guid id)
+        {
+            return Ok();
         }
     }
 }
