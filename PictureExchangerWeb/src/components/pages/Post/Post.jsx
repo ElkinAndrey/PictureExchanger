@@ -36,6 +36,7 @@ const Post = () => {
         </div>
         <div>{"#" + post.tags.join(" #")}</div>
         <div>{post.images.join(", ")}</div>
+        <Link to={`/${params.postId}/change`}>Изменить</Link>
       </div>
     )
   );

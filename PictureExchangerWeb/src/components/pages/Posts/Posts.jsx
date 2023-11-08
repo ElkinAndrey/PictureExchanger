@@ -115,6 +115,7 @@ const Posts = () => {
           <div>{"#" + post.tags.join(" #")}</div>
           <div>{post.images.join(", ")}</div>
           <Link to={`/${post.id}`}>Открыть</Link>
+          <Link to={`/${post.id}/change`}>Изменить</Link>
         </div>
       ))}
     </div>
