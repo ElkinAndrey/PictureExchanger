@@ -42,14 +42,17 @@ class PostApi {
     await axios.put(`${URL}/${id}/change`, params);
   }
 
+  /** Получить ссылку на картинку */
   static getPicture(id, number) {
     return `${URL}/${id}/${number}`;
   }
 
+  /** Забанить */
   static async banned(id) {
     await axios.put(`${URL}/${id}/banned`);
   }
 
+  /** Разбанить */
   static async unbanned(id) {
     await axios.put(`${URL}/${id}/unbanned`);
   }

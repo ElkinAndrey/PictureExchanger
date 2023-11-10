@@ -22,6 +22,16 @@ class UserApi {
     const response = await axios.post(`${URL}/${name}/posts/count`, params);
     return response;
   }
+
+  /** Забанить */
+  static async banned(name) {
+    await axios.put(`${URL}/${name}/banned`);
+  }
+
+  /** Разбанить */
+  static async unbanned(name) {
+    await axios.put(`${URL}/${name}/unbanned`);
+  }
 }
 
 export default UserApi;

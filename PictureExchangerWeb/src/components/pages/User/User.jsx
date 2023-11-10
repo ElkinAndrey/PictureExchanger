@@ -49,18 +49,30 @@ const User = () => {
   );
 
   /** Забанить пост */
-  const [fetchBanned, isLoadingBanned, errorBanned] = useFetching(
+  const [fetchBannedPost, isLoadingBannedPost, errorBannedPost] = useFetching(
     async (id) => {
       await PostApi.banned(id);
     }
   );
 
   /** Разбанить пост */
-  const [fetchUnbanned, isLoadingUnbanned, errorUnbanned] = useFetching(
-    async (id) => {
+  const [fetchUnbannedPost, isLoadingUnbannedPost, errorUnbannedPost] =
+    useFetching(async (id) => {
       await PostApi.unbanned(id);
+    });
+
+  /** Забанить пользователя */
+  const [fetchBannedUser, isLoadingBannedUser, errorBannedUser] = useFetching(
+    async (name) => {
+      await UserApi.banned(name);
     }
   );
+
+  /** Разбанить пользователя */
+  const [fetchUnbannedUser, isLoadingUnbannedUser, errorUnbannedUser] =
+    useFetching(async (name) => {
+      await UserApi.unbanned(name);
+    });
 
   // ФУНКЦИИ
 
@@ -97,8 +109,8 @@ const User = () => {
   };
 
   /** Забанить */
-  const banned = (id) => {
-    fetchBanned(id);
+  const bannedPost = (id) => {
+    fetchBannedPost(id);
     let newPosts = posts.map((post) => {
       if (post.id === id) post.isBanned = true;
       return post;
@@ -107,14 +119,28 @@ const User = () => {
   };
 
   /** Разбанить */
-  const unbanned = (id) => {
-    fetchUnbanned(id);
+  const unbannedPost = (id) => {
+    fetchUnbannedPost(id);
     postsChange(
       posts.map((post) => {
         if (post.id === id) post.isBanned = false;
         return post;
       })
     );
+  };
+
+  /** Забанить */
+  const bannedUser = () => {
+    fetchBannedUser(user.name);
+    user.isBanned = true;
+    userChange({ ...user });
+  };
+
+  /** Разбанить */
+  const unbannedUser = () => {
+    fetchUnbannedUser(user.name);
+    user.isBanned = false;
+    userChange({ ...user });
   };
 
   // ДЕЙСТВИЯ
@@ -133,6 +159,14 @@ const User = () => {
           <div>
             <div>{user.name}</div>
             <div>{user.email}</div>
+            <div>{user.isBanned}</div>
+            <div>
+              {user.isBanned ? (
+                <button onClick={unbannedUser}>Разбанить</button>
+              ) : (
+                <button onClick={bannedUser}>Забанить</button>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -164,9 +198,9 @@ const User = () => {
             <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
             <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
             {post.isBanned ? (
-              <button onClick={() => unbanned(post.id)}>Разбанить</button>
+              <button onClick={() => unbannedPost(post.id)}>Разбанить</button>
             ) : (
-              <button onClick={() => banned(post.id)}>Забанить</button>
+              <button onClick={() => bannedPost(post.id)}>Забанить</button>
             )}
             <div>{"#" + post.tags.join(" #")}</div>
             <div>
