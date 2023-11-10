@@ -122,6 +122,17 @@ namespace PictureExchangerAPI.Presentation.Controllers
         }
 
         /// <summary>
+        /// Удалить пост по id
+        /// </summary>
+        /// <param name="id">Id поста</param>
+        /// <returns>Все хорошо</returns>
+        [HttpDelete("{id}/delete")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            return Ok();
+        }
+
+        /// <summary>
         /// Получить картинку по посту и номеру
         /// </summary>
         /// <param name="id">Id поста</param>
