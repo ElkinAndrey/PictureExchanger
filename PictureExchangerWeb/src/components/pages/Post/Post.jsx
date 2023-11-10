@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
 
 const Post = () => {
   // ПЕРЕМЕННЫЕ
+  let navigate = useNavigate();
   const params = useParams(); // Параметры из URL
   const [post, postChange] = useState(null); // Посты
 
@@ -30,6 +31,13 @@ const Post = () => {
     }
   );
 
+  /** Удалить пост */
+  const [fetchDeletePost, isLoadingDeletePost, errorDeletePost] = useFetching(
+    async (id) => {
+      await PostApi.delete(id);
+    }
+  );
+
   // ФУНКЦИИ
 
   /** Забанить */
@@ -44,6 +52,14 @@ const Post = () => {
     fetchUnbanned(params.postId);
     post.isBanned = false;
     postChange({ ...post });
+  };
+
+  /** Удалить пост */
+  const deletePost = () => {
+    fetchDeletePost(params.postId);
+    // if (window.history.length <= 2)
+    navigate("/");
+    // else window.history.back();
   };
 
   // ДЕЙСТВИЯ
@@ -81,6 +97,9 @@ const Post = () => {
           ))}
         </div>
         <Link to={`/${params.postId}/change`}>Изменить</Link>
+        <div>
+          <button onClick={deletePost}>Удалить</button>
+        </div>
       </div>
     )
   );

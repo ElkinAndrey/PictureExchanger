@@ -42,6 +42,11 @@ class PostApi {
     await axios.put(`${URL}/${id}/change`, params);
   }
 
+  /** Изменить пост */
+  static async delete(id) {
+    await axios.delete(`${URL}/${id}/delete`);
+  }
+
   /** Получить ссылку на картинку */
   static getPicture(id, number) {
     return `${URL}/${id}/${number}`;
