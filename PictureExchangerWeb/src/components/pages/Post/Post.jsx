@@ -16,6 +16,36 @@ const Post = () => {
     postChange(response.data);
   });
 
+  /** Забанить пост */
+  const [fetchBanned, isLoadingBanned, errorBanned] = useFetching(
+    async (id) => {
+      await PostApi.banned(id);
+    }
+  );
+
+  /** Разбанить пост */
+  const [fetchUnbanned, isLoadingUnbanned, errorUnbanned] = useFetching(
+    async (id) => {
+      await PostApi.unbanned(id);
+    }
+  );
+
+  // ФУНКЦИИ
+
+  /** Забанить */
+  const banned = () => {
+    fetchBanned(params.postId);
+    post.isBanned = true;
+    postChange({ ...post });
+  };
+
+  /** Разбанить */
+  const unbanned = () => {
+    fetchUnbanned(params.postId);
+    post.isBanned = false;
+    postChange({ ...post });
+  };
+
   // ДЕЙСТВИЯ
 
   /** Действия при загрузке страницы */
@@ -31,6 +61,11 @@ const Post = () => {
         <div>{post.date}</div>
         <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
         <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
+        {post.isBanned ? (
+          <button onClick={unbanned}>Разбанить</button>
+        ) : (
+          <button onClick={banned}>Забанить</button>
+        )}
         <div>
           <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
         </div>

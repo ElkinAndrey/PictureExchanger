@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import UserApi from "../../../api/userApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
+import PostApi from "../../../api/postApi";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -47,6 +48,20 @@ const User = () => {
     }
   );
 
+  /** Забанить пост */
+  const [fetchBanned, isLoadingBanned, errorBanned] = useFetching(
+    async (id) => {
+      await PostApi.banned(id);
+    }
+  );
+
+  /** Разбанить пост */
+  const [fetchUnbanned, isLoadingUnbanned, errorUnbanned] = useFetching(
+    async (id) => {
+      await PostApi.unbanned(id);
+    }
+  );
+
   // ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
@@ -79,6 +94,27 @@ const User = () => {
     paramsChange({ ...baseParams });
     newParamsChange({ ...baseParams });
     updatePostsFetch(urlParams.name, { ...baseParams });
+  };
+
+  /** Забанить */
+  const banned = (id) => {
+    fetchBanned(id);
+    let newPosts = posts.map((post) => {
+      if (post.id === id) post.isBanned = true;
+      return post;
+    });
+    postsChange(newPosts);
+  };
+
+  /** Разбанить */
+  const unbanned = (id) => {
+    fetchUnbanned(id);
+    postsChange(
+      posts.map((post) => {
+        if (post.id === id) post.isBanned = false;
+        return post;
+      })
+    );
   };
 
   // ДЕЙСТВИЯ
@@ -127,8 +163,22 @@ const User = () => {
             <div>{post.date}</div>
             <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
             <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
+            {post.isBanned ? (
+              <button onClick={() => unbanned(post.id)}>Разбанить</button>
+            ) : (
+              <button onClick={() => banned(post.id)}>Забанить</button>
+            )}
             <div>{"#" + post.tags.join(" #")}</div>
-            <div>{post.images.join(", ")}</div>
+            <div>
+              {post.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={PostApi.getPicture(post.id, image)}
+                  alt=""
+                  style={{ width: "100px" }}
+                />
+              ))}
+            </div>
             <Link to={`/${post.id}`}>Открыть</Link>
           </div>
         ))}

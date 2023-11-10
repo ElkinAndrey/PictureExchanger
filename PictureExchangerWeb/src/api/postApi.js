@@ -45,6 +45,14 @@ class PostApi {
   static getPicture(id, number) {
     return `${URL}/${id}/${number}`;
   }
+
+  static async banned(id) {
+    await axios.put(`${URL}/${id}/banned`);
+  }
+
+  static async unbanned(id) {
+    await axios.put(`${URL}/${id}/unbanned`);
+  }
 }
 
 export default PostApi;

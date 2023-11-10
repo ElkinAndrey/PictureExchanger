@@ -39,6 +39,20 @@ const Posts = () => {
     }
   );
 
+  /** Забанить пост */
+  const [fetchBanned, isLoadingBanned, errorBanned] = useFetching(
+    async (id) => {
+      await PostApi.banned(id);
+    }
+  );
+
+  /** Разбанить пост */
+  const [fetchUnbanned, isLoadingUnbanned, errorUnbanned] = useFetching(
+    async (id) => {
+      await PostApi.unbanned(id);
+    }
+  );
+
   // ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
@@ -71,6 +85,27 @@ const Posts = () => {
     paramsChange({ ...baseParams });
     newParamsChange({ ...baseParams });
     updateFetch({ ...baseParams });
+  };
+
+  /** Забанить */
+  const banned = (id) => {
+    fetchBanned(id);
+    let newPosts = posts.map((post) => {
+      if (post.id === id) post.isBanned = true;
+      return post;
+    });
+    postsChange(newPosts);
+  };
+
+  /** Разбанить */
+  const unbanned = (id) => {
+    fetchUnbanned(id);
+    postsChange(
+      posts.map((post) => {
+        if (post.id === id) post.isBanned = false;
+        return post;
+      })
+    );
   };
 
   // ДЕЙСТВИЯ
@@ -109,6 +144,11 @@ const Posts = () => {
           <div>{post.date}</div>
           <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
           <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
+          {post.isBanned ? (
+            <button onClick={() => unbanned(post.id)}>Разбанить</button>
+          ) : (
+            <button onClick={() => banned(post.id)}>Забанить</button>
+          )}
           <div>
             <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
           </div>
