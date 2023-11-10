@@ -76,5 +76,27 @@ namespace PictureExchangerAPI.Presentation.Controllers
             var count = 13;
             return Ok(count);
         }
+
+        /// <summary>
+        /// Забанить пользователя
+        /// </summary>
+        /// <param name="name">Имя пользователя</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPut("{name}/banned")]
+        public async Task<IActionResult> Banned(string name)
+        {
+            return Ok();
+        }
+
+        /// <summary>
+        /// Разбанить пользователя
+        /// </summary>
+        /// <param name="name">Имя пользователя</param>
+        /// <returns>Все хорошо</returns>
+        [HttpPut("{name}/unbanned")]
+        public async Task<IActionResult> Unbanned(string name)
+        {
+            return Ok();
+        }
     }
 }
