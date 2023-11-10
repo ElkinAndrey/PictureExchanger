@@ -78,5 +78,21 @@ namespace PictureExchangerAPI.Presentation.Controllers
             Response.Cookies.Append("refreshToken", refresh, cookieOptions);
             return Ok(access);
         }
+
+        /// <summary>
+        /// Выйти с аккаунта
+        /// </summary>
+        /// <returns>Все хорошо</returns>
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string? refreshToken = Request.Cookies["refreshToken"]; 
+            if (refreshToken is null)
+                return Ok();
+
+            Response.Cookies.Delete("refreshToken");
+
+            return Ok();
+        }
     }
 }
