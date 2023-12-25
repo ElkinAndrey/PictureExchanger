@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
+import InputString from "../../../views/InputString/InputString";
+import InputBool from "../../../views/InputBool/InputBool";
+import Img from "../../../views/Img/Img";
+import UploadImage from "../../../views/UploadImage/UploadImage";
 
 const baseImage =
   "data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==";
@@ -21,97 +25,68 @@ const AddPost = () => {
     }
   );
 
-  const addCover = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      let image = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (x) => {
-        setCovers([...covers, image]);
-        setCoversSrc([...coversSrc, x.target.result]);
-      };
-      reader.readAsDataURL(image);
-      setCoversNotSelected(false);
-    }
+  /** Создать пост */
+  const create = () => {
+    fetchAddPost({ ...params, files: covers });
+  };
+
+  /** Изменить имя */
+  const paramsChangeName = (value) => {
+    params.name = value;
+    paramsChange({ ...params });
+  };
+
+  /** Изменить приватность */
+  const paramsChangeIsPrivate = () => {
+    params.isPrivate = !params.isPrivate;
+    paramsChange({ ...params });
+  };
+
+  /** Изменить теги */
+  const paramsChangeTags = (value) => {
+    params.tags = value.split(",");
+    paramsChange({ ...params });
   };
 
   return (
     <div>
       <h1>Добавление поста</h1>
-      <div>
-        Название
-        <input
-          value={params.name}
-          onChange={(e) => {
-            params.name = e.target.value;
-            paramsChange({ ...params });
-          }}
-        />
-      </div>
-      <div>
-        Сделать приватным
-        <input
-          type="checkbox"
-          value={params.isPrivate}
-          onChange={() => {
-            params.isPrivate = !params.isPrivate;
-            paramsChange({ ...params });
-          }}
-        />
-      </div>
-      <div>
-        Теги
-        <input
-          value={params.tags.join(",")}
-          onChange={(e) => {
-            params.tags = e.target.value.split(",");
-            paramsChange({ ...params });
-          }}
-        />
-      </div>
+      <InputString
+        value={params.name}
+        valueChange={paramsChangeName}
+        text="Название"
+      />
+      <InputBool
+        value={params.isPrivate}
+        valueChange={paramsChangeIsPrivate}
+        text="Сделать приватным"
+      />
+      <InputString
+        value={params.tags.join(",")}
+        valueChange={paramsChangeTags}
+        text="Теги"
+      />
       <div style={{ border: "3px black solid" }}>
         <div>Картинки</div>
         <div style={{ display: "inline-block" }}>
           {coversSrc.map((coverSrc, index) => (
-            <img
+            <Img
               key={index}
-              style={{ width: "300px" }}
               hidden={baseImage === coverSrc ? true : false}
               src={coverSrc}
-              alt={""}
             />
           ))}
         </div>
-
-        <div>
-          <label
-            htmlFor="formIdCover"
-            style={{
-              background: "#EFEFEF",
-              border: "1px #767676 solid",
-              borderRadius: "2px",
-              padding: "0px 5px",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              name=""
-              type="file"
-              accept="image/*"
-              onChange={addCover}
-              id="formIdCover"
-              hidden
-            />
-            Выбрать картинку
-          </label>
-        </div>
+        <UploadImage
+          covers={covers}
+          setCovers={setCovers}
+          coversSrc={coversSrc}
+          setCoversSrc={setCoversSrc}
+          coversNotSelected={coversNotSelected}
+          setCoversNotSelected={setCoversNotSelected}
+        />
       </div>
-      <button
-        onClick={() => {
-          fetchAddPost({ ...params, files: covers });
-        }}
-      >
-        Создать
-      </button>
+      <button onClick={create}>Создать</button>
     </div>
   );
 };

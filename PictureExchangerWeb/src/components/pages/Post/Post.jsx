@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
+import IsBanned from "../../../views/IsBanned/IsBanned";
+import Bool from "../../../views/Bool/Bool";
+import DivLink from "../../../views/DivLink/DivLink";
+import Join from "../../../views/Join/Join";
+import Img from "../../../views/Img/Img";
+import DivButton from "../../../views/DivButton/DivButton";
+import Empty from "../../../views/Empty/Empty";
+import PostInPosts from "../../../views/PostInPosts/PostInPosts";
 
 const Post = () => {
-  // ПЕРЕМЕННЫЕ
-  let navigate = useNavigate();
+  // КОНСТАНТЫ
+  const navigate = useNavigate(); // Функция перехода на другую страницу
   const params = useParams(); // Параметры из URL
+
+  // ПЕРЕМЕННЫЕ
   const [post, postChange] = useState(null); // Посты
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
@@ -57,9 +67,7 @@ const Post = () => {
   /** Удалить пост */
   const deletePost = () => {
     fetchDeletePost(params.postId);
-    // if (window.history.length <= 2)
     navigate("/");
-    // else window.history.back();
   };
 
   // ДЕЙСТВИЯ
@@ -69,39 +77,20 @@ const Post = () => {
     fetchPost(params.postId);
   }, []);
 
+  // Пока пост не пришел
+  if (!post) return <Empty />;
+
   return (
-    post && (
-      <div>
-        <h1>Пост</h1>
-        <div>{post.name}</div>
-        <div>{post.date}</div>
-        <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
-        <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
-        {post.isBanned ? (
-          <button onClick={unbanned}>Разбанить</button>
-        ) : (
-          <button onClick={banned}>Забанить</button>
-        )}
-        <div>
-          <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
-        </div>
-        <div>{"#" + post.tags.join(" #")}</div>{" "}
-        <div>
-          {post.images.map((image, index) => (
-            <img
-              key={index}
-              src={PostApi.getPicture(post.id, image)}
-              alt=""
-              style={{ width: "100px" }}
-            />
-          ))}
-        </div>
-        <Link to={`/${params.postId}/change`}>Изменить</Link>
-        <div>
-          <button onClick={deletePost}>Удалить</button>
-        </div>
-      </div>
-    )
+    <div>
+      <h1>Пост</h1>
+      <PostInPosts
+        post={post}
+        banned={banned}
+        unbanned={unbanned}
+        deletePost={deletePost}
+        openable={false}
+      />
+    </div>
   );
 };
 

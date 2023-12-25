@@ -3,6 +3,9 @@ import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
 import { Link } from "react-router-dom";
+import InputString from "../../../views/InputString/InputString";
+import Count from "../../../views/Count/Count";
+import PostInPosts from "../../../views/PostInPosts/PostInPosts";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -115,17 +118,17 @@ const Posts = () => {
     updateFetch(params);
   }, []);
 
+  // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+  const newParamsNameChange = (value) => {
+    newParams.name = value;
+    newParamsChange({ ...newParams });
+  };
+
   return (
     <div>
       <h1>Главная</h1>
-      <input
-        value={newParams.name}
-        onChange={(e) => {
-          newParams.name = e.target.value;
-          newParamsChange({ ...newParams });
-        }}
-      />
-      <div>{`Количество: ${postsCount}`}</div>
+      <InputString value={newParams.name} valueChange={newParamsNameChange} />
+      <Count count={postsCount} />
       <PaginationBar
         min={1}
         max={Math.ceil(postsCount / pageSize)}
@@ -136,36 +139,12 @@ const Posts = () => {
       <button onClick={update}>Обновить</button>
       <button onClick={reset}>Сбросить</button>
       {posts.map((post) => (
-        <div
+        <PostInPosts
           key={post.id}
-          style={{ border: "3px black solid", margin: "5px 0px" }}
-        >
-          <div>{post.name}</div>
-          <div>{post.date}</div>
-          <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
-          <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
-          {post.isBanned ? (
-            <button onClick={() => unbanned(post.id)}>Разбанить</button>
-          ) : (
-            <button onClick={() => banned(post.id)}>Забанить</button>
-          )}
-          <div>
-            <Link to={`/users/${post.user.name}`}>{post.user.name}</Link>
-          </div>
-          <div>{"#" + post.tags.join(" #")}</div>
-          <div>
-            {post.images.map((image, index) => (
-              <img
-                key={index}
-                src={PostApi.getPicture(post.id, image)}
-                alt=""
-                style={{ width: "100px" }}
-              />
-            ))}
-          </div>
-          <Link to={`/${post.id}`}>Открыть</Link>
-          <Link to={`/${post.id}/change`}>Изменить</Link>
-        </div>
+          post={post}
+          banned={banned}
+          unbanned={unbanned}
+        />
       ))}
     </div>
   );

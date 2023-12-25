@@ -4,6 +4,11 @@ import useFetching from "../../../hooks/useFetching";
 import UserApi from "../../../api/userApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
 import PostApi from "../../../api/postApi";
+import IsBanned from "../../../views/IsBanned/IsBanned";
+import PostInPosts from "../../../views/PostInPosts/PostInPosts";
+import InputString from "../../../views/InputString/InputString";
+import Empty from "../../../views/Empty/Empty";
+import Count from "../../../views/Count/Count";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -151,72 +156,45 @@ const User = () => {
     updatePostsFetch(urlParams.name, params);
   }, []);
 
+  // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+  const newParamsNameChange = (value) => {
+    newParams.name = value;
+    newParamsChange({ ...newParams });
+  };
+
+  // Пока пользователь не пришел
+  if (!user) return <Empty />;
+
   return (
     <div>
       <h1>Пользователь</h1>
-      <div>
-        {user && (
-          <div>
-            <div>{user.name}</div>
-            <div>{user.email}</div>
-            <div>{user.isBanned}</div>
-            <div>
-              {user.isBanned ? (
-                <button onClick={unbannedUser}>Разбанить</button>
-              ) : (
-                <button onClick={bannedUser}>Забанить</button>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-      <div>
-        <input
-          value={newParams.name}
-          onChange={(e) => {
-            newParams.name = e.target.value;
-            newParamsChange({ ...newParams });
-          }}
+      <div>{user.name}</div>
+      <div>{user.email}</div>
+      <div>{user.isBanned}</div>
+      <IsBanned
+        isBanned={user.isBanned}
+        banned={bannedUser}
+        unbanned={unbannedUser}
+      />
+      <InputString value={newParams.name} valueChange={newParamsNameChange} />
+      <Count count={postsCount} />
+      <PaginationBar
+        min={1}
+        max={Math.ceil(postsCount / pageSize)}
+        page={page}
+        setPage={setPage}
+        centerCount={1}
+      />
+      <button onClick={update}>Обновить</button>
+      <button onClick={reset}>Сбросить</button>
+      {posts.map((post) => (
+        <PostInPosts
+          key={post.id}
+          post={post}
+          banned={bannedPost}
+          unbanned={unbannedPost}
         />
-        <div>{`Количество: ${postsCount}`}</div>
-        <PaginationBar
-          min={1}
-          max={Math.ceil(postsCount / pageSize)}
-          page={page}
-          setPage={setPage}
-          centerCount={1}
-        />
-        <button onClick={update}>Обновить</button>
-        <button onClick={reset}>Сбросить</button>
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            style={{ border: "3px black solid", margin: "5px 0px" }}
-          >
-            <div>{post.name}</div>
-            <div>{post.date}</div>
-            <div>{post.isPrivate ? "Приватный" : "Публичный"}</div>
-            <div>{post.isBanned ? "Забанен" : "Не забанен"}</div>
-            {post.isBanned ? (
-              <button onClick={() => unbannedPost(post.id)}>Разбанить</button>
-            ) : (
-              <button onClick={() => bannedPost(post.id)}>Забанить</button>
-            )}
-            <div>{"#" + post.tags.join(" #")}</div>
-            <div>
-              {post.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={PostApi.getPicture(post.id, image)}
-                  alt=""
-                  style={{ width: "100px" }}
-                />
-              ))}
-            </div>
-            <Link to={`/${post.id}`}>Открыть</Link>
-          </div>
-        ))}
-      </div>
+      ))}
     </div>
   );
 };
