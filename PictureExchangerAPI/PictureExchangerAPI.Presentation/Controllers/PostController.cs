@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Presentation.DTO.Posts;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -16,9 +17,19 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
         /// <returns>Список постов</returns>
+        [AllowAnonymous]
         [HttpPost("")]
         public async Task<IActionResult> Get(GetPostsDto model)
         {
+            var n = Request.Cookies["cookieName"];
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None  // Установите значение SameSite в зависимости от ваших требований безопасности
+            };
+            Response.Cookies.Append("cookieName", "cookieValue", cookieOptions);
+
             var posts = new List<object>()
             {
                 new
@@ -63,6 +74,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="model">Название</param>
         /// <returns>Количество постов</returns>
+        [AllowAnonymous]
         [HttpPost("count")]
         public async Task<IActionResult> Count(GetPostsCountDto model)
         {
@@ -75,6 +87,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Пост</returns>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -104,6 +117,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Данные для добавления модели</param>
         /// <returns>Все хорошо</returns>
         [HttpPost("add")]
+        [Authorize]
         public async Task<IActionResult> Add([FromForm] AddPostDto model)
         {
             return Ok();
@@ -115,6 +129,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="id">Id поста</param>
         /// <param name="model">Название, приватный ли пост, теги</param>
         /// <returns>Все хорошо</returns>
+        [Authorize]
         [HttpPut("{id}/change")]
         public async Task<IActionResult> Change(Guid id, ChangePostDto model)
         {
@@ -126,6 +141,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Все хорошо</returns>
+        [Authorize]
         [HttpDelete("{id}/delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -138,6 +154,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="id">Id поста</param>
         /// <param name="number">Номер картинки</param>
         /// <returns>Картинка</returns>
+        [AllowAnonymous]
         [HttpGet("{id}/{number}")]
         public async Task<IActionResult> GetImage(Guid id, int number)
         {
@@ -150,6 +167,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Все хорошо</returns>
+        [Authorize(Policy = "Manager")]
         [HttpPut("{id}/banned")]
         public async Task<IActionResult> Banned(Guid id)
         {
@@ -161,6 +179,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Все хорошо</returns>
+        [Authorize(Policy = "Manager")]
         [HttpPut("{id}/unbanned")]
         public async Task<IActionResult> Unbanned(Guid id)
         {

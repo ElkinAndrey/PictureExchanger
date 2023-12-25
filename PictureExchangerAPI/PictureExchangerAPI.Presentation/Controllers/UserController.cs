@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PictureExchangerAPI.Presentation.DTO.Posts;
 using PictureExchangerAPI.Presentation.DTO.User;
 
 namespace PictureExchangerAPI.Presentation.Controllers
@@ -14,6 +13,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Пользователь</returns>
+        [AllowAnonymous]
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
@@ -34,6 +34,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="name">Имя пользователя</param>
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
         /// <returns>Список постов</returns>
+        [AllowAnonymous]
         [HttpPost("{name}/posts")]
         public async Task<IActionResult> GetPosts(string name, GetPostsByUserNameDto model)
         {
@@ -70,6 +71,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="name">Имя пользователя</param>
         /// <param name="model">Часть названия</param>
         /// <returns>Количество постов</returns>
+        [AllowAnonymous]
         [HttpPost("{name}/posts/count")]
         public async Task<IActionResult> GetPostsCount(string name, GetPostsCountByUserNameDto model)
         {
@@ -82,6 +84,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Все хорошо</returns>
+        [Authorize(Policy = "Manager")]
         [HttpPut("{name}/banned")]
         public async Task<IActionResult> Banned(string name)
         {
@@ -93,6 +96,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Все хорошо</returns>
+        [Authorize(Policy = "Manager")]
         [HttpPut("{name}/unbanned")]
         public async Task<IActionResult> Unbanned(string name)
         {
