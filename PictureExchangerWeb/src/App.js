@@ -2,7 +2,6 @@ import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter/AppRouter";
 import { useEffect, useState } from "react";
 import Context from "./context/context";
-import parseJwt from "./utils/parseJwt";
 import useFetching from "./hooks/useFetching";
 import AuthApi from "./api/authApi";
 import login from "./utils/login";

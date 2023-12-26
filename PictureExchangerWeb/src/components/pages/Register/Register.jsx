@@ -54,6 +54,7 @@ const Register = () => {
 
   return (
     <div>
+      <h1>Зарегистрироваться</h1>
       <InputString
         value={registerParams.name}
         valueChange={paramsNameChange}

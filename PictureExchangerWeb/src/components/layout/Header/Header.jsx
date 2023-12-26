@@ -17,6 +17,7 @@ const Header = () => {
       <Link to={"/"}>На главную</Link>
       <Link to={"/add"}>Добавить пост</Link>
       <Link to={"/register"}>Регистрация</Link>
+      <Link to={"/login"}>Вход</Link>
       <button onClick={() => logout(params, paramsChange, fetchLogout)}>
         Выйти
       </button>
