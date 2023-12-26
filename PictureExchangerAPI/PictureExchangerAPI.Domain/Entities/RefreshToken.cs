@@ -38,6 +38,6 @@
         /// <summary>
         /// Пользователь
         /// </summary>
-        public User User { get; set; } = new User();
+        public User User { get; set; } = null!;
     }
 }

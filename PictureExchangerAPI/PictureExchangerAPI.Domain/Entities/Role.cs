@@ -15,6 +15,9 @@
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
-        public List<User> Users { get; set; } = new List<User>();
+        /// <summary>
+        /// Список пользователей с такой ролью
+        /// </summary>
+        public List<User> Users { get; set; } = null!;
     }
 }

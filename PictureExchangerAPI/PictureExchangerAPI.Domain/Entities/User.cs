@@ -43,16 +43,16 @@
         /// <summary>
         /// Посты
         /// </summary>
-        public List<Post> Posts { get; set; } = new List<Post>();
+        public List<Post> Posts { get; set; } = null!;
 
         /// <summary>
         /// Роль пользователя
         /// </summary>
-        public Role Role { get; set; } = new Role();
+        public Role Role { get; set; } = null!;
 
         /// <summary>
         /// Токены обновления
         /// </summary>
-        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+        public List<RefreshToken> RefreshTokens { get; set; } = null!;
     }
 }

@@ -19,7 +19,7 @@ namespace PictureExchangerAPI.Service.Services
 
         public async Task DeleteTokenAsync(string token)
         {
-            // Находим пользователя по токену в базе данных
+            // Находим токен в базе данных
             // Удаляем токен у пользователя
             // Вносим изменения в базу данных
             throw new NotImplementedException();

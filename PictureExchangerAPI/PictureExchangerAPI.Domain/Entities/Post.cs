@@ -33,16 +33,16 @@
         /// <summary>
         /// Список картинок
         /// </summary>
-        public List<Image> Images { get; set; } = new List<Image>();
+        public List<Image> Images { get; set; } = null!;
 
         /// <summary>
         /// Список тегов
         /// </summary>
-        public List<Tag> Tags { get; set; } = new List<Tag>();
+        public List<Tag> Tags { get; set; } = null!;
 
         /// <summary>
         /// Пользователь, оставивший пост
         /// </summary>
-        public User User { get; set; } = new User();
+        public User User { get; set; } = null!;
     }
 }
