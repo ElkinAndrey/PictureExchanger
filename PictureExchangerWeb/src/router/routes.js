@@ -4,6 +4,7 @@ import Post from "../components/pages/Post/Post";
 import User from "../components/pages/User/User";
 import AddPost from "../components/pages/AddPost/AddPost";
 import ChangePost from "../components/pages/ChangePost/ChangePost";
+import Register from "../components/pages/Register/Register";
 
 const routes = [
   { path: "/", element: <Posts />, exact: true },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/:postId", element: <Post />, exact: true },
   { path: "/:postId/change", element: <ChangePost />, exact: true },
   { path: "add", element: <AddPost />, exact: true },
+  { path: "register", element: <Register />, exact: true },
 ];
 
 export default routes;

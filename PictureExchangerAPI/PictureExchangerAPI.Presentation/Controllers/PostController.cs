@@ -21,14 +21,14 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get(GetPostsDto model)
         {
-            var n = Request.Cookies["cookieName"];
+/*            var n = Request.Cookies["cookieName"];
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None  // Установите значение SameSite в зависимости от ваших требований безопасности
             };
-            Response.Cookies.Append("cookieName", "cookieValue", cookieOptions);
+            Response.Cookies.Append("cookieName", "cookieValue", cookieOptions);*/
 
             var posts = new List<object>()
             {

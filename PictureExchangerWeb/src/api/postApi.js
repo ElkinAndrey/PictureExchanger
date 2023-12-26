@@ -1,5 +1,6 @@
 import axios from "axios";
 import defaultURL from "./apiSettings";
+import $api from "../http";
 
 const URL = `${defaultURL}/posts`;
 
@@ -34,17 +35,17 @@ class PostApi {
     params.tags.forEach((t) => append("tags", t));
     params.files.forEach((f) => append("files", f));
 
-    await axios.post(`${URL}/add`, formData);
+    await $api.post(`${URL}/add`, formData);
   }
 
   /** Изменить пост */
   static async change(id, params) {
-    await axios.put(`${URL}/${id}/change`, params);
+    await $api.put(`${URL}/${id}/change`, params);
   }
 
   /** Изменить пост */
   static async delete(id) {
-    await axios.delete(`${URL}/${id}/delete`);
+    await $api.delete(`${URL}/${id}/delete`);
   }
 
   /** Получить ссылку на картинку */
@@ -54,12 +55,14 @@ class PostApi {
 
   /** Забанить */
   static async banned(id) {
-    await axios.put(`${URL}/${id}/banned`);
+    const response = await $api.put(`${URL}/${id}/banned`);
+    return response;
   }
 
   /** Разбанить */
   static async unbanned(id) {
-    await axios.put(`${URL}/${id}/unbanned`);
+    const response = await $api.put(`${URL}/${id}/unbanned`);
+    return response;
   }
 }
 

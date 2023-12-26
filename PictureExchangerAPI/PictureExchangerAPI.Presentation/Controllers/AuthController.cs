@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PictureExchangerAPI.Presentation.DTO.Auth;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace PictureExchangerAPI.Presentation.Controllers
@@ -38,18 +40,19 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public async Task<IActionResult> Register(RegisterDto model)
         {
             var secretKey = configuration.GetSection("AppSettings:Token").Value!;
-            
+
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, "123"), 
-                new Claim(ClaimTypes.Email, "123"),
-                new Claim(ClaimTypes.Role, "Manager")
+                new Claim(ClaimTypes.NameIdentifier, "123"),
+                new Claim(ClaimTypes.Name, "456"),
+                new Claim(ClaimTypes.Email, "789"),
+                new Claim(ClaimTypes.Role, model.name)
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(100, 0, 0, 0)),
+                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)), // Время жизни токена доступа
                 signingCredentials: creds);
             var access = new JwtSecurityTokenHandler().WriteToken(token);
             var refresh = "123";
@@ -59,7 +62,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                //Expires = DateTime.Now.Add(new TimeSpan(200, 0, 0, 0)),
+                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
             };
             Response.Cookies.Append("refreshToken", refresh, cookieOptions);
             return Ok(access);
@@ -79,14 +82,15 @@ namespace PictureExchangerAPI.Presentation.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "123"),
-                new Claim(ClaimTypes.Email, "123"),
-                new Claim(ClaimTypes.Role, "Manager")
+                new Claim(ClaimTypes.Name, "456"),
+                new Claim(ClaimTypes.Email, "789"),
+                new Claim(ClaimTypes.Role, model.nameOrEmail),
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(100, 0, 0, 0)),
+                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)),
                 signingCredentials: creds);
             var access = new JwtSecurityTokenHandler().WriteToken(token);
             var refresh = "123";
@@ -96,7 +100,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                //Expires = DateTime.Now.Add(new TimeSpan(200, 0, 0, 0)),
+                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
             };
             Response.Cookies.Append("refreshToken", refresh, cookieOptions);
             return Ok(access);
@@ -110,11 +114,18 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            string? refreshToken = Request.Cookies["refreshToken"]; 
+            string? refreshToken = Request.Cookies["refreshToken"];
             if (refreshToken is null)
                 return Ok();
 
-            Response.Cookies.Delete("refreshToken");
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
+                Expires = DateTime.Now.Add(new TimeSpan(-1, 0, 0, 0)), // Время жизни куков (-1 для удаления)
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
 
             return Ok();
         }
@@ -129,20 +140,26 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             // Достать токен обновления из куки
             string? refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken is null)
+            {
+                Response.StatusCode = 401;
+                return Ok();
+            }
 
             var secretKey = configuration.GetSection("AppSettings:Token").Value!;
 
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "123"),
-                new Claim(ClaimTypes.Email, "123"),
-                new Claim(ClaimTypes.Role, "Manager")
+                new Claim(ClaimTypes.Name, "456"),
+                new Claim(ClaimTypes.Email, "789"),
+                new Claim(ClaimTypes.Role, "Manager"),
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(100, 0, 0, 0)),
+                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)),
                 signingCredentials: creds);
             var access = new JwtSecurityTokenHandler().WriteToken(token);
             var refresh = "123";
@@ -152,7 +169,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                //Expires = DateTime.Now.Add(new TimeSpan(200, 0, 0, 0)),
+                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
             };
             Response.Cookies.Append("refreshToken", refresh, cookieOptions);
             return Ok(access);
