@@ -14,12 +14,16 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="email">Электронная почта</param>
         /// <param name="password">Пароль</param
         /// <param name="secretKey">Секретный ключ</param>
+        /// <param name="ip">IP адрес</param>
+        /// <param name="deviceData">Данные о девайсе</param>
         /// <returns>Пара токенов</returns>
         public Task<PairOfTokens> RegisterAsync(
             string name,
             string email,
             string password,
-            string secretKey);
+            string secretKey,
+            string ip,
+            string deviceData);
 
         /// <summary>
         /// Войти в аккаунт
@@ -27,11 +31,15 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="nameOrEmail">Имя пользователя или электронная почта</param>
         /// <param name="password">Пароль</param
         /// <param name="secretKey">Секретный ключ</param>
+        /// <param name="ip">IP адрес</param>
+        /// <param name="deviceData">Данные о девайсе</param>
         /// <returns>Пара токенов</returns>
         public Task<PairOfTokens> LoginAsync(
             string nameOrEmail,
             string password,
-            string secretKey);
+            string secretKey,
+            string ip,
+            string deviceData);
 
         /// <summary>
         /// Удалить токен обновления из базы данных
@@ -43,10 +51,14 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// Обновить токен
         /// </summary>
         /// <param name="token">Токен</param>
-        /// <param name="secretKey">Секретный ключ для формирования Access токена</param>        
+        /// <param name="secretKey">Секретный ключ для формирования Access токена</param>      
+        /// <param name="ip">IP адрес</param>
+        /// <param name="deviceData">Данные о девайсе</param>  
         /// <returns>Пара токенов</returns>
         public Task<PairOfTokens> RefreshTokenAsync(
             string token,
-            string secretKey);
+            string secretKey,
+            string ip,
+            string deviceData);
     }
 }

@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Presentation.DTO.Auth;
+using PictureExchangerAPI.Presentation.Exceptions;
+using PictureExchangerAPI.Service.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
@@ -19,15 +23,21 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <summary>
         /// Конфигурации
         /// </summary>
-        private readonly IConfiguration configuration;
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Сервис для авторизации
+        /// </summary>
+        private readonly IAuthService _authService;
 
         /// <summary>
         /// Контроллер для работы с авторизацией
         /// </summary>
         /// <param name="configuration">Конфигурации</param>
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IAuthService authService)
         {
-            this.configuration = configuration;
+            _configuration = configuration;
+            _authService = authService;
         }
 
         /// <summary>
@@ -39,33 +49,22 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)
         {
-            var secretKey = configuration.GetSection("AppSettings:Token").Value!;
+            string secretKey = _configuration.GetSection("AppSettings:Token").Value!; // Секретный ключ
+            string ip = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString()!; // IP адрес
+            string deviceData = HttpContext.Request.Headers["User-Agent"]!; // Данные об устройстве
+            
+            var tokens = await _authService.RegisterAsync(model.Name, model.Email, model.Password, secretKey, ip, deviceData); // Получение пары токенов
 
-            List<Claim> claims = new List<Claim>
+            var cookieOptions = new CookieOptions // Токен обновления записывается в куки
             {
-                new Claim(ClaimTypes.NameIdentifier, "123"),
-                new Claim(ClaimTypes.Name, "456"),
-                new Claim(ClaimTypes.Email, "789"),
-                new Claim(ClaimTypes.Role, model.name)
-            };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)), // Время жизни токена доступа
-                signingCredentials: creds);
-            var access = new JwtSecurityTokenHandler().WriteToken(token);
-            var refresh = "123";
-
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
                 Secure = true,
-                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
+                SameSite = SameSiteMode.None, // Установите значение SameSite в зависимости от ваших требований безопасности
+                Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
             };
-            Response.Cookies.Append("refreshToken", refresh, cookieOptions);
-            return Ok(access);
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
 
         /// <summary>
@@ -77,33 +76,22 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
-            var secretKey = configuration.GetSection("AppSettings:Token").Value!;
+            string secretKey = _configuration.GetSection("AppSettings:Token").Value!; // Секретный ключ
+            string ip = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString()!; // IP адрес
+            string deviceData = HttpContext.Request.Headers["User-Agent"]!; // Данные об устройстве
 
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, "123"),
-                new Claim(ClaimTypes.Name, "456"),
-                new Claim(ClaimTypes.Email, "789"),
-                new Claim(ClaimTypes.Role, model.nameOrEmail),
-            };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)),
-                signingCredentials: creds);
-            var access = new JwtSecurityTokenHandler().WriteToken(token);
-            var refresh = "123";
+            var tokens = await _authService.LoginAsync(model.NameOrEmail, model.Password, secretKey, ip, deviceData); // Получение пары токенов
 
-            var cookieOptions = new CookieOptions
+            var cookieOptions = new CookieOptions // Токен обновления записывается в куки
             {
-                HttpOnly = true,
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
                 Secure = true,
-                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
+                SameSite = SameSiteMode.None, // Установите значение SameSite в зависимости от ваших требований безопасности
+                Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
             };
-            Response.Cookies.Append("refreshToken", refresh, cookieOptions);
-            return Ok(access);
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
 
         /// <summary>
@@ -114,13 +102,14 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            string? refreshToken = Request.Cookies["refreshToken"];
-            if (refreshToken is null)
-                return Ok();
+            string? refreshToken = Request.Cookies["refreshToken"]; // Получаем токен обновления
+            if (refreshToken is null) return Ok(); // Если токена обновления нет, то ничего не делать
+
+            await _authService.DeleteTokenAsync(refreshToken); // Удалить токен из базы дынных
 
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
                 Secure = true,
                 SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
                 Expires = DateTime.Now.Add(new TimeSpan(-1, 0, 0, 0)), // Время жизни куков (-1 для удаления)
@@ -138,41 +127,26 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
-            // Достать токен обновления из куки
-            string? refreshToken = Request.Cookies["refreshToken"];
-            if (refreshToken is null)
-            {
-                Response.StatusCode = 401;
-                return Ok();
-            }
+            string? refreshToken = Request.Cookies["refreshToken"]; // Достать токен обновления из куки
+            if (string.IsNullOrEmpty(refreshToken)) throw new RefreshTokenNotInCookieException(); // Если токена нет, то выдать ошибку
 
-            var secretKey = configuration.GetSection("AppSettings:Token").Value!;
+            string secretKey = _configuration.GetSection("AppSettings:Token").Value!; // Секретный ключ
+            string ip = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString()!; // IP адрес
+            string deviceData = HttpContext.Request.Headers["User-Agent"]!; // Данные об устройстве
 
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, "123"),
-                new Claim(ClaimTypes.Name, "456"),
-                new Claim(ClaimTypes.Email, "789"),
-                new Claim(ClaimTypes.Role, "Manager"),
-            };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.Add(new TimeSpan(0, 0, 0, 5)),
-                signingCredentials: creds);
-            var access = new JwtSecurityTokenHandler().WriteToken(token);
-            var refresh = "123";
+            var tokens = await _authService.RefreshTokenAsync(refreshToken, secretKey, ip, deviceData); // Получение пары токенов
 
+            // Токен обновления записывается в куки
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
                 Secure = true,
                 SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = DateTime.Now.Add(new TimeSpan(0, 0, 0, 15)), // Время жизни куков
+                Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
             };
-            Response.Cookies.Append("refreshToken", refresh, cookieOptions);
-            return Ok(access);
+            Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
+
+            return Ok(tokens.AccessToken);
         }
     }
 }

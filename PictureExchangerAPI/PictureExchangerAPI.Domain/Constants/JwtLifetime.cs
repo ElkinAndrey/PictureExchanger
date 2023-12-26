@@ -10,8 +10,8 @@
         /// </summary>
         public static TimeSpan AccessTimeSpan { get; } = new TimeSpan(
             days: 0,
-            hours: 0,
-            minutes: 15,
+            hours: 1,
+            minutes: 0,
             seconds: 0);
 
         /// <summary>

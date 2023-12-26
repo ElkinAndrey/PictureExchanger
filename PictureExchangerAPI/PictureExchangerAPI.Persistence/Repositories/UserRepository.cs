@@ -61,6 +61,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
         {
             var user = await _context.Users
                 .Include(u => u.Role)
+                .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.Name == nameOrEmail || u.Email == nameOrEmail);
 
             return user;

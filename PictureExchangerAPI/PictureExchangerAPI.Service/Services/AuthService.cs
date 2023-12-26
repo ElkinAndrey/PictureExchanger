@@ -1,19 +1,13 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.IdentityModel.Tokens;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
-using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.Functions;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -51,9 +45,10 @@ namespace PictureExchangerAPI.Service.Services
         {
             var user = await _userRepository.GetUserByNameOrEmailAsync(nameOrEmail); // Находим пользователя по имени или email в базе данных
             if (user is null) throw new UserNotFoundException(nameOrEmail); // Если пользователь не найден, то выдать исключение!!!
-            if (VerifyPassword(password, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException(); // Если пароль введен неверно, то выдать исключение
+            if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException(); // Если пароль введен неверно, то выдать исключение
             var tokens = GenerateTokens(user.Id, user.Name, user.Email, user.Role?.Name ?? "", secretKey); // Сгенерировать пару токенов
             var refresh = new RefreshToken(1, tokens.RefreshToken, ip, deviceData, tokens.DateOfCreation, tokens.DateOfCreation, user, user.Id); // Создание refresh токена для базы данных
+            if (user.RefreshTokens.Count != 0) refresh.Number = user.RefreshTokens.Max(u => u.Number) + 1;
             user.RefreshTokens.Add(refresh); // Добавить пользователю токен обновления
             await _userRepository.SaveAsync();// Обновить базу данных
             return tokens;// Вернуть пару токенов
@@ -93,10 +88,10 @@ namespace PictureExchangerAPI.Service.Services
             string ip = "",
             string deviceData = "")
         {
-            var isThereSuchName = _userRepository.IsThereSuchNameAsync(name);
-            var isThereSuchEmail = _userRepository.IsThereSuchEmailAsync(name);
-            if (await isThereSuchName) throw new UserWithThisNameExistsException(); // Если такое имя занято, то выдать исключение
-            if (await isThereSuchEmail) throw new UserWithThisEmailExistsException(); // Если такой email занят, то выдать исключение
+            var isThereSuchName = await  _userRepository.IsThereSuchNameAsync(name);
+            var isThereSuchEmail = await  _userRepository.IsThereSuchEmailAsync(name);
+            if (isThereSuchName) throw new UserWithThisNameExistsException(); // Если такое имя занято, то выдать исключение
+            if (isThereSuchEmail) throw new UserWithThisEmailExistsException(); // Если такой email занят, то выдать исключение
 
             var role = await _userRepository.GetRoleByName(Roles.User); // Получить роль пользователя из базы данных
             if (role is null) role = new Role { Id = Guid.NewGuid(), Name = Roles.User }; // Если роли пользователя нет в базе данных, то добавить
@@ -112,9 +107,11 @@ namespace PictureExchangerAPI.Service.Services
                 RegistrationDate = tokens.DateOfCreation,
                 IsBanned = false,
                 Role = role,
+                RefreshTokens = new List<RefreshToken>(),
             };
             var refresh = new RefreshToken(1, tokens.RefreshToken, ip, deviceData, tokens.DateOfCreation, tokens.DateOfCreation, user, user.Id); // Создание refresh токена для базы данных
             user.RefreshTokens.Add(refresh); // Добавить пользователю токен обновления
+            await _userRepository.AddUserAsync(user); // Добавить пользователя
             await _userRepository.SaveAsync();// Обновить базу данных
             return tokens;// Вернуть пару токенов
         }

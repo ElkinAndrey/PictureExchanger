@@ -5,6 +5,8 @@ using Microsoft.OpenApi.Models;
 using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.Repositories;
+using PictureExchangerAPI.Service.Abstractions;
+using PictureExchangerAPI.Service.Services;
 using System.Security.Claims;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -85,6 +87,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IAuthService, AuthService>();
 
 var app = builder.Build();
 
