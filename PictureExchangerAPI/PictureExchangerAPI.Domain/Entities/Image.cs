@@ -14,5 +14,10 @@
         /// Пост
         /// </summary>
         public Post Post { get; set; } = null!;
+
+        /// <summary>
+        /// Id поста
+        /// </summary>
+        public Guid PostId { get; set; }
     }
 }

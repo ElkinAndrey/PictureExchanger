@@ -46,6 +46,11 @@
         public List<Post> Posts { get; set; } = null!;
 
         /// <summary>
+        /// Id роли пользователя
+        /// </summary>
+        public Guid RoleId { get; set; }
+
+        /// <summary>
         /// Роль пользователя
         /// </summary>
         public Role Role { get; set; } = null!;

@@ -16,6 +16,11 @@
         public Post Post { get; set; } = null!;
 
         /// <summary>
+        /// Id поста
+        /// </summary>
+        public Guid PostId { get; set; }
+
+        /// <summary>
         /// Текст
         /// </summary>
         public string Text { get; set; } = string.Empty;

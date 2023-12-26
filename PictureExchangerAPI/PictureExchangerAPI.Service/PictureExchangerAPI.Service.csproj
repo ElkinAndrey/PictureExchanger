@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PictureExchangerAPI.Domain\PictureExchangerAPI.Domain.csproj" />
+    <ProjectReference Include="..\PictureExchangerAPI.Persistence\PictureExchangerAPI.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

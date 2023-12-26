@@ -39,5 +39,10 @@
         /// Пользователь
         /// </summary>
         public User User { get; set; } = null!;
+
+        /// <summary>
+        /// Id пользователя
+        /// </summary>
+        public Guid UserId { get; set; }
     }
 }

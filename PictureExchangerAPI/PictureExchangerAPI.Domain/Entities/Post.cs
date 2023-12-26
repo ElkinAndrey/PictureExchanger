@@ -41,6 +41,11 @@
         public List<Tag> Tags { get; set; } = null!;
 
         /// <summary>
+        /// Id пользователя
+        /// </summary>
+        public Guid UserId { get; set; }
+
+        /// <summary>
         /// Пользователь, оставивший пост
         /// </summary>
         public User User { get; set; } = null!;
