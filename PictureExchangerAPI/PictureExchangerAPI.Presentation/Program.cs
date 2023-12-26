@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PictureExchangerAPI.Persistence;
+using PictureExchangerAPI.Persistence.Abstractions;
+using PictureExchangerAPI.Persistence.Repositories;
 using System.Security.Claims;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +83,8 @@ builder.Services.AddAuthorization(options =>
         builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "Admin"));
     });
 });
+
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

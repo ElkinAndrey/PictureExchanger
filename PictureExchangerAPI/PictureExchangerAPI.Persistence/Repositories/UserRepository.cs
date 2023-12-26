@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
 using System.Collections.Generic;
@@ -36,6 +37,14 @@ namespace PictureExchangerAPI.Persistence.Repositories
 
             if (refreshToken is not null)
                 _context.RefreshTokens.Remove(refreshToken);
+        }
+
+        public async Task<Role?> GetRoleByName(string name)
+        {
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Name == name);
+
+            return role;
         }
 
         public async Task<RefreshToken?> GetTokenWithUserByTokenAsync(string token)

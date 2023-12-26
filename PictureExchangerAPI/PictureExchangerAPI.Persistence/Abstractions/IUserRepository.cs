@@ -48,6 +48,13 @@ namespace PictureExchangerAPI.Persistence.Abstractions
         public Task AddUserAsync(User user);
 
         /// <summary>
+        /// Получить роль пользователя по имени роли
+        /// </summary>
+        /// <param name="name">Имя роли</param>
+        /// <returns>Роль</returns>
+        public Task<Role?> GetRoleByName(string name);
+
+        /// <summary>
         /// Внести изменения
         /// </summary>
         public Task SaveAsync();
