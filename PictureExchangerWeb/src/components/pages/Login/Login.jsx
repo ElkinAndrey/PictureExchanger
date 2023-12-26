@@ -7,14 +7,11 @@ import login from "../../../utils/login";
 
 const Login = () => {
   // КОНСТАНТЫ
-  const baseParams = {
-    nameOrEmail: "",
-    password: "",
-  };
   const { params, paramsChange } = useContext(Context);
 
   // ПЕРЕМЕННЫЕ
-  const [loginParams, loginParamsChange] = useState({ ...baseParams });
+  const [nameOrEmail, nameOrEmailChange] = useState("");
+  const [password, passwordChange] = useState("");
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
@@ -26,34 +23,25 @@ const Login = () => {
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
-  /** Изменить имя */
-  const paramsNameOrEmailChange = (value) => {
-    loginParams.nameOrEmail = value;
-    loginParamsChange({ ...loginParams });
-  };
-
-  /** Изменить пароль */
-  const paramsPasswordChange = (value) => {
-    loginParams.password = value;
-    loginParamsChange({ ...loginParams });
-  };
-
   /** Зарегистрироваться */
   const log = () => {
-    fetchLogin(loginParams);
+    fetchLogin({
+      nameOrEmail: nameOrEmail,
+      password: password,
+    });
   };
 
   return (
     <div>
       <h1>Войти</h1>
       <InputString
-        value={loginParams.nameOrEmail}
-        valueChange={paramsNameOrEmailChange}
+        value={nameOrEmail}
+        valueChange={nameOrEmailChange}
         text="Имя или Email"
       />
       <InputString
-        value={loginParams.password}
-        valueChange={paramsPasswordChange}
+        value={password}
+        valueChange={passwordChange}
         text="Пароль"
       />
       <button onClick={log}>Войти</button>

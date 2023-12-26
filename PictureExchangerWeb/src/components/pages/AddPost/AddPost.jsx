@@ -8,10 +8,12 @@ import UploadImage from "../../../views/UploadImage/UploadImage";
 
 const baseImage =
   "data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==";
-const baseParams = { name: "", isPrivate: false, tags: [], files: [] };
 
 const AddPost = () => {
-  const [params, paramsChange] = useState({ ...baseParams });
+  // ПЕРЕМЕННЫЕ
+  const [name, nameChange] = useState("");
+  const [isPrivate, isPrivateChange] = useState(false);
+  const [tags, tagsChange] = useState([]);
   const [covers, setCovers] = useState([]);
   const [coversSrc, setCoversSrc] = useState([]);
   const [coversNotSelected, setCoversNotSelected] = useState(false);
@@ -27,43 +29,26 @@ const AddPost = () => {
 
   /** Создать пост */
   const create = () => {
-    fetchAddPost({ ...params, files: covers });
-  };
-
-  /** Изменить имя */
-  const paramsChangeName = (value) => {
-    params.name = value;
-    paramsChange({ ...params });
-  };
-
-  /** Изменить приватность */
-  const paramsChangeIsPrivate = () => {
-    params.isPrivate = !params.isPrivate;
-    paramsChange({ ...params });
-  };
-
-  /** Изменить теги */
-  const paramsChangeTags = (value) => {
-    params.tags = value.split(",");
-    paramsChange({ ...params });
+    fetchAddPost({
+      name: name,
+      isPrivate: isPrivate,
+      tags: tags,
+      files: covers,
+    });
   };
 
   return (
     <div>
       <h1>Добавление поста</h1>
-      <InputString
-        value={params.name}
-        valueChange={paramsChangeName}
-        text="Название"
-      />
+      <InputString value={name} valueChange={nameChange} text="Название" />
       <InputBool
-        value={params.isPrivate}
-        valueChange={paramsChangeIsPrivate}
+        value={isPrivate}
+        valueChange={isPrivateChange}
         text="Сделать приватным"
       />
       <InputString
-        value={params.tags.join(",")}
-        valueChange={paramsChangeTags}
+        value={tags.join(",")}
+        valueChange={tagsChange}
         text="Теги"
       />
       <div style={{ border: "3px black solid" }}>

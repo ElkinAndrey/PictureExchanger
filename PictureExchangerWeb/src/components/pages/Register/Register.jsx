@@ -7,15 +7,12 @@ import Context from "../../../context/context";
 
 const Register = () => {
   // КОНСТАНТЫ
-  const baseParams = {
-    name: "",
-    email: "",
-    password: "",
-  };
   const { params, paramsChange } = useContext(Context);
 
   // ПЕРЕМЕННЫЕ
-  const [registerParams, registerParamsChange] = useState({ ...baseParams });
+  const [name, nameChange] = useState("");
+  const [email, emailChange] = useState("");
+  const [password, passwordChange] = useState("");
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
@@ -29,45 +26,23 @@ const Register = () => {
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 
-  /** Изменить имя */
-  const paramsNameChange = (value) => {
-    registerParams.name = value;
-    registerParamsChange({ ...registerParams });
-  };
-
-  /** Изменить Email */
-  const paramsEmailChange = (value) => {
-    registerParams.email = value;
-    registerParamsChange({ ...registerParams });
-  };
-
-  /** Изменить пароль */
-  const paramsPasswordChange = (value) => {
-    registerParams.password = value;
-    registerParamsChange({ ...registerParams });
-  };
-
   /** Зарегистрироваться */
   const register = () => {
-    fetchRegister(registerParams);
+    fetchRegister({
+      name: name,
+      email: email,
+      password: password,
+    });
   };
 
   return (
     <div>
       <h1>Зарегистрироваться</h1>
+      <InputString value={name} valueChange={nameChange} text="Имя" />
+      <InputString value={email} valueChange={emailChange} text="Email" />
       <InputString
-        value={registerParams.name}
-        valueChange={paramsNameChange}
-        text="Имя"
-      />
-      <InputString
-        value={registerParams.email}
-        valueChange={paramsEmailChange}
-        text="Email"
-      />
-      <InputString
-        value={registerParams.password}
-        valueChange={paramsPasswordChange}
+        value={password}
+        valueChange={passwordChange}
         text="Пароль"
       />
       <button onClick={register}>Зарегистрироваться</button>

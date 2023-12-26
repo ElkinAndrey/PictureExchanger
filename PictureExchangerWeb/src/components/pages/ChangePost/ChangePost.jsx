@@ -9,7 +9,9 @@ import InputBool from "../../../views/InputBool/InputBool";
 const ChangePost = () => {
   const urlParams = useParams(); // Параметры из URL
   const [baseParams, baseParamsChange] = useState(null);
-  const [params, paramsChange] = useState(null);
+  const [name, nameChange] = useState("");
+  const [isPrivate, isPrivateChange] = useState(false);
+  const [tags, tagsChange] = useState([]);
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
@@ -18,7 +20,9 @@ const ChangePost = () => {
     async (id) => {
       let response = await PostApi.getById(id);
       baseParamsChange({ ...response.data });
-      paramsChange({ ...response.data });
+      nameChange(response.data.name);
+      isPrivateChange(response.data.isPrivate);
+      tagsChange(response.data.tags);
     }
   );
   const [fetchChangePost, isLoadingChangePost, errorChangePost] = useFetching(
@@ -32,51 +36,35 @@ const ChangePost = () => {
   }, []);
 
   const change = () => {
-    fetchChangePost(urlParams.postId, params);
+    fetchChangePost(urlParams.postId, {
+      name: name,
+      isPrivate: isPrivate,
+      tags: tags,
+    });
   };
 
   /** Отменить изменения */
   const cancelChanges = () => {
-    paramsChange({ ...baseParams });
-  };
-
-  /** Изменить имя */
-  const paramsChangeName = (value) => {
-    params.name = value;
-    paramsChange({ ...params });
-  };
-
-  /** Изменить приватность */
-  const paramsChangeIsPrivate = () => {
-    params.isPrivate = !params.isPrivate;
-    paramsChange({ ...params });
-  };
-
-  /** Изменить теги */
-  const paramsChangeTags = (value) => {
-    params.tags = value.split(",");
-    paramsChange({ ...params });
+    nameChange(baseParams.name);
+    isPrivateChange(baseParams.isPrivate);
+    tagsChange(baseParams.tags);
   };
 
   // Если параметров нет
-  if (!params) return <Empty />;
+  if (!baseParams) return <Empty />;
 
   return (
     <div>
       <h1>Изменение поста</h1>
-      <InputString
-        value={params.name}
-        valueChange={paramsChangeName}
-        text="Название"
-      />
+      <InputString value={name} valueChange={nameChange} text="Название" />
       <InputBool
-        value={params.isPrivate}
-        valueChange={paramsChangeIsPrivate}
+        value={isPrivate}
+        valueChange={isPrivateChange}
         text="Сделать приватным"
       />
       <InputString
-        value={params.tags.join(",")}
-        valueChange={paramsChangeTags}
+        value={tags.join(",")}
+        valueChange={tagsChange}
         text="Теги"
       />
       <button onClick={change}>Изменить</button>
