@@ -19,13 +19,6 @@ namespace PictureExchangerAPI.Persistence.Abstractions
         /// <param name="nameOrEmail">Имя или электронная почта</param>
         /// <returns>Пользователь</returns>
         public Task<User?> GetUserByNameOrEmailAsync(string nameOrEmail);
-        
-        /// <summary>
-        /// Добавить токен пользователю
-        /// </summary>
-        /// <param name="user">Пользователь</param>
-        /// <param name="refreshToken">Токен</param>
-        public Task AddTokenToUserAsync(User user, RefreshToken refreshToken);
 
         /// <summary>
         /// Получить токен с пользователем по токену
