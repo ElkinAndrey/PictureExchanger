@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.Repositories;
+using PictureExchangerAPI.Presentation.Middlewares;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Services;
 using System.Security.Claims;
@@ -111,5 +112,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseExceptionHandlerMiddleware();
 
 app.Run();
