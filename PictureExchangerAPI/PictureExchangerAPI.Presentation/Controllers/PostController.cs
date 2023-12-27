@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
-using PictureExchangerAPI.Persistence.DTO;
+using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Presentation.DTO.Posts;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Functions;
@@ -24,14 +24,14 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <summary>
         /// Репозиторий для работы с постами
         /// </summary>
-        private readonly IPostRepository _postRepository;
+        private readonly IPostService _postRepository;
 
         /// <summary>
         /// Контроллер для работы с авторизацией
         /// </summary>
         /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostService postRepository)
         {
             _postRepository = postRepository;
         }

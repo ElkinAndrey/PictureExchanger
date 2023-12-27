@@ -15,7 +15,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <summary>
         /// Репозиторий для работы с постами
         /// </summary>
-        private readonly IPostRepository _postRepository;
+        private readonly IPostService _postRepository;
 
         /// <summary>
         /// Сервис для работы с пользователями
@@ -28,7 +28,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
         public UserController(
-            IPostRepository postRepository,
+            IPostService postRepository,
             IUserService userService)
         {
             _postRepository = postRepository;

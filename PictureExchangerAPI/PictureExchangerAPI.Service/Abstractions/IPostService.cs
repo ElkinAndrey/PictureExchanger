@@ -1,12 +1,12 @@
 ﻿using PictureExchangerAPI.Domain.Entities;
-using PictureExchangerAPI.Persistence.DTO;
+using PictureExchangerAPI.Service.DTO;
 
-namespace PictureExchangerAPI.Persistence.Abstractions
+namespace PictureExchangerAPI.Service.Abstractions
 {
     /// <summary>
     /// Интерфейс для репозитория с постами
     /// </summary>
-    public interface IPostRepository
+    public interface IPostService
     {
         /// <summary>
         /// Получить посты

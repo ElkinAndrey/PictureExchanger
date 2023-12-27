@@ -1,4 +1,4 @@
-﻿namespace PictureExchangerAPI.Persistence.Exceptions
+﻿namespace PictureExchangerAPI.Service.Exceptions
 {
     /// <summary>
     /// Ошибка. Пост не найден

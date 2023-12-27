@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
-using PictureExchangerAPI.Persistence.Abstractions;
-using PictureExchangerAPI.Persistence.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
-using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Exceptions;
+using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Functions;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using PictureExchangerAPI.Persistence.Abstractions;
 
 namespace PictureExchangerAPI.Service.Services
 {

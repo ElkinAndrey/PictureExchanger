@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence;
-using PictureExchangerAPI.Persistence.Exceptions;
+using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
 
 namespace PictureExchangerAPI.Service.Services

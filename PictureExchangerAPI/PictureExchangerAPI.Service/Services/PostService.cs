@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PictureExchangerAPI.Domain.Entities;
-using PictureExchangerAPI.Persistence.Abstractions;
-using PictureExchangerAPI.Persistence.DTO;
-using PictureExchangerAPI.Persistence.Exceptions;
+using PictureExchangerAPI.Persistence;
+using PictureExchangerAPI.Service.Abstractions;
+using PictureExchangerAPI.Service.DTO;
+using PictureExchangerAPI.Service.Exceptions;
 
-namespace PictureExchangerAPI.Persistence.Repositories
+namespace PictureExchangerAPI.Service.Repositories
 {
     /// <summary>
     /// Репозиторий с постами
     /// </summary>
-    public class PostRepository : IPostRepository
+    public class PostService : IPostService
     {
         /// <summary>
         /// Контекст базы данных
@@ -20,7 +21,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
         /// Репозиторий с постами
         /// </summary>
         /// <param name="context">Контекст базы данных</param>
-        public PostRepository(ApplicationDbContext context)
+        public PostService(ApplicationDbContext context)
         {
             _context = context;
         }

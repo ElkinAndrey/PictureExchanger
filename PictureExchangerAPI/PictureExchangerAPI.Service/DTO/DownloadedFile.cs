@@ -1,4 +1,4 @@
-﻿namespace PictureExchangerAPI.Persistence.DTO
+﻿namespace PictureExchangerAPI.Service.DTO
 {
     /// <summary>
     /// Файл

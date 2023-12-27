@@ -1,6 +1,5 @@
-﻿using PictureExchangerAPI.Persistence.Exceptions;
+﻿using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Presentation.Exceptions;
-using PictureExchangerAPI.Service.Exceptions;
 
 namespace PictureExchangerAPI.Presentation.Middlewares
 {

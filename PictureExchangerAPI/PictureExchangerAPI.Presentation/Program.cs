@@ -8,10 +8,10 @@ using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.Repositories;
 using PictureExchangerAPI.Presentation.Middlewares;
 using PictureExchangerAPI.Service.Abstractions;
+using PictureExchangerAPI.Service.Repositories;
 using PictureExchangerAPI.Service.Services;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,7 +108,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IPostRepository, PostRepository>();
+builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
