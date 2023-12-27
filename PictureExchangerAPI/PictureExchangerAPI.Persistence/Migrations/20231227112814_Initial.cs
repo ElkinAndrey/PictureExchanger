@@ -100,7 +100,9 @@ namespace PictureExchangerAPI.Persistence.Migrations
                 columns: table => new
                 {
                     Number = table.Column<int>(type: "int", nullable: false),
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    СontentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,19 +177,19 @@ namespace PictureExchangerAPI.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Images",
-                columns: new[] { "Number", "PostId" },
+                columns: new[] { "Number", "PostId", "Name", "СontentType" },
                 values: new object[,]
                 {
-                    { 1, new Guid("06453552-c990-4a33-ab0a-bd5b7ecb1451") },
-                    { 1, new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82") },
-                    { 2, new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82") },
-                    { 1, new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883") },
-                    { 2, new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883") },
-                    { 1, new Guid("78dec745-66f1-4c41-8e5d-ea9969267155") },
-                    { 2, new Guid("78dec745-66f1-4c41-8e5d-ea9969267155") },
-                    { 1, new Guid("c6bf7649-07b1-42b7-85cf-67452a262dba") },
-                    { 1, new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff") },
-                    { 2, new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff") }
+                    { 1, new Guid("06453552-c990-4a33-ab0a-bd5b7ecb1451"), "123.png", "image/png" },
+                    { 1, new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82"), "123.png", "image/png" },
+                    { 2, new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82"), "123.png", "image/png" },
+                    { 1, new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883"), "123.png", "image/png" },
+                    { 2, new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883"), "123.png", "image/png" },
+                    { 1, new Guid("78dec745-66f1-4c41-8e5d-ea9969267155"), "123.png", "image/png" },
+                    { 2, new Guid("78dec745-66f1-4c41-8e5d-ea9969267155"), "123.png", "image/png" },
+                    { 1, new Guid("c6bf7649-07b1-42b7-85cf-67452a262dba"), "123.png", "image/png" },
+                    { 1, new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff"), "123.png", "image/png" },
+                    { 2, new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff"), "123.png", "image/png" }
                 });
 
             migrationBuilder.InsertData(

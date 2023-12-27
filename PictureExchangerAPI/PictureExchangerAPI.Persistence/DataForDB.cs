@@ -74,16 +74,16 @@ namespace PictureExchangerAPI.Persistence
         /// </summary>
         public static List<Image> Images { get; } = new List<Image>()
         {
-            new Image { PostId = Posts[0].Id, Number = 1, },
-            new Image { PostId = Posts[0].Id, Number = 2, },
-            new Image { PostId = Posts[1].Id, Number = 1, },
-            new Image { PostId = Posts[1].Id, Number = 2, },
-            new Image { PostId = Posts[2].Id, Number = 1, },
-            new Image { PostId = Posts[2].Id, Number = 2, },
-            new Image { PostId = Posts[3].Id, Number = 1, },
-            new Image { PostId = Posts[4].Id, Number = 1, },
-            new Image { PostId = Posts[4].Id, Number = 2, },
-            new Image { PostId = Posts[5].Id, Number = 1, },
+            new Image { PostId = Posts[0].Id, Number = 1, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[0].Id, Number = 2, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[1].Id, Number = 1, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[1].Id, Number = 2, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[2].Id, Number = 1, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[2].Id, Number = 2, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[3].Id, Number = 1, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[4].Id, Number = 1, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[4].Id, Number = 2, СontentType="image/png", Name="123.png" },
+            new Image { PostId = Posts[5].Id, Number = 1, СontentType="image/png", Name="123.png" },
         };
     }
 }

@@ -1,6 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PictureExchangerAPI.Domain.Entities;
+using PictureExchangerAPI.Persistence.Abstractions;
+using PictureExchangerAPI.Persistence.DTO;
 using PictureExchangerAPI.Presentation.DTO.Posts;
+using PictureExchangerAPI.Service.Abstractions;
+using PictureExchangerAPI.Service.Functions;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PictureExchangerAPI.Presentation.Controllers
@@ -13,6 +21,27 @@ namespace PictureExchangerAPI.Presentation.Controllers
     public class PostController : ControllerBase
     {
         /// <summary>
+        /// Конфигурации
+        /// </summary>
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Репозиторий для работы с постами
+        /// </summary>
+        private readonly IPostRepository _postRepository;
+
+        /// <summary>
+        /// Контроллер для работы с авторизацией
+        /// </summary>
+        /// <param name="configuration">Конфигурации</param>
+        /// <param name="postRepository">Репозиторий для работы с постами</param>
+        public PostController(IConfiguration configuration, IPostRepository postRepository)
+        {
+            _configuration = configuration;
+            _postRepository = postRepository;
+        }
+
+        /// <summary>
         /// Получить список постов
         /// </summary>
         /// <param name="model">Начало отчета, конец отчета, часть названия</param>
@@ -21,43 +50,25 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get(GetPostsDto model)
         {
-            var posts = new List<object>()
+            List<Post> posts = await _postRepository.Get(model.start, model.length, model.name);
+            var response = posts.Select(p => new
             {
-                new
+                Id = p.Id,
+                Name = p.Name,
+                Date = p.DateOfCreation,
+                IsPrivate = p.IsPrivate,
+                IsBanned = p.IsBanned,
+                Tags = p.Tags.OrderBy(t => t.Number).Select(t => t.Text),
+                Images = p.Images.OrderBy(t => t.Number).Select(t => t.Number),
+                User = new
                 {
-                    Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                    Name = "Аниме картинки",
-                    Date = new DateTime(2023, 6, 13, 20, 30, 59),
-                    IsPrivate = false,
-                    IsBanned = false,
-                    Tags = new List<object>() { "аниме", "картинка" },
-                    Images = new List<object>() { 1, 2, 3 },
-                    User = new
-                    {
-                        Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                        Name = "Igor123",
-                        IsBanned = true,
-                    },
+                    Id = p.User.Id,
+                    Name = p.User.Name,
+                    IsBanned = p.User.IsBanned,
                 },
-                new
-                {
-                    Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                    Name = "CS GO",
-                    Date = new DateTime(2023, 6, 13, 20, 30, 59),
-                    IsPrivate = false,
-                    IsBanned = false,
-                    Tags = new List<object>() { "cs go", "cs", "go" },
-                    Images = new List<object>() { 1, 2 },
-                    User = new
-                    {
-                        Id = new Guid("00000000-0000-0000-0000-000000000000"),
-                        Name = "Vasya000",
-                        IsBanned = false,
-                    },
-                },
-            };
+            });
 
-            return Ok(posts);
+            return Ok(response);
         }
 
         /// <summary>
@@ -69,7 +80,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("count")]
         public async Task<IActionResult> Count(GetPostsCountDto model)
         {
-            var count = 31;
+            var count = await _postRepository.GetCount(model.name);
             return Ok(count);
         }
 
@@ -82,24 +93,25 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var post = new
+            Post post = await _postRepository.GetById(id);
+            var response = new
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                Name = "CS GO",
-                Date = new DateTime(2023, 6, 13, 20, 30, 59),
-                IsPrivate = false,
-                IsBanned = false,
-                Tags = new List<object>() { "cs go", "cs", "go" },
-                Images = new List<object>() { 1, 2 },
+                Id = post.Id,
+                Name = post.Name,
+                Date = post.DateOfCreation,
+                IsPrivate = post.IsPrivate,
+                IsBanned = post.IsBanned,
+                Tags = post.Tags.OrderBy(t => t.Number).Select(t => t.Text),
+                Images = post.Images.OrderBy(t => t.Number).Select(t => t.Number),
                 User = new
                 {
-                    Id = new Guid("00000000-0000-0000-0000-000000000000"),
-                    Name = "Vasya000",
-                    IsBanned = false,
+                    Id = post.User.Id,
+                    Name = post.User.Name,
+                    IsBanned = post.User.IsBanned,
                 },
             };
 
-            return Ok(post);
+            return Ok(response);
         }
 
         /// <summary>
@@ -111,6 +123,14 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> Add([FromForm] AddPostDto model)
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return Ok();
+            var userId = JWT.GetData(accessToken).Id;
+            var images = model.Files.Select(f => new DownloadedFile(
+                f.OpenReadStream(),
+                f.ContentType,
+                f.FileName));
+            await _postRepository.Add(userId, model.Name, model.IsPrivate, model.Tags, images);
             return Ok();
         }
 
@@ -124,6 +144,10 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{id}/change")]
         public async Task<IActionResult> Change(Guid id, ChangePostDto model)
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return Ok();
+            var userId = JWT.GetData(accessToken).Id;
+            await _postRepository.Change(id, model.Name, model.IsPrivate, null, model.Tags, userId);
             return Ok();
         }
 
@@ -136,6 +160,10 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpDelete("{id}/delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return Ok();
+            var userId = JWT.GetData(accessToken).Id;
+            await _postRepository.Delete(id, userId);
             return Ok();
         }
 
@@ -162,6 +190,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{id}/banned")]
         public async Task<IActionResult> Banned(Guid id)
         {
+            await _postRepository.Change(id, null, null, true, null, null);
             return Ok();
         }
 
@@ -174,6 +203,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{id}/unbanned")]
         public async Task<IActionResult> Unbanned(Guid id)
         {
+            await _postRepository.Change(id, null, null, false, null, null);
             return Ok();
         }
     }

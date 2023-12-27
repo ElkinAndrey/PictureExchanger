@@ -30,6 +30,14 @@ namespace PictureExchangerAPI.Persistence.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("СontentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("PostId", "Number");
 
                     b.ToTable("Images");
@@ -38,52 +46,72 @@ namespace PictureExchangerAPI.Persistence.Migrations
                         new
                         {
                             PostId = new Guid("78dec745-66f1-4c41-8e5d-ea9969267155"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("78dec745-66f1-4c41-8e5d-ea9969267155"),
-                            Number = 2
+                            Number = 2,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("22c467db-c11c-40b9-b3b0-225c88b16d82"),
-                            Number = 2
+                            Number = 2,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("292f61ab-ab96-4c6c-b64c-3c74f1350883"),
-                            Number = 2
+                            Number = 2,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("06453552-c990-4a33-ab0a-bd5b7ecb1451"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("cae8a07a-c230-48e6-b431-0f15e3ec76ff"),
-                            Number = 2
+                            Number = 2,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         },
                         new
                         {
                             PostId = new Guid("c6bf7649-07b1-42b7-85cf-67452a262dba"),
-                            Number = 1
+                            Number = 1,
+                            Name = "123.png",
+                            СontentType = "image/png"
                         });
                 });
 

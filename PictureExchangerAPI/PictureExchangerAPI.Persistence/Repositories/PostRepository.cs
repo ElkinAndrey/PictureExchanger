@@ -3,9 +3,6 @@ using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.DTO;
 using PictureExchangerAPI.Persistence.Exceptions;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 
 namespace PictureExchangerAPI.Persistence.Repositories
 {
@@ -32,14 +29,15 @@ namespace PictureExchangerAPI.Persistence.Repositories
             Guid userId,
             string name,
             bool isPrivate,
-            List<string> tags,
-            List<DownloadedFile> images)
+            IEnumerable<string> tags,
+            IEnumerable<DownloadedFile> images)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user is null) throw new UserNotFoundException();
 
+            if (images is null) images = new List<DownloadedFile>();
             var imgs = images.Select((i, num) => new Domain.Entities.Image
             {
                 Number = num,
@@ -47,6 +45,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
                 Name = i.FileDownloadName,
             }).ToList();
 
+            if (tags is null) tags = new List<string>();
             var tgs = tags.Select((t, num) => new Tag
             {
                 Number = num,
@@ -74,7 +73,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             string? name,
             bool? isPrivate,
             bool? isBanned,
-            List<string>? tags,
+            IEnumerable<string>? tags,
             Guid? userId = null)
         {
             var post = await _context.Posts // Находим пост
@@ -93,11 +92,15 @@ namespace PictureExchangerAPI.Persistence.Repositories
             if (isPrivate is not null) post.IsPrivate = (bool)isPrivate; // Изменение приватности
             if (isBanned is not null) post.IsBanned = (bool)isBanned; // Изменение бана
             if (tags is not null) // Изменение тэгов
+            {
+                var oldTags = _context.Tags.Where(t => t.PostId == postId);
+                _context.Tags.RemoveRange(oldTags);
                 post.Tags = tags.Select((t, num) => new Tag
                 {
                     Number = num,
                     Text = t,
                 }).ToList();
+            }
 
             _context.SaveChanges();
         }
@@ -120,6 +123,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
                 }
 
                 _context.Posts.Remove(post);
+                _context.SaveChanges();
             }
         }
 
@@ -132,9 +136,13 @@ namespace PictureExchangerAPI.Persistence.Repositories
             return await Task.Run(() =>
             {
                 var posts = _context.Posts
+                    .Include(p=>p.User)
+                    .Include(p=>p.Tags)
+                    .Include(p=>p.Images)
                     .Where(p => 
                         p.Name.Contains(postName) && 
                         (userName == null || p.User.Name == userName))
+                    .OrderByDescending(p => p.DateOfCreation)
                     .Skip(start)
                     .Take(length);
 
@@ -145,6 +153,9 @@ namespace PictureExchangerAPI.Persistence.Repositories
         public async Task<Post> GetById(Guid id)
         {
             var post = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Tags)
+                .Include(p => p.Images)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (post is null) throw new PostNotFoundException(); // Ошибка если пост не найден

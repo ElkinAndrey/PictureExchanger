@@ -7,8 +7,7 @@
     /// <param name="isPrivate">Сделать пост приватным</param>
     /// <param name="tags">Теги</param>
     public record class ChangePostDto(
-        string name = "",
-        bool isPrivate = false,
-        List<string> tags = null!
-        );
+        string Name = "",
+        bool IsPrivate = false,
+        List<string> Tags = null!);
 }

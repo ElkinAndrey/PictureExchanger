@@ -20,7 +20,7 @@ namespace PictureExchangerAPI.Persistence.Abstractions
             int start,
             int length,
             string postName,
-            string? userName);
+            string? userName = null);
 
         /// <summary>
         /// Получить количество постов
@@ -30,7 +30,7 @@ namespace PictureExchangerAPI.Persistence.Abstractions
         /// <returns>Количество постов</returns>
         public Task<int> GetCount(
             string postName,
-            string? userName);
+            string? userName = null);
         
         /// <summary>
         /// Получить пост по Id
@@ -51,8 +51,8 @@ namespace PictureExchangerAPI.Persistence.Abstractions
             Guid userId,
             string name,
             bool isPrivate,
-            List<string> tags,
-            List<DownloadedFile> images);
+            IEnumerable<string> tags,
+            IEnumerable<DownloadedFile> images);
 
         /// <summary>
         /// Изменить пост
@@ -65,11 +65,11 @@ namespace PictureExchangerAPI.Persistence.Abstractions
         /// <param name="userId">Id пользователя</param>
         public Task Change(
             Guid postId,
-            string? name,
-            bool? isPrivate,
-            bool? isBanned,
-            List<string>? tags,
-            Guid? userId);
+            string? name = null,
+            bool? isPrivate = null,
+            bool? isBanned = null,
+            IEnumerable<string>? tags = null,
+            Guid? userId = null);
 
         /// <summary>
         /// Удалить пост
@@ -78,6 +78,6 @@ namespace PictureExchangerAPI.Persistence.Abstractions
         /// <param name="userId">Id пользователя</param>
         public Task Delete(
             Guid postId,
-            Guid? userId);
+            Guid? userId = null);
     }
 }

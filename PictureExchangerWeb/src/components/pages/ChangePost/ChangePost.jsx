@@ -64,7 +64,7 @@ const ChangePost = () => {
       />
       <InputString
         value={tags.join(",")}
-        valueChange={tagsChange}
+        valueChange={(v) => tagsChange(v.split(","))}
         text="Теги"
       />
       <button onClick={change}>Изменить</button>

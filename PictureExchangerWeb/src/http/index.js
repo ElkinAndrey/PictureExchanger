@@ -16,6 +16,7 @@ $api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    console.log(error.response.status);
     if (
       error.response.status === 401 &&
       error.config &&
@@ -26,9 +27,11 @@ $api.interceptors.response.use(
         const response = await AuthApi.refresh();
         if (response) localStorage.setItem("jwt", response.data);
         return $api.request(originalRequest);
-      } catch (e) {}
+      } catch (e) {
+        console.log("1");
+      }
     }
-    console.log("Пользователь не авторизован");
+    console.log("2");
     throw error;
   }
 );

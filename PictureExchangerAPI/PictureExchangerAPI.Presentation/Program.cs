@@ -88,6 +88,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IPostRepository, PostRepository>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 
 var app = builder.Build();

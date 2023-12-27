@@ -1,5 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Azure.Core;
+using Microsoft.IdentityModel.Tokens;
 using PictureExchangerAPI.Domain.Constants;
+using PictureExchangerAPI.Domain.Entities;
+using PictureExchangerAPI.Service.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -33,5 +36,31 @@ namespace PictureExchangerAPI.Service.Functions
         /// <returns>Токен обновления</returns>
         public static string CreateRefreshToken()
             => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+        /// <summary>
+        /// Получить данные из JWT токена
+        /// </summary>
+        /// <param name="token">Токен</param>
+        /// <returns>Данные в виде клаймов</returns>
+        public static DataFromJWT GetData(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var claims = jwtSecurityToken.Claims;
+
+            var dataFromJWT = new DataFromJWT();
+            foreach (var claim in claims)
+            {
+                if (claim.Type == ClaimTypes.NameIdentifier)
+                    dataFromJWT.Id = new Guid(claim.Value);
+                else if (claim.Type == ClaimTypes.Name)
+                    dataFromJWT.Name = claim.Value;
+                else if (claim.Type == ClaimTypes.Email)
+                    dataFromJWT.Email = claim.Value;
+                else if (claim.Type == ClaimTypes.Role)
+                    dataFromJWT.Role = claim.Value;
+            }
+            return dataFromJWT;
+        }
     }
 }

@@ -8,9 +8,9 @@
     /// <param name="tags">Теги</param>
     /// <param name="files">Картинки</param>
     public record class AddPostDto(
-        string name = "",
-        bool isPrivate = false,
-        List<string> tags = null!,
-        List<IFormFile> files = null!
+        string Name = "",
+        bool IsPrivate = false,
+        List<string> Tags = null!,
+        List<IFormFile> Files = null!
         );
 }

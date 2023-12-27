@@ -36,7 +36,7 @@ const AddPost = () => {
       files: covers,
     });
   };
-
+  
   return (
     <div>
       <h1>Добавление поста</h1>
@@ -48,7 +48,7 @@ const AddPost = () => {
       />
       <InputString
         value={tags.join(",")}
-        valueChange={tagsChange}
+        valueChange={(v) => tagsChange(v.split(","))}
         text="Теги"
       />
       <div style={{ border: "3px black solid" }}>
