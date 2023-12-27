@@ -46,7 +46,12 @@ namespace PictureExchangerAPI.Presentation.Middlewares
             if (exception is RefreshTokenObsoleteException)
                 return CreateError(context, 401, exception);
 
+            if (exception is UserDoesNotHaveRightsToEditPostException)
+                return CreateError(context, 403, exception);
+
             if (exception is UserNotFoundException)
+                return CreateError(context, 404, exception);
+            if (exception is PostNotFoundException)
                 return CreateError(context, 404, exception);
             if (exception is WrongPasswordException)
                 return CreateError(context, 404, exception);
