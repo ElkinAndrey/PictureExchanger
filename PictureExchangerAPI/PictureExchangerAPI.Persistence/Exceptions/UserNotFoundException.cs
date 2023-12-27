@@ -1,4 +1,4 @@
-﻿namespace PictureExchangerAPI.Service.Exceptions
+﻿namespace PictureExchangerAPI.Persistence.Exceptions
 {
     /// <summary>
     /// Ошибка. Пользователь не найден
@@ -13,6 +13,7 @@
         {
 
         }
+
         /// <summary>
         /// Ошибка. Пользователь не найден
         /// </summary>

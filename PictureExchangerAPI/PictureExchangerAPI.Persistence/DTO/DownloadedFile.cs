@@ -3,11 +3,11 @@
     /// <summary>
     /// Файл
     /// </summary>
-    /// <param name="stream">Стрим файла</param>
-    /// <param name="contentType">MIME тип файла</param>
-    /// <param name="fileDownloadName">Имя файла</param>
+    /// <param name="Stream">Стрим файла</param>
+    /// <param name="ContentType">MIME тип файла</param>
+    /// <param name="FileDownloadName">Имя файла</param>
     public sealed record class DownloadedFile(
-        Stream stream,
-        string contentType,
-        string? fileDownloadName);
+        Stream Stream,
+        string ContentType,
+        string FileDownloadName);
 }

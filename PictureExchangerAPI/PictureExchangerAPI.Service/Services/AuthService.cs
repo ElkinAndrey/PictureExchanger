@@ -2,6 +2,7 @@
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
+using PictureExchangerAPI.Persistence.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Exceptions;
