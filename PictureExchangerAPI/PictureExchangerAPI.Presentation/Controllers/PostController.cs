@@ -50,7 +50,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get(GetPostsDto model)
         {
-            List<Post> posts = await _postRepository.Get(model.start, model.length, model.name);
+            List<Post> posts = await _postRepository.GetAsync(model.start, model.length, model.name);
             var response = posts.Select(p => new
             {
                 Id = p.Id,
@@ -80,7 +80,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("count")]
         public async Task<IActionResult> Count(GetPostsCountDto model)
         {
-            var count = await _postRepository.GetCount(model.name);
+            var count = await _postRepository.GetCountAsync(model.name);
             return Ok(count);
         }
 
@@ -93,7 +93,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            Post post = await _postRepository.GetById(id);
+            Post post = await _postRepository.GetByIdAsync(id);
             var response = new
             {
                 Id = post.Id,
@@ -125,12 +125,15 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             if (accessToken == null) return Ok();
+
             var userId = JWT.GetData(accessToken).Id;
             var images = model.Files.Select(f => new DownloadedFile(
                 f.OpenReadStream(),
                 f.ContentType,
                 f.FileName));
-            await _postRepository.Add(userId, model.Name, model.IsPrivate, model.Tags, images);
+
+            await _postRepository.AddAsync(userId, model.Name, model.IsPrivate, model.Tags, images);
+
             return Ok();
         }
 
@@ -147,7 +150,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             if (accessToken == null) return Ok();
             var userId = JWT.GetData(accessToken).Id;
-            await _postRepository.Change(id, model.Name, model.IsPrivate, null, model.Tags, userId);
+
+            await _postRepository.ChangeAsync(id, model.Name, model.IsPrivate, null, model.Tags, userId);
+
             return Ok();
         }
 
@@ -163,7 +168,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             if (accessToken == null) return Ok();
             var userId = JWT.GetData(accessToken).Id;
-            await _postRepository.Delete(id, userId);
+
+            await _postRepository.DeleteAsync(id, userId);
+
             return Ok();
         }
 
@@ -190,7 +197,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{id}/banned")]
         public async Task<IActionResult> Banned(Guid id)
         {
-            await _postRepository.Change(id, null, null, true, null, null);
+            await _postRepository.ChangeAsync(id, null, null, true, null, null);
             return Ok();
         }
 
@@ -203,7 +210,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{id}/unbanned")]
         public async Task<IActionResult> Unbanned(Guid id)
         {
-            await _postRepository.Change(id, null, null, false, null, null);
+            await _postRepository.ChangeAsync(id, null, null, false, null, null);
             return Ok();
         }
     }

@@ -25,7 +25,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             _context = context;
         }
 
-        public async Task Add(
+        public async Task AddAsync(
             Guid userId,
             string name,
             bool isPrivate,
@@ -68,7 +68,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Change(
+        public async Task ChangeAsync(
             Guid postId,
             string? name,
             bool? isPrivate,
@@ -105,7 +105,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             _context.SaveChanges();
         }
 
-        public async Task Delete(
+        public async Task DeleteAsync(
             Guid postId,
             Guid? userId = null)
         {
@@ -127,7 +127,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             }
         }
 
-        public async Task<List<Post>> Get(
+        public async Task<List<Post>> GetAsync(
             int start,
             int length,
             string postName,
@@ -150,7 +150,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             });
         }
 
-        public async Task<Post> GetById(Guid id)
+        public async Task<Post> GetByIdAsync(Guid id)
         {
             var post = await _context.Posts
                 .Include(p => p.User)
@@ -163,7 +163,7 @@ namespace PictureExchangerAPI.Persistence.Repositories
             return post;
         }
 
-        public async Task<int> GetCount(
+        public async Task<int> GetCountAsync(
             string postName,
             string? userName = null)
         {
