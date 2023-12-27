@@ -168,6 +168,7 @@ namespace PictureExchangerAPI.Service.Services
             List<Claim> claims = new List<Claim> // Данные, которые будут записаны в токен
             {
                 new Claim(ClaimTypes.NameIdentifier, id.ToString()), // Имя пользователя
+                new Claim(ClaimTypes.Name, name), // Имя пользователя
                 new Claim(ClaimTypes.Email, email), // Имя пользователя
                 new Claim(ClaimTypes.Role, role) // Роль пользователя
             };

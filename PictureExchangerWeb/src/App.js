@@ -5,7 +5,6 @@ import Context from "./context/context";
 import useFetching from "./hooks/useFetching";
 import AuthApi from "./api/authApi";
 import login from "./utils/login";
-import logout from "./utils/logout";
 
 function App() {
   // ПЕРЕМЕННЫЕ

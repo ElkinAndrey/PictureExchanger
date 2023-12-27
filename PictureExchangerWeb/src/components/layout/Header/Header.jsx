@@ -21,7 +21,9 @@ const Header = () => {
       <button onClick={() => logout(params, paramsChange, fetchLogout)}>
         Выйти
       </button>
-      {params.email && <label>{`Email: ${params.email}`}</label>}
+      {params.name && <label>{`Имя: ${params.name};`}</label>}
+      {params.email && <label>{`Email: ${params.email};`}</label>}
+      {params.role && <label>{`Роль: ${params.role};`}</label>}
     </div>
   );
 };

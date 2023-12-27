@@ -6,7 +6,7 @@ const login = (jwt, params, paramsChange) => {
   params.id = newParams.id;
   params.name = newParams.name;
   params.email = newParams.email;
-  params.password = newParams.password;
+  params.role = newParams.role;
   paramsChange({ ...params });
 };
 
