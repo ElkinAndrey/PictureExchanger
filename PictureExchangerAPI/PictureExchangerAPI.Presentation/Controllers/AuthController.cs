@@ -10,6 +10,7 @@ using PictureExchangerAPI.Service.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
