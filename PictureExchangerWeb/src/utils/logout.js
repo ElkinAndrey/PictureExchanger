@@ -3,7 +3,7 @@ const logout = (params, paramsChange, fetchLogout) => {
   params.id = null;
   params.name = null;
   params.email = null;
-  params.password = null;
+  params.role = null;
   paramsChange({ ...params });
   fetchLogout();
 };

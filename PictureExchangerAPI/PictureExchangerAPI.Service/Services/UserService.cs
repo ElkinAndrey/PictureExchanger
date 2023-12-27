@@ -43,10 +43,27 @@ namespace PictureExchangerAPI.Service.Services
             _context.SaveChanges();
         }
 
+        public async Task ChangeByNameAsync(
+            string name,
+            string? newName = null,
+            string? email = null,
+            bool? isBanned = null)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(p => p.Name == name);
+
+            if (user is null) throw new UserNotFoundException(name);
+
+            if (newName is not null) user.Name = (string)newName; // Изменение имени
+            if (email is not null) user.Email = (string)email; // Изменение приватности
+            if (isBanned is not null) user.IsBanned = (bool)isBanned; // Изменение бана
+
+            _context.SaveChanges();
+        }
+
         public async Task<User> GetByNameAsync(string name)
         {
             var user = await _context.Users
-                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Name == name);
 
             if (user is null) throw new UserNotFoundException(name);

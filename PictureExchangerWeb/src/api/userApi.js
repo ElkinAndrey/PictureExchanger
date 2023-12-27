@@ -1,5 +1,6 @@
 import axios from "axios";
 import defaultURL from "./apiSettings";
+import $api from "../http";
 
 const URL = `${defaultURL}/users`;
 
@@ -25,12 +26,12 @@ class UserApi {
 
   /** Забанить */
   static async banned(name) {
-    await axios.put(`${URL}/${name}/banned`);
+    await $api.put(`${URL}/${name}/banned`);
   }
 
   /** Разбанить */
   static async unbanned(name) {
-    await axios.put(`${URL}/${name}/unbanned`);
+    await $api.put(`${URL}/${name}/unbanned`);
   }
 }
 

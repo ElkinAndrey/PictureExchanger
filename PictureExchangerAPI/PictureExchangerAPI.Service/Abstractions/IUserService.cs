@@ -21,10 +21,22 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="name">Имя пользователя</param>
         /// <param name="email">Электронная почта пользователя</param>
         /// <param name="isBanned">Забанен ли</param>
-        /// <returns></returns>
         public Task ChangeAsync(
             Guid id,
             string? name = null,
+            string? email = null,
+            bool? isBanned = null);
+
+        /// <summary>
+        /// Изменить пользователя по имени
+        /// </summary>
+        /// <param name="name">Имя пользователя</param>
+        /// <param name="newName">Новое имя пользователя</param>
+        /// <param name="email">Электронная почта пользователя</param>
+        /// <param name="isBanned">Забанен ли</param>
+        public Task ChangeByNameAsync(
+            string name,
+            string? newName = null,
             string? email = null,
             bool? isBanned = null);
     }

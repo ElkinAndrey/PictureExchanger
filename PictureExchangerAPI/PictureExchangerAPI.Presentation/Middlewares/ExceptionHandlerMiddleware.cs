@@ -56,7 +56,7 @@ namespace PictureExchangerAPI.Presentation.Middlewares
             if (exception is UserWithThisNameExistsException)
                 return CreateError(context, 409, exception);
 
-            return CreateError(context, 500, $"Неизвестная ошибка");
+            return CreateError(context, 500, exception);
         }
 
         /// <summary>
