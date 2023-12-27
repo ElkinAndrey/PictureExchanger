@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Presentation.DTO.User;
@@ -11,11 +12,6 @@ namespace PictureExchangerAPI.Presentation.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        /// <summary>
-        /// Конфигурации
-        /// </summary>
-        private readonly IConfiguration _configuration;
-
         /// <summary>
         /// Репозиторий для работы с постами
         /// </summary>
@@ -32,11 +28,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
         public UserController(
-            IConfiguration configuration,
             IPostRepository postRepository,
             IUserService userService)
         {
-            _configuration = configuration;
             _postRepository = postRepository;
             _userService = userService;
         }
@@ -112,7 +106,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Все хорошо</returns>
-        [Authorize(Policy = "Manager")]
+        [Authorize(Policy = Policies.Admin)]
         [HttpPut("{name}/banned")]
         public async Task<IActionResult> Banned(string name)
         {
@@ -125,7 +119,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Все хорошо</returns>
-        [Authorize(Policy = "Manager")]
+        [Authorize(Policy = Policies.Admin)]
         [HttpPut("{name}/unbanned")]
         public async Task<IActionResult> Unbanned(string name)
         {

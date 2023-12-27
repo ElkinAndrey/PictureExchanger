@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
 import InputString from "../../../views/InputString/InputString";
 import InputBool from "../../../views/InputBool/InputBool";
 import Img from "../../../views/Img/Img";
 import UploadImage from "../../../views/UploadImage/UploadImage";
+import { useNavigate } from "react-router-dom";
+import Context from "../../../context/context";
 
 const baseImage =
   "data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==";
 
 const AddPost = () => {
+  // КОНСТАНТЫ
+  const { params } = useContext(Context); // Параметры из URL
+  const navigate = useNavigate(); // Функция перехода на другую страницу
+
   // ПЕРЕМЕННЫЕ
   const [name, nameChange] = useState("");
   const [isPrivate, isPrivateChange] = useState(false);
@@ -22,8 +28,8 @@ const AddPost = () => {
 
   /** Добавить пост */
   const [fetchAddPost, isLoadingAddPost, errorAddPost] = useFetching(
-    async (params) => {
-      await PostApi.add(params);
+    async (p) => {
+      await PostApi.add(p);
     }
   );
 
@@ -35,8 +41,9 @@ const AddPost = () => {
       tags: tags,
       files: covers,
     });
+    navigate(`/users/${params.name}`);
   };
-  
+
   return (
     <div>
       <h1>Добавление поста</h1>

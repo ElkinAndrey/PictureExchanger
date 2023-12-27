@@ -3,7 +3,7 @@ import AppRouter from "./router/AppRouter/AppRouter";
 import { useEffect, useState } from "react";
 import Context from "./context/context";
 import login from "./utils/login";
-import isAuth from "./utils/isAuth";
+import Policy from "./utils/policy";
 
 function App() {
   // ПЕРЕМЕННЫЕ
@@ -16,7 +16,8 @@ function App() {
 
   /** Действия при запуске приложения */
   useEffect(() => {
-    if (isAuth()) login(localStorage.getItem("jwt"), params, paramsChange);
+    if (Policy.isAuth())
+      login(localStorage.getItem("jwt"), params, paramsChange);
   }, []);
 
   return (

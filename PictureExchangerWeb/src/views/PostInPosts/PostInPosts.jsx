@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PostApi from "../../api/postApi";
 import IsBanned from "../IsBanned/IsBanned";
@@ -8,6 +8,8 @@ import Bool from "../Bool/Bool";
 import Img from "../Img/Img";
 import Empty from "../Empty/Empty";
 import DivButton from "../DivButton/DivButton";
+import Context from "../../context/context";
+import Policy from "../../utils/policy";
 
 const PostInPosts = ({
   post,
@@ -16,6 +18,11 @@ const PostInPosts = ({
   deletePost = null,
   openable = true,
 }) => {
+  // КОНСТАНТЫ
+  const { params } = useContext(Context);
+
+  //ФУНКЦИИ
+
   /** Забанить по Id */
   const bannedById = () => banned(post.id);
 
@@ -28,16 +35,28 @@ const PostInPosts = ({
     <div style={{ border: "3px black solid", margin: "5px 0px" }}>
       <div>{post.name}</div>
       <div>{post.date}</div>
-      <Bool value={post.isPrivate} trueText="Приватный" fasleText="Публичный" />
-      <Bool value={post.isBanned} trueText="Забанен" fasleText="Не забанен" />
-      <IsBanned
-        isBanned={post.isBanned}
-        banned={bannedById}
-        unbanned={unbannedById}
-      />
-      {post.user && (
-        <DivLink to={`/users/${post.user.name}`}>{post.user.name}</DivLink>
+      {Policy.isManagerOrOwner(params.role, params.id, post.user.id) && (
+        <>
+          <Bool
+            value={post.isPrivate}
+            trueText="Приватный"
+            fasleText="Публичный"
+          />
+          <Bool
+            value={post.isBanned}
+            trueText="Забанен"
+            fasleText="Не забанен"
+          />
+        </>
       )}
+      {Policy.isManager(params.role) && (
+        <IsBanned
+          isBanned={post.isBanned}
+          banned={bannedById}
+          unbanned={unbannedById}
+        />
+      )}
+      <DivLink to={`/users/${post.user.name}`}>{post.user.name}</DivLink>
       <Join list={post.tags} separator=" " before="#" />
       <div>
         {post.images.map((image, index) => (
@@ -45,8 +64,13 @@ const PostInPosts = ({
         ))}
       </div>
       {openable && <Link to={`/${post.id}`}>Открыть</Link>}
-      <Link to={`/${post.id}/change`}>Изменить</Link>
-      {deletePost && <DivButton onClick={deletePost}>Удалить</DivButton>}
+      {Policy.isManagerOrOwner(params.role, params.id, post.user.id) && (
+        <Link to={`/${post.id}/change`}>Изменить</Link>
+      )}
+      {deletePost &&
+        Policy.isManagerOrOwner(params.role, params.id, post.user.id) && (
+          <DivButton onClick={deletePost}>Удалить</DivButton>
+        )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.Repositories;
@@ -72,18 +73,37 @@ builder.Services
 builder.Services.AddAuthorization(options =>
 {
     // Менеджер
-    options.AddPolicy("Manager", builder =>
+    options.AddPolicy(Policies.Manager, builder =>
     {
         builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "Manager")
-                                   || x.User.HasClaim(ClaimTypes.Role, "Admin"));
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Manager)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.SuperManager)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.Admin)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.SuperAdmin));
+    });
+
+    // Суперменеджер
+    options.AddPolicy(Policies.SuperManager, builder =>
+    {
+        builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.SuperManager)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.Admin)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.SuperAdmin));
     });
 
     // Администратор
-    options.AddPolicy("Admin", builder =>
+    options.AddPolicy(Policies.Admin, builder =>
     {
         builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "Admin"));
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Admin)
+                                   || x.User.HasClaim(ClaimTypes.Role, Roles.SuperAdmin));
+    });
+
+    // Суперадминистратор
+    options.AddPolicy(Policies.SuperAdmin, builder =>
+    {
+        builder.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.SuperAdmin));
     });
 });
 

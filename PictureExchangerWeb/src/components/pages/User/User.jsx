@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import UserApi from "../../../api/userApi";
@@ -9,24 +9,26 @@ import PostInPosts from "../../../views/PostInPosts/PostInPosts";
 import InputString from "../../../views/InputString/InputString";
 import Empty from "../../../views/Empty/Empty";
 import Count from "../../../views/Count/Count";
-
-/** Количество книг на странице */
-const pageSize = 4;
-
-/** Страница по умолчанию */
-const basePage = 1;
-
-/** Параметры поиска по умолчанию */
-const baseParams = { start: 0, length: pageSize, name: "" };
+import Policy from "../../../utils/policy";
+import Context from "../../../context/context";
 
 const User = () => {
+  // КОНСТАНТЫ
+  /** Количество книг на странице */
+  const pageSize = 4;
+  /** Страница по умолчанию */
+  const basePage = 1;
+  /** Параметры поиска по умолчанию */
+  const baseParams = { start: 0, length: pageSize, name: "" };
+  const { params } = useContext(Context);
+
   // ПЕРЕМЕННЫЕ
   const urlParams = useParams(); // Параметры из URL
   const [user, userChange] = useState(null); // Пользователь
   const [posts, postsChange] = useState([]); // Посты
   const [postsCount, postsCountChange] = useState([]); // Количество постов
   const [page, pageChange] = useState(basePage); // Страница
-  const [params, paramsChange] = useState({ ...baseParams }); // Параметры плучения постов
+  const [paramsSearch, paramsSearchChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
@@ -89,11 +91,11 @@ const User = () => {
 
   /** Действия при установке страницы */
   const setPage = (page) => {
-    params.start = (page - 1) * pageSize;
-    params.length = pageSize;
+    paramsSearch.start = (page - 1) * pageSize;
+    paramsSearch.length = pageSize;
     pageChange(page);
-    updatePostsFetch(urlParams.name, params);
-    paramsChange({ ...params });
+    updatePostsFetch(urlParams.name, paramsSearch);
+    paramsSearchChange({ ...paramsSearch });
   };
 
   /** Обновить параметры поиска */
@@ -101,14 +103,14 @@ const User = () => {
     newParams.start = (basePage - 1) * pageSize;
     newParams.length = pageSize;
     pageChange(basePage);
-    paramsChange(newParams);
+    paramsSearchChange(newParams);
     updatePostsFetch(urlParams.name, newParams);
   };
 
   /** Установить параметры поиска по умолчанию */
   const reset = () => {
     pageChange(basePage);
-    paramsChange({ ...baseParams });
+    paramsSearchChange({ ...baseParams });
     newParamsChange({ ...baseParams });
     updatePostsFetch(urlParams.name, { ...baseParams });
   };
@@ -153,7 +155,7 @@ const User = () => {
   /** Действия при загрузке страницы */
   useEffect(() => {
     fetchUser(urlParams.name);
-    updatePostsFetch(urlParams.name, params);
+    updatePostsFetch(urlParams.name, paramsSearch);
   }, []);
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -171,11 +173,13 @@ const User = () => {
       <div>{user.name}</div>
       <div>{user.email}</div>
       <div>{user.isBanned}</div>
-      <IsBanned
-        isBanned={user.isBanned}
-        banned={bannedUser}
-        unbanned={unbannedUser}
-      />
+      {Policy.isAdmin(params.role) && (
+        <IsBanned
+          isBanned={user.isBanned}
+          banned={bannedUser}
+          unbanned={unbannedUser}
+        />
+      )}
       <InputString value={newParams.name} valueChange={newParamsNameChange} />
       <Count count={postsCount} />
       <PaginationBar

@@ -1,19 +1,34 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import routes from "../routes";
 import Header from "../../components/layout/Header/Header";
+import Context from "../../context/context";
+import roles from "../../constants/roles";
 
 const AppRouter = () => {
+  const { params } = useContext(Context);
+  const [route, routeChange] = useState(routes.notRegister);
+  
+  useEffect(() => {
+    if (!params.role) routeChange(routes.notRegister);
+    else if (params.role === roles.superAdmin) routeChange(routes.superAdmin);
+    else if (params.role === roles.admin) routeChange(routes.admin);
+    else if (params.role === roles.superManager)
+      routeChange(routes.superManager);
+    else if (params.role === roles.manager) routeChange(routes.manager);
+    else routeChange(routes.user);
+  }, [params]);
+
   return (
     <div>
       <Header />
       <Routes path="/">
-        {routes.map((route, index) => (
+        {route.map((r, index) => (
           <Route
             key={index}
-            exact={route.exact}
-            path={route.path}
-            element={route.element}
+            exact={r.exact}
+            path={r.path}
+            element={r.element}
           ></Route>
         ))}
       </Routes>

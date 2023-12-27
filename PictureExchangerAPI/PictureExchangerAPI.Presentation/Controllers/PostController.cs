@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Persistence.DTO;
@@ -21,11 +22,6 @@ namespace PictureExchangerAPI.Presentation.Controllers
     public class PostController : ControllerBase
     {
         /// <summary>
-        /// Конфигурации
-        /// </summary>
-        private readonly IConfiguration _configuration;
-
-        /// <summary>
         /// Репозиторий для работы с постами
         /// </summary>
         private readonly IPostRepository _postRepository;
@@ -35,9 +31,8 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
-        public PostController(IConfiguration configuration, IPostRepository postRepository)
+        public PostController(IPostRepository postRepository)
         {
-            _configuration = configuration;
             _postRepository = postRepository;
         }
 
@@ -119,8 +114,8 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="model">Данные для добавления модели</param>
         /// <returns>Все хорошо</returns>
-        [HttpPost("add")]
         [Authorize]
+        [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] AddPostDto model)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
@@ -193,7 +188,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Все хорошо</returns>
-        [Authorize(Policy = "Manager")]
+        [Authorize(Policy = Policies.Manager)]
         [HttpPut("{id}/banned")]
         public async Task<IActionResult> Banned(Guid id)
         {
@@ -206,7 +201,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Все хорошо</returns>
-        [Authorize(Policy = "Manager")]
+        [Authorize(Policy = Policies.Manager)]
         [HttpPut("{id}/unbanned")]
         public async Task<IActionResult> Unbanned(Guid id)
         {

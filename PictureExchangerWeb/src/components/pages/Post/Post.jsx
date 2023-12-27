@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
-import IsBanned from "../../../views/IsBanned/IsBanned";
-import Bool from "../../../views/Bool/Bool";
-import DivLink from "../../../views/DivLink/DivLink";
-import Join from "../../../views/Join/Join";
-import Img from "../../../views/Img/Img";
-import DivButton from "../../../views/DivButton/DivButton";
 import Empty from "../../../views/Empty/Empty";
 import PostInPosts from "../../../views/PostInPosts/PostInPosts";
 
