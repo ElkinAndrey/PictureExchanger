@@ -4,6 +4,9 @@ using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Domain.Constants;
+using System.Linq.Expressions;
+using System.Globalization;
+using System;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -98,18 +101,18 @@ namespace PictureExchangerAPI.Service.Services
         {
             return await Task.Run(() =>
             {
-                var users = _context.Users
+                IQueryable<User> users = _context.Users
                     .Include(u => u.Role)
                     .Where(p =>
                         p.Name.Contains(name) &&
                         (isBanned == null || p.IsBanned == (bool)isBanned));
-
                 if (isSortByRegistrationDate)
-                    users.OrderByDescending(p => p.RegistrationDate);
+                    users = users.OrderByDescending(p => p.RegistrationDate);
                 else if (isSortByBannedDate)
-                    users.OrderByDescending(p => p.BannedDate);
-
-                users.Skip(start).Take(length);
+                    users = users.OrderByDescending(p => p.BannedDate);
+                else
+                    users = users.OrderBy(p => p.Name);
+                users = users.Skip(start).Take(length);
 
                 return users.ToList();
             });

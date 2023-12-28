@@ -7,8 +7,8 @@ import roles from "../../constants/roles";
 
 const AppRouter = () => {
   const { params } = useContext(Context);
-  const [route, routeChange] = useState(routes.notRegister);
-  
+  const [route, routeChange] = useState(routes.superAdmin);
+
   useEffect(() => {
     if (!params.role) routeChange(routes.notRegister);
     else if (params.role === roles.superAdmin) routeChange(routes.superAdmin);

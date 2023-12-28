@@ -41,7 +41,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Данные для получения</param>
         /// <returns>Список пользователей</returns>
         [Authorize(Policy = Policies.SuperManager)]
-        [HttpGet("")]
+        [HttpPost("")]
         public async Task<IActionResult> Get(GetUsersDto model)
         {
             var users = await _userService.GetAsync(
@@ -58,12 +58,12 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 Name = u.Name,
                 Email = u.Email,
                 RegistrationDate = u.RegistrationDate,
-                Role = u.Role.Name,
+                Role = u.Role?.Name,
                 IsBanned = u.IsBanned,
                 BannedDate = u.BannedDate,
             });
 
-            return Ok(users);
+            return Ok(responce);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <param name="model">Данные для получения</param>
         /// <returns>Количество пользователей</returns>
         [Authorize(Policy = Policies.SuperManager)]
-        [HttpGet("count")]
+        [HttpPost("count")]
         public async Task<IActionResult> GetCount(GetUsersCountDto model)
         {
             var count = await _userService.GetCountAsync(

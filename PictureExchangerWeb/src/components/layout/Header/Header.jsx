@@ -20,6 +20,9 @@ const Header = () => {
     <div style={{ background: "#bbbbbb", padding: "10px" }}>
       <Link to={"/"}>На главную</Link>
       {Policy.isAuth() && <Link to={"/add"}>Добавить пост</Link>}
+      {Policy.isSuperManager(params.role) && (
+        <Link to={"/users"}>Список пользователей</Link>
+      )}
       {Policy.isNotAuth() && <Link to={"/register"}>Регистрация</Link>}
       {Policy.isNotAuth() && <Link to={"/login"}>Вход</Link>}
       {Policy.isAuth() && <button onClick={lgt}>Выйти</button>}
