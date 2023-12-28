@@ -50,6 +50,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
+                Role = user.Role.Name,
                 IsBanned = user.IsBanned,
             };
 

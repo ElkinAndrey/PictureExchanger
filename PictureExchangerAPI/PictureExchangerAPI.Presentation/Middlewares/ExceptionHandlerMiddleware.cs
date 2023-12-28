@@ -47,10 +47,10 @@ namespace PictureExchangerAPI.Presentation.Middlewares
                 return CreateError(context, 401, exception);
             if (exception is RefreshTokenObsoleteException)
                 return CreateError(context, 401, exception);
-            if (exception is ThereAreNotEnoughRightsToIssueRoleException)
-                return CreateError(context, 401, exception);
 
             if (exception is UserDoesNotHaveRightsToEditPostException)
+                return CreateError(context, 403, exception);
+            if (exception is ThereAreNotEnoughRightsToIssueRoleException)
                 return CreateError(context, 403, exception);
 
             if (exception is RoleNotFoundException)

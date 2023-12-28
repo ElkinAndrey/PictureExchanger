@@ -54,7 +54,7 @@ namespace PictureExchangerAPI.Service.Services
             string? roleChanger = null)
         {
             var user = await _context.Users
-                .Include(u=>u.Role)
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Name == name);
 
             if (user is null) throw new UserNotFoundException(name);
@@ -78,6 +78,7 @@ namespace PictureExchangerAPI.Service.Services
         public async Task<User> GetByNameAsync(string name)
         {
             var user = await _context.Users
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Name == name);
 
             if (user is null) throw new UserNotFoundException(name);

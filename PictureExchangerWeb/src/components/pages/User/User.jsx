@@ -11,18 +11,21 @@ import Empty from "../../../views/Empty/Empty";
 import Count from "../../../views/Count/Count";
 import Policy from "../../../utils/policy";
 import Context from "../../../context/context";
+import RoleApi from "../../../api/roleApi";
+import Bool from "../../../views/Bool/Bool";
 
 const User = () => {
-  // КОНСТАНТЫ
-  /** Количество книг на странице */
+  //#region КОНСТАНТЫ
+
   const pageSize = 4;
-  /** Страница по умолчанию */
   const basePage = 1;
-  /** Параметры поиска по умолчанию */
   const baseParams = { start: 0, length: pageSize, name: "" };
   const { params } = useContext(Context);
 
-  // ПЕРЕМЕННЫЕ
+  //#endregion
+
+  //#region ПЕРЕМЕННЫЕ
+
   const urlParams = useParams(); // Параметры из URL
   const [user, userChange] = useState(null); // Пользователь
   const [posts, postsChange] = useState([]); // Посты
@@ -31,7 +34,9 @@ const User = () => {
   const [paramsSearch, paramsSearchChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
-  // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
+  //#endregion
+
+  //#region ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
   /** Получение пользователя по имени */
   const [fetchUser, isLoadingUser, errorUser] = useFetching(async (name) => {
@@ -80,8 +85,42 @@ const User = () => {
     useFetching(async (name) => {
       await UserApi.unbanned(name);
     });
+  //#endregion
 
-  // ФУНКЦИИ
+  //#region ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ (РАБОТА С РОЛЯМИ)
+
+  /** Выдать роль пользователя */
+  const [fetchGiveUser, isLoadingGiveUser, errorGiveUser] = useFetching(
+    async () => {
+      await RoleApi.giveUser(urlParams.name);
+    }
+  );
+
+  /** Выдать роль менедрежа */
+  const [fetchGiveManager, isLoadingGiveManager, errorGiveManager] =
+    useFetching(async () => {
+      await RoleApi.giveManager(urlParams.name);
+    });
+
+  /** Выдать роль суперменедрежа */
+  const [
+    fetchGiveSuperManager,
+    isLoadingGiveSuperManager,
+    errorGiveSuperManager,
+  ] = useFetching(async () => {
+    await RoleApi.giveSuperManager(urlParams.name);
+  });
+
+  /** Выдать роль администратора */
+  const [fetchGiveAdmin, isLoadingGiveAdmin, errorGiveAdmin] = useFetching(
+    async () => {
+      await RoleApi.giveAdmin(urlParams.name);
+    }
+  );
+
+  //#endregion
+
+  //#region ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
   const updatePostsFetch = (name, params) => {
@@ -150,7 +189,9 @@ const User = () => {
     userChange({ ...user });
   };
 
-  // ДЕЙСТВИЯ
+  //#endregion
+
+  //#region ДЕЙСТВИЯ
 
   /** Действия при загрузке страницы */
   useEffect(() => {
@@ -158,11 +199,16 @@ const User = () => {
     updatePostsFetch(urlParams.name, paramsSearch);
   }, []);
 
-  // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+  //#endregion
+
+  //#region ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+
   const newParamsNameChange = (value) => {
     newParams.name = value;
     newParamsChange({ ...newParams });
   };
+
+  //#endregion
 
   // Пока пользователь не пришел
   if (!user) return <Empty />;
@@ -172,7 +218,16 @@ const User = () => {
       <h1>Пользователь</h1>
       <div>{user.name}</div>
       <div>{user.email}</div>
-      <div>{user.isBanned}</div>
+      {Policy.isManagerOrOwner(params.role, params.id, user.id) && (
+        <>
+          <Bool
+            value={user.isBanned}
+            trueText="Забанен"
+            fasleText="Не забанен"
+          />
+          <div>{user.role}</div>
+        </>
+      )}
       {Policy.isAdmin(params.role) && (
         <IsBanned
           isBanned={user.isBanned}
@@ -191,6 +246,26 @@ const User = () => {
       />
       <button onClick={update}>Обновить</button>
       <button onClick={reset}>Сбросить</button>
+      <div>
+        {Policy.isSuperManager(params.role) &&
+          Policy.firstRoleBigger(params.role, user.role) && (
+            <button onClick={fetchGiveUser}>Выдать пользователя</button>
+          )}
+        {Policy.isSuperManager(params.role) &&
+          Policy.firstRoleBigger(params.role, user.role) && (
+            <button onClick={fetchGiveManager}>Выдать менеджера</button>
+          )}
+        {Policy.isAdmin(params.role) &&
+          Policy.firstRoleBigger(params.role, user.role) && (
+            <button onClick={fetchGiveSuperManager}>
+              Выдать суперменеджера
+            </button>
+          )}
+        {Policy.isSuperAdmin(params.role) &&
+          Policy.firstRoleBigger(params.role, user.role) && (
+            <button onClick={fetchGiveAdmin}>Выдать администратора</button>
+          )}
+      </div>
       {posts.map((post) => (
         <PostInPosts
           key={post.id}
