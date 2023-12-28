@@ -3,7 +3,6 @@ using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
-using System.Threading.Channels;
 using PictureExchangerAPI.Domain.Constants;
 
 namespace PictureExchangerAPI.Service.Services
@@ -40,7 +39,14 @@ namespace PictureExchangerAPI.Service.Services
 
             if (name is not null) user.Name = (string)name; // Изменение имени
             if (email is not null) user.Email = (string)email; // Изменение приватности
-            if (isBanned is not null) user.IsBanned = (bool)isBanned; // Изменение бана
+            if (isBanned is not null) // Изменение бана
+            {
+                user.IsBanned = (bool)isBanned; 
+                if ((bool)isBanned)
+                    user.BannedDate = DateTime.Now;
+                else
+                    user.BannedDate = null;
+            }
 
             _context.SaveChanges();
         }
@@ -61,7 +67,14 @@ namespace PictureExchangerAPI.Service.Services
 
             if (newName is not null) user.Name = (string)newName; // Изменение имени
             if (email is not null) user.Email = (string)email; // Изменение приватности
-            if (isBanned is not null) user.IsBanned = (bool)isBanned; // Изменение бана
+            if (isBanned is not null) // Изменение бана
+            {
+                user.IsBanned = (bool)isBanned;
+                if ((bool)isBanned)
+                    user.BannedDate = DateTime.Now;
+                else
+                    user.BannedDate = null;
+            }
             if (role is not null)
             {
                 if (roleChanger is null) throw new RoleChangerNotShownException();
@@ -75,6 +88,33 @@ namespace PictureExchangerAPI.Service.Services
             _context.SaveChanges();
         }
 
+        public async Task<List<User>> GetAsync(
+            int start,
+            int length,
+            string name,
+            bool isSortByRegistrationDate,
+            bool isSortByBannedDate,
+            bool? isBanned = null)
+        {
+            return await Task.Run(() =>
+            {
+                var users = _context.Users
+                    .Include(u => u.Role)
+                    .Where(p =>
+                        p.Name.Contains(name) &&
+                        (isBanned == null || p.IsBanned == (bool)isBanned));
+
+                if (isSortByRegistrationDate)
+                    users.OrderByDescending(p => p.RegistrationDate);
+                else if (isSortByBannedDate)
+                    users.OrderByDescending(p => p.BannedDate);
+
+                users.Skip(start).Take(length);
+
+                return users.ToList();
+            });
+        }
+
         public async Task<User> GetByNameAsync(string name)
         {
             var user = await _context.Users
@@ -84,6 +124,29 @@ namespace PictureExchangerAPI.Service.Services
             if (user is null) throw new UserNotFoundException(name);
 
             return user;
+        }
+
+        public async Task<int> GetCountAsync(
+            string name,
+            bool isSortByRegistrationDate,
+            bool isSortByBannedDate,
+            bool? isBanned = null)
+        {
+            return await Task.Run(() =>
+            {
+                var users = _context.Users
+                    .Include(u => u.Role)
+                    .Where(p =>
+                        p.Name.Contains(name) &&
+                        (isBanned == null || p.IsBanned == (bool)isBanned));
+
+                if (isSortByRegistrationDate)
+                    users.OrderByDescending(p => p.RegistrationDate);
+                else if (isSortByBannedDate)
+                    users.OrderByDescending(p => p.BannedDate);
+
+                return users.Count();
+            });
         }
     }
 }

@@ -36,6 +36,55 @@ namespace PictureExchangerAPI.Presentation.Controllers
         }
 
         /// <summary>
+        /// Получить пользователей
+        /// </summary>
+        /// <param name="model">Данные для получения</param>
+        /// <returns>Список пользователей</returns>
+        [Authorize(Policy = Policies.SuperManager)]
+        [HttpGet("")]
+        public async Task<IActionResult> Get(GetUsersDto model)
+        {
+            var users = await _userService.GetAsync(
+                model.Start,
+                model.Length,
+                model.Name,
+                model.IsSortByRegistrationDate,
+                model.IsSortByBannedDate,
+                model.IsBanned);
+
+            var responce = users.Select(u => new
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                RegistrationDate = u.RegistrationDate,
+                Role = u.Role.Name,
+                IsBanned = u.IsBanned,
+                BannedDate = u.BannedDate,
+            });
+
+            return Ok(users);
+        }
+
+        /// <summary>
+        /// Получить количество пользователей
+        /// </summary>
+        /// <param name="model">Данные для получения</param>
+        /// <returns>Количество пользователей</returns>
+        [Authorize(Policy = Policies.SuperManager)]
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount(GetUsersCountDto model)
+        {
+            var count = await _userService.GetCountAsync(
+                model.Name,
+                model.IsSortByRegistrationDate,
+                model.IsSortByBannedDate,
+                model.IsBanned);
+
+            return Ok(count);
+        }
+
+        /// <summary>
         /// Получить пользователя по имени
         /// </summary>
         /// <param name="name">Имя пользователя</param>
@@ -50,8 +99,10 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
+                RegistrationDate = user.RegistrationDate,
                 Role = user.Role.Name,
                 IsBanned = user.IsBanned,
+                BannedDate = user.BannedDate,
             };
 
             return Ok(responce);
@@ -81,7 +132,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = p.User.Id,
                     Name = p.User.Name,
+                    RegistrationDate = p.User.RegistrationDate,
                     IsBanned = p.User.IsBanned,
+                    BannedDate = p.User.BannedDate,
                 },
             });
 

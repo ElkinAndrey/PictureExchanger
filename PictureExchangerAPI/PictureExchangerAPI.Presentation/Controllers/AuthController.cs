@@ -1,16 +1,9 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Presentation.DTO.Auth;
 using PictureExchangerAPI.Presentation.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
-using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {

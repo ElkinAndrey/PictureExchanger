@@ -106,6 +106,7 @@ namespace PictureExchangerAPI.Service.Services
                 PasswordSalt = hashAndSalt.PasswordSalt,
                 RegistrationDate = tokens.DateOfCreation,
                 IsBanned = false,
+                BannedDate = null,
                 Role = role,
                 RefreshTokens = new List<RefreshToken>(),
             };

@@ -41,6 +41,11 @@
         public bool IsBanned { get; set; } = false;
 
         /// <summary>
+        /// Дата бана
+        /// </summary>
+        public DateTime? BannedDate { get; set; } = null;
+
+        /// <summary>
         /// Посты
         /// </summary>
         public List<Post> Posts { get; set; } = null!;

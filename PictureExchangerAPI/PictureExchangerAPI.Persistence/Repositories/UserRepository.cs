@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
-using System.Collections.Generic;
 
 namespace PictureExchangerAPI.Persistence.Repositories
 {

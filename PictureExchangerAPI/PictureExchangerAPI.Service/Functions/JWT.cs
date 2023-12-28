@@ -1,7 +1,5 @@
-﻿using Azure.Core;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using PictureExchangerAPI.Domain.Constants;
-using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Service.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

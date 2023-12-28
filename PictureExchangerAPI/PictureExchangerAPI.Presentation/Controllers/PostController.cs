@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
-using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Presentation.DTO.Posts;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Functions;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -59,7 +55,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = p.User.Id,
                     Name = p.User.Name,
+                    RegistrationDate = p.User.RegistrationDate,
                     IsBanned = p.User.IsBanned,
+                    BannedDate = p.User.BannedDate,
                 },
             });
 
@@ -102,7 +100,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = post.User.Id,
                     Name = post.User.Name,
+                    RegistrationDate = post.User.RegistrationDate,
                     IsBanned = post.User.IsBanned,
+                    BannedDate = post.User.BannedDate,
                 },
             };
 

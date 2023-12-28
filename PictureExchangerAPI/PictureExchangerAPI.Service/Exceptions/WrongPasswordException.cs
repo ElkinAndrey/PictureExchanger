@@ -1,6 +1,4 @@
-﻿using PictureExchangerAPI.Domain.Entities;
-
-namespace PictureExchangerAPI.Service.Exceptions
+﻿namespace PictureExchangerAPI.Service.Exceptions
 {
     /// <summary>
     /// Ошибка. Неверный пароль
