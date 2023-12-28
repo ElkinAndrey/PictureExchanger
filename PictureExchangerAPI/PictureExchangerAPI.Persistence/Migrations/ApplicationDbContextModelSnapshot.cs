@@ -397,6 +397,12 @@ namespace PictureExchangerAPI.Persistence.Migrations
                     b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsEmailHidden")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRegistrationDateHidden")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -427,6 +433,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("35434031-0853-472c-8c87-3b7831e0fd17"),
                             Email = "1@1.1",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "1",
                             PasswordHash = "yE3UT3m6W4KlkNLJdTAM4UQYIZuS7QIU/6kWcAjU/mc=",
                             PasswordSalt = new byte[] { 118, 75, 18, 36, 222, 48, 190, 38, 185, 49, 119, 151, 113, 34, 164, 228 },
@@ -438,6 +446,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("f725550b-b2b0-4509-85bd-556535471756"),
                             Email = "2@2.2",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "2",
                             PasswordHash = "KjK/J9gOLsJ5Qi8MQlpn7+G5YcU1ZnQtuZI1X+TTzy0=",
                             PasswordSalt = new byte[] { 137, 110, 127, 108, 129, 137, 155, 42, 178, 110, 230, 77, 29, 222, 131, 149 },
@@ -449,6 +459,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("2efa388c-584b-4e8d-9c5d-29fa600cfac9"),
                             Email = "3@3.3",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "3",
                             PasswordHash = "mVJOzj048UABroLpqaiOCXC7ov4rY/bHqr8zYznk+2I=",
                             PasswordSalt = new byte[] { 34, 54, 150, 248, 77, 23, 108, 37, 149, 29, 207, 94, 119, 12, 110, 183 },
@@ -460,6 +472,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("ead9e0c0-395b-4489-a82b-416562905957"),
                             Email = "4@4.4",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "4",
                             PasswordHash = "Kfqg0txtZSqNkmeQbOosmGadf/IIaB2z3WaeMr3C1o0=",
                             PasswordSalt = new byte[] { 205, 233, 1, 141, 87, 98, 77, 54, 135, 152, 169, 87, 148, 116, 188, 201 },
@@ -471,6 +485,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("adca4721-3a4c-44ca-80a6-de74abc7450e"),
                             Email = "5@5.5",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "5",
                             PasswordHash = "4PDjB8dRo5n/m9N7vnYR8tM/PdyB0M7wV+dHNRAD3YQ=",
                             PasswordSalt = new byte[] { 51, 48, 107, 15, 165, 157, 219, 223, 108, 49, 81, 49, 152, 219, 5, 159 },
@@ -482,6 +498,8 @@ namespace PictureExchangerAPI.Persistence.Migrations
                             Id = new Guid("f5080b8b-9b17-497b-8fe3-9470978b0ab1"),
                             Email = "6@6.6",
                             IsBanned = false,
+                            IsEmailHidden = true,
+                            IsRegistrationDateHidden = false,
                             Name = "6",
                             PasswordHash = "Pmuehs/dEiTauUtjQXqPWSjr4XombKHPuqgZBW1JYhM=",
                             PasswordSalt = new byte[] { 128, 183, 146, 79, 41, 2, 134, 246, 132, 144, 191, 89, 214, 199, 85, 70 },

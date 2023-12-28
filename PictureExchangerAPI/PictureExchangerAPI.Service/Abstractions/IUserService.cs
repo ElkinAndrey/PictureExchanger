@@ -15,6 +15,13 @@ namespace PictureExchangerAPI.Service.Abstractions
         public Task<User> GetByNameAsync(string name);
 
         /// <summary>
+        /// Получить пользователя по id
+        /// </summary>
+        /// <param name="Id">Id пользователя</param>
+        /// <returns>Пользователь</returns>
+        public Task<User> GetByIdAsync(Guid id);
+
+        /// <summary>
         /// Изменить пользователя по id с проверкой пароля
         /// </summary>
         /// <param name="id">Id пользователя</param>

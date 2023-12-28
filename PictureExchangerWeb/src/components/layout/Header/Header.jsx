@@ -23,6 +23,7 @@ const Header = () => {
       {Policy.isSuperManager(params.role) && (
         <Link to={"/users"}>Список пользователей</Link>
       )}
+      {Policy.isAuth() && <Link to={"/settings"}>Настройки</Link>}
       {Policy.isNotAuth() && <Link to={"/register"}>Регистрация</Link>}
       {Policy.isNotAuth() && <Link to={"/login"}>Вход</Link>}
       {Policy.isAuth() && <button onClick={lgt}>Выйти</button>}

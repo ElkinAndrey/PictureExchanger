@@ -4,12 +4,8 @@ using PictureExchangerAPI.Persistence;
 using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Domain.Constants;
-using System.Linq.Expressions;
-using System.Globalization;
-using System;
 using PictureExchangerAPI.Service.Functions;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -193,6 +189,17 @@ namespace PictureExchangerAPI.Service.Services
 
                 return users.Count();
             });
+        }
+
+        public async Task<User> GetByIdAsync(Guid id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user is null) throw new UserNotFoundException();
+
+            return user;
         }
     }
 }

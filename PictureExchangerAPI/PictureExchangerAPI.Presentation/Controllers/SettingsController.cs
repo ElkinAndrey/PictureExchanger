@@ -29,6 +29,30 @@ namespace PictureExchangerAPI.Presentation.Controllers
         }
 
         [Authorize]
+        [HttpGet("")]
+        public async Task<IActionResult> Get()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return Ok();
+            var userId = JWT.GetData(accessToken).Id;
+
+            var user = await _userService.GetByIdAsync(userId);
+
+            return Ok(new
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                RegistrationDate = user.RegistrationDate,
+                Role = user.Role?.Name,
+                IsBanned = user.IsBanned,
+                BannedDate = user.BannedDate,
+                IsEmailHidden = user.IsEmailHidden,
+                IsRegistrationDateHidden = user.IsRegistrationDateHidden,
+            });
+        }
+
+        [Authorize]
         [HttpPut("/change")]
         public async Task<IActionResult> Change(ChangeSettingsDto model)
         {

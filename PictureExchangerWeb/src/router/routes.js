@@ -7,6 +7,7 @@ import ChangePost from "../components/pages/ChangePost/ChangePost";
 import Register from "../components/pages/Register/Register";
 import Login from "../components/pages/Login/Login";
 import Users from "../components/pages/Users/Users";
+import Settings from "../components/pages/Settings/Settings";
 
 const routes = {
   notRegister: [
@@ -19,6 +20,7 @@ const routes = {
     { path: "register", element: <Register />, exact: true },
     { path: "login", element: <Login />, exact: true },
     { path: "users", element: <Navigate to="/" />, exact: true },
+    { path: "settings", element: <Navigate to="/" />, exact: true },
   ],
   user: [
     { path: "/", element: <Posts />, exact: true },
@@ -30,6 +32,7 @@ const routes = {
     { path: "register", element: <Navigate to="/" />, exact: true },
     { path: "login", element: <Navigate to="/" />, exact: true },
     { path: "users", element: <Navigate to="/" />, exact: true },
+    { path: "settings", element: <Settings />, exact: true },
   ],
   manager: [
     { path: "/", element: <Posts />, exact: true },
@@ -41,6 +44,7 @@ const routes = {
     { path: "register", element: <Navigate to="/" />, exact: true },
     { path: "login", element: <Navigate to="/" />, exact: true },
     { path: "users", element: <Navigate to="/" />, exact: true },
+    { path: "settings", element: <Settings />, exact: true },
   ],
   superManager: [
     { path: "/", element: <Posts />, exact: true },
@@ -52,6 +56,7 @@ const routes = {
     { path: "register", element: <Navigate to="/" />, exact: true },
     { path: "login", element: <Navigate to="/" />, exact: true },
     { path: "users", element: <Users />, exact: true },
+    { path: "settings", element: <Settings />, exact: true },
   ],
   admin: [
     { path: "/", element: <Posts />, exact: true },
@@ -63,6 +68,7 @@ const routes = {
     { path: "register", element: <Navigate to="/" />, exact: true },
     { path: "login", element: <Navigate to="/" />, exact: true },
     { path: "users", element: <Users />, exact: true },
+    { path: "settings", element: <Settings />, exact: true },
   ],
   superAdmin: [
     { path: "/", element: <Posts />, exact: true },
@@ -74,6 +80,7 @@ const routes = {
     { path: "register", element: <Navigate to="/" />, exact: true },
     { path: "login", element: <Navigate to="/" />, exact: true },
     { path: "users", element: <Users />, exact: true },
+    { path: "settings", element: <Settings />, exact: true },
   ],
 };
 
