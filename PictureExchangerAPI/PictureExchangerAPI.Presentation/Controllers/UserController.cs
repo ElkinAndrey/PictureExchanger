@@ -25,8 +25,8 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <summary>
         /// Контроллер для работы с авторизацией
         /// </summary>
-        /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
+        /// <param name="userService">Сервис для работы с пользователями</param>
         public UserController(
             IPostService postRepository,
             IUserService userService)
@@ -132,7 +132,6 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = p.User.Id,
                     Name = p.User.Name,
-                    RegistrationDate = p.User.RegistrationDate,
                     IsBanned = p.User.IsBanned,
                     BannedDate = p.User.BannedDate,
                 },

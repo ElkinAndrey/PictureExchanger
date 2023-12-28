@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using PictureExchangerAPI.Domain.Constants;
+﻿using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Exceptions;
 using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Functions;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using PictureExchangerAPI.Persistence.Abstractions;
 
 namespace PictureExchangerAPI.Service.Services
@@ -45,7 +43,7 @@ namespace PictureExchangerAPI.Service.Services
         {
             var user = await _userRepository.GetUserByNameOrEmailAsync(nameOrEmail); // Находим пользователя по имени или email в базе данных
             if (user is null) throw new UserNotFoundException(nameOrEmail); // Если пользователь не найден, то выдать исключение!!!
-            if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException(); // Если пароль введен неверно, то выдать исключение
+            if (!Password.VerifyPassword(password, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException(); // Если пароль введен неверно, то выдать исключение
             var tokens = GenerateTokens(user.Id, user.Name, user.Email, user.Role?.Name ?? "", secretKey); // Сгенерировать пару токенов
             var refresh = new RefreshToken(1, tokens.RefreshToken, ip, deviceData, tokens.DateOfCreation, tokens.DateOfCreation, user, user.Id); // Создание refresh токена для базы данных
             if (user.RefreshTokens.Count != 0) refresh.Number = user.RefreshTokens.Max(u => u.Number) + 1;
@@ -95,7 +93,7 @@ namespace PictureExchangerAPI.Service.Services
 
             var role = await _userRepository.GetRoleByName(Roles.User); // Получить роль пользователя из базы данных
             if (role is null) role = new Role { Id = Guid.NewGuid(), Name = Roles.User }; // Если роли пользователя нет в базе данных, то добавить
-            var hashAndSalt = CreatePassword(password); // Сгенерировать хэш и соль пароля
+            var hashAndSalt = Password.CreatePassword(password); // Сгенерировать хэш и соль пароля
             var tokens = GenerateTokens(Guid.NewGuid(), name, email, role.Name, secretKey); // Сгенерировать пару токенов
             var user = new User // Создать пользователя
             {
@@ -109,6 +107,8 @@ namespace PictureExchangerAPI.Service.Services
                 BannedDate = null,
                 Role = role,
                 RefreshTokens = new List<RefreshToken>(),
+                IsEmailHidden = true,
+                IsRegistrationDateHidden = false,
             };
             var refresh = new RefreshToken(1, tokens.RefreshToken, ip, deviceData, tokens.DateOfCreation, tokens.DateOfCreation, user, user.Id); // Создание refresh токена для базы данных
             user.RefreshTokens.Add(refresh); // Добавить пользователю токен обновления
@@ -116,41 +116,6 @@ namespace PictureExchangerAPI.Service.Services
             await _userRepository.SaveAsync();// Обновить базу данных
             return tokens;// Вернуть пару токенов
         }
-
-        /// <summary>
-        /// Получить хэш
-        /// </summary>
-        /// <param name="password">Пароль</param>
-        /// <param name="passwordSalt">Соль</param>
-        /// <returns>Хэш</returns>
-        private static string GetHash(string password, byte[] passwordSalt)
-            => Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password!,
-                salt: passwordSalt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
-                numBytesRequested: 256 / 8));
-
-        /// <summary>
-        /// Создать хэш
-        /// </summary>
-        /// <param name="password">Пароль</param>
-        private HashAndSalt CreatePassword(string password)
-        {
-            byte[] passwordSalt = RandomNumberGenerator.GetBytes(128 / 8);
-            string passwordHash = GetHash(password, passwordSalt);
-            return new HashAndSalt(passwordHash, passwordSalt);
-        }
-
-        /// <summary>
-        /// Проверить пароль
-        /// </summary>
-        /// <param name="password">пароль</param>
-        /// <param name="passwordHash">хэш, с которым нужно сравнить пароль</param>
-        /// <param name="passwordSalt">соль</param>
-        /// <returns>True - пароль верный, False - пароль не верный</returns>
-        private static bool VerifyPassword(string password, string passwordHash, byte[] passwordSalt)
-            => passwordHash == GetHash(password, passwordSalt);
 
         /// <summary>
         /// Сгенерировать пару токенов

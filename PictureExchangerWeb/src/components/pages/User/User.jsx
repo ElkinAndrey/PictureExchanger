@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import UserApi from "../../../api/userApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
@@ -218,6 +218,7 @@ const User = () => {
       <h1>Пользователь</h1>
       <div>{user.name}</div>
       <div>{user.email}</div>
+      <div>{user.registrationDate}</div>
       {Policy.isManagerOrOwner(params.role, params.id, user.id) && (
         <>
           <Bool

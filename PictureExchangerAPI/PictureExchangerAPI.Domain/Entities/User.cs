@@ -64,5 +64,15 @@
         /// Токены обновления
         /// </summary>
         public List<RefreshToken> RefreshTokens { get; set; } = null!;
+
+        /// <summary>
+        /// Скрыт ли Email для других пользователей
+        /// </summary>
+        public bool IsEmailHidden { get; set; } = true;
+
+        /// <summary>
+        /// Скрыта ли дата регистрации для других пользователей
+        /// </summary>
+        public bool IsRegistrationDateHidden { get; set; } = false;
     }
 }

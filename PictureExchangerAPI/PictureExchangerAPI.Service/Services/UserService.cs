@@ -7,6 +7,9 @@ using PictureExchangerAPI.Domain.Constants;
 using System.Linq.Expressions;
 using System.Globalization;
 using System;
+using PictureExchangerAPI.Service.Functions;
+using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -29,29 +32,35 @@ namespace PictureExchangerAPI.Service.Services
             _context = context;
         }
 
-        public async Task ChangeAsync(
+        public async Task ChangeByIdWithCheckingPasswordAsync(
             Guid id,
-            string? name = null,
+            string currentPassword,
+            string? newName = null,
             string? email = null,
-            bool? isBanned = null)
+            bool? isBanned = null,
+            string? role = null,
+            string? roleChanger = null,
+            bool? isEmailHidden = null,
+            bool? isRegistrationDateHidden = null,
+            string? password = null)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user is null) throw new UserNotFoundException();
+            if (!Password.VerifyPassword(currentPassword, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException();
 
-            if (name is not null) user.Name = (string)name; // Изменение имени
-            if (email is not null) user.Email = (string)email; // Изменение приватности
-            if (isBanned is not null) // Изменение бана
-            {
-                user.IsBanned = (bool)isBanned; 
-                if ((bool)isBanned)
-                    user.BannedDate = DateTime.Now;
-                else
-                    user.BannedDate = null;
-            }
-
-            _context.SaveChanges();
+            await ChangeUserAsync(
+                user,
+                newName,
+                email,
+                isBanned,
+                role,
+                roleChanger,
+                isEmailHidden,
+                isRegistrationDateHidden,
+                password);
         }
 
         public async Task ChangeByNameAsync(
@@ -60,7 +69,10 @@ namespace PictureExchangerAPI.Service.Services
             string? email = null,
             bool? isBanned = null,
             string? role = null,
-            string? roleChanger = null)
+            string? roleChanger = null,
+            bool? isEmailHidden = null,
+            bool? isRegistrationDateHidden = null,
+            string? password = null)
         {
             var user = await _context.Users
                 .Include(u => u.Role)
@@ -68,6 +80,29 @@ namespace PictureExchangerAPI.Service.Services
 
             if (user is null) throw new UserNotFoundException(name);
 
+            await ChangeUserAsync(
+                user,
+                newName,
+                email,
+                isBanned,
+                role,
+                roleChanger,
+                isEmailHidden,
+                isRegistrationDateHidden,
+                password);
+        }
+
+        private async Task ChangeUserAsync(
+            User user,
+            string? newName = null,
+            string? email = null,
+            bool? isBanned = null,
+            string? role = null,
+            string? roleChanger = null,
+            bool? isEmailHidden = null,
+            bool? isRegistrationDateHidden = null,
+            string? password = null)
+        {
             if (newName is not null) user.Name = (string)newName; // Изменение имени
             if (email is not null) user.Email = (string)email; // Изменение приватности
             if (isBanned is not null) // Изменение бана
@@ -86,6 +121,14 @@ namespace PictureExchangerAPI.Service.Services
                     .FirstOrDefaultAsync(r => r.Name == role);
                 if (newRole is null) throw new RoleNotFoundException();
                 user.Role = newRole;
+            }
+            if (isEmailHidden is not null) user.IsEmailHidden = (bool)isEmailHidden;
+            if (isRegistrationDateHidden is not null) user.IsRegistrationDateHidden = (bool)isRegistrationDateHidden;
+            if (password is not null)
+            {
+                var hashAndSalt = Password.CreatePassword(password); // Сгенерировать хэш и соль пароля
+                user.PasswordHash = hashAndSalt.PasswordHash;
+                user.PasswordSalt = hashAndSalt.PasswordSalt;
             }
 
             _context.SaveChanges();

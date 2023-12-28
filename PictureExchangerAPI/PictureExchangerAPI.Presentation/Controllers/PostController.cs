@@ -55,7 +55,6 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = p.User.Id,
                     Name = p.User.Name,
-                    RegistrationDate = p.User.RegistrationDate,
                     IsBanned = p.User.IsBanned,
                     BannedDate = p.User.BannedDate,
                 },
@@ -100,7 +99,6 @@ namespace PictureExchangerAPI.Presentation.Controllers
                 {
                     Id = post.User.Id,
                     Name = post.User.Name,
-                    RegistrationDate = post.User.RegistrationDate,
                     IsBanned = post.User.IsBanned,
                     BannedDate = post.User.BannedDate,
                 },
