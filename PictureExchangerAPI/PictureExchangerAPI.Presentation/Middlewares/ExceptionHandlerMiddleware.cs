@@ -39,15 +39,22 @@ namespace PictureExchangerAPI.Presentation.Middlewares
             ///       пользователь уже зарегистрирован по такой почте)   
             /// 422 - ошибка валидации (неверный формат введения Email или пароль 
             ///       слишком простой)
+            
+            if (exception is RoleChangerNotShownException)
+                return CreateError(context, 400, exception);
 
             if (exception is RefreshTokenNotInCookieException)
                 return CreateError(context, 401, exception);
             if (exception is RefreshTokenObsoleteException)
                 return CreateError(context, 401, exception);
+            if (exception is ThereAreNotEnoughRightsToIssueRoleException)
+                return CreateError(context, 401, exception);
 
             if (exception is UserDoesNotHaveRightsToEditPostException)
                 return CreateError(context, 403, exception);
 
+            if (exception is RoleNotFoundException)
+                return CreateError(context, 404, exception);
             if (exception is UserNotFoundException)
                 return CreateError(context, 404, exception);
             if (exception is PostNotFoundException)

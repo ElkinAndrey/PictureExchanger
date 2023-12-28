@@ -134,8 +134,6 @@ namespace PictureExchangerAPI.Service.Services
         /// Создать хэш
         /// </summary>
         /// <param name="password">Пароль</param>
-        /// <param name="passwordHash">Хэш</param>
-        /// <param name="passwordSalt">Соль</param>
         private HashAndSalt CreatePassword(string password)
         {
             byte[] passwordSalt = RandomNumberGenerator.GetBytes(128 / 8);

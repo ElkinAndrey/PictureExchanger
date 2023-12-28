@@ -17,9 +17,9 @@
         /// <summary>
         /// Ошибка. Пользователь не найден
         /// </summary>
-        /// <param name="nameOrEmail">Имя или электронная почта</param>
-        public UserNotFoundException(string nameOrEmail) :
-            base($"Пользователь с данными \"{nameOrEmail}\" не найден")
+        /// <param name="name">Имя пользователя</param>
+        public UserNotFoundException(string name) :
+            base($"Пользователь с данными \"{name}\" не найден")
         {
 
         }

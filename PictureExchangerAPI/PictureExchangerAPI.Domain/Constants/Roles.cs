@@ -32,5 +32,24 @@ namespace PictureExchangerAPI.Domain.Constants
         /// Суперадминистратор
         /// </summary>
         public const string SuperAdmin = "SuperAdmin";
+
+        /// <summary>
+        /// Больше ли первая роль, чем вторая
+        /// </summary>
+        /// <param name="roleFirst">Первая роль</param>
+        /// <param name="roleSecond">Вторая роль</param>
+        /// <returns>true - первая больше, fasle - первая меньше или равна</returns>
+        public static bool FirstRoleBigger(string roleFirst, string roleSecond)
+        {
+            List<string> roles = new List<string>() { User, Manager, SuperManager, Admin, SuperAdmin };
+            int roleFirstIndex = 0;
+            int roleSecondIndex = 0;
+            for (int i = 0; i < roles.Count; i++)
+            {
+                if (roles[i] == roleFirst) roleFirstIndex = i;
+                if (roles[i] == roleSecond) roleSecondIndex = i;
+            }
+            return roleFirstIndex > roleSecondIndex;
+        }
     }
 }

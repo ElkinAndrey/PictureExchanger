@@ -38,6 +38,8 @@ namespace PictureExchangerAPI.Service.Abstractions
             string name,
             string? newName = null,
             string? email = null,
-            bool? isBanned = null);
+            bool? isBanned = null,
+            string? role = null,
+            string? roleChanger = null);
     }
 }
