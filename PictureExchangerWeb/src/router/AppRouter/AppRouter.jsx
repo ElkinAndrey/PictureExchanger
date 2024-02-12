@@ -4,6 +4,7 @@ import routes from "../routes";
 import Header from "../../components/layout/Header/Header";
 import Context from "../../context/context";
 import roles from "../../constants/roles";
+import LeftMenu from "../../components/layout/LeftMenu/LeftMenu";
 
 const AppRouter = () => {
   const { params } = useContext(Context);
@@ -22,16 +23,29 @@ const AppRouter = () => {
   return (
     <div>
       <Header />
-      <Routes path="/">
-        {route.map((r, index) => (
-          <Route
-            key={index}
-            exact={r.exact}
-            path={r.path}
-            element={r.element}
-          ></Route>
-        ))}
-      </Routes>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{ width: "800px", display: "flex", justifyContent: "center" }}
+        >
+          <LeftMenu />
+          <div
+            style={{
+              flex: "1 0 auto",
+            }}
+          >
+            <Routes path="/">
+              {route.map((r, index) => (
+                <Route
+                  key={index}
+                  exact={r.exact}
+                  path={r.path}
+                  element={r.element}
+                ></Route>
+              ))}
+            </Routes>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

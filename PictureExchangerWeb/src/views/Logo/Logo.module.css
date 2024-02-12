@@ -1,0 +1,19 @@
+.body {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000000;
+  padding: 8px 5px;
+  white-space: nowrap; 
+}
+
+.image {
+  width: 35px;
+  height: 35px;
+  margin-right: 5px;
+}
+
+.text {
+  font-size: 20px;
+}

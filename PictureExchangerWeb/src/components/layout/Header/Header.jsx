@@ -5,6 +5,10 @@ import useFetching from "../../../hooks/useFetching";
 import AuthApi from "../../../api/authApi";
 import logout from "../../../utils/logout";
 import Policy from "../../../utils/policy";
+import Logo from "../../../views/Logo/Logo";
+import classes from "./Header.module.css";
+import ProfileMenu from "../../../views/ProfileMenu/ProfileMenu";
+import AuthMenu from "../../../views/AuthMenu/AuthMenu";
 
 const Header = () => {
   const { params, paramsChange } = useContext(Context);
@@ -17,9 +21,11 @@ const Header = () => {
   const lgt = () => logout(params, paramsChange, fetchLogout);
 
   return (
-    <div style={{ background: "#bbbbbb", padding: "10px" }}>
-      <Link to={"/"}>На главную</Link>
-      {Policy.isAuth() && <Link to={"/add"}>Добавить пост</Link>}
+    <div className={classes.body}>
+      <Logo />
+      {Policy.isAuth() && <ProfileMenu />}
+      {Policy.isNotAuth() && <AuthMenu />}
+      {/* {Policy.isAuth() && <Link to={"/add"}>Добавить пост</Link>}
       {Policy.isSuperManager(params.role) && (
         <Link to={"/users"}>Список пользователей</Link>
       )}
@@ -29,7 +35,7 @@ const Header = () => {
       {Policy.isAuth() && <button onClick={lgt}>Выйти</button>}
       {params.name && <label>{`Имя: ${params.name};`}</label>}
       {params.email && <label>{`Email: ${params.email};`}</label>}
-      {params.role && <label>{`Роль: ${params.role};`}</label>}
+      {params.role && <label>{`Роль: ${params.role};`}</label>} */}
     </div>
   );
 };
