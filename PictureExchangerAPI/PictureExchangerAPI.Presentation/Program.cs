@@ -19,7 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -136,5 +135,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseExceptionHandlerMiddleware();
+app.UseTimeDelayMiddleware();
 
 app.Run();

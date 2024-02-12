@@ -3,7 +3,7 @@
     /// <summary>
     /// Кастомные Middleware
     /// </summary>
-    public static class ExceptionHandlerMiddlewareExtensions
+    public static class MiddlewareExtensions
     {
         /// <summary>
         /// Глобальная обработка исключений
@@ -11,6 +11,11 @@
         public static void UseExceptionHandlerMiddleware(this IApplicationBuilder app)
         {
             app.UseMiddleware<ExceptionHandlerMiddleware>();
+        }
+
+        public static void UseTimeDelayMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<TimeoutMiddleware>();
         }
     }
 }
