@@ -7,6 +7,7 @@ import Img from "../../../views/Img/Img";
 import UploadImage from "../../../views/UploadImage/UploadImage";
 import { useNavigate } from "react-router-dom";
 import Context from "../../../context/context";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const baseImage =
   "data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==";
@@ -45,7 +46,7 @@ const AddPost = () => {
   };
 
   return (
-    <div>
+    <LeftMenu>
       <h1>Добавление поста</h1>
       <InputString value={name} valueChange={nameChange} text="Название" />
       <InputBool
@@ -79,7 +80,7 @@ const AddPost = () => {
         />
       </div>
       <button onClick={create}>Создать</button>
-    </div>
+    </LeftMenu>
   );
 };
 

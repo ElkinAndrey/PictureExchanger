@@ -6,6 +6,7 @@ import PaginationBar from "../../forms/PaginationBar/PaginationBar";
 import InputString from "../../../views/InputString/InputString";
 import Count from "../../../views/Count/Count";
 import { Link } from "react-router-dom";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const Users = () => {
   const pageSize = 4;
@@ -111,7 +112,7 @@ const Users = () => {
   };
 
   return (
-    <div>
+    <LeftMenu>
       <h1>Главная</h1>
       <InputString value={newParams.name} valueChange={newParamsNameChange} />
       <Count count={usersCount} />
@@ -220,13 +221,13 @@ const Users = () => {
               </td>
               <td>{user.bannedDate}</td>
               <td>
-                <Link to={`/users/${user.name}`} >Открыть</Link>
+                <Link to={`/users/${user.name}`}>Открыть</Link>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </LeftMenu>
   );
 };
 

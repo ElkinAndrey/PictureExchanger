@@ -24,25 +24,18 @@ const AppRouter = () => {
   return (
     <div className={classes.main}>
       <Header />
-      <div className={classes.centeringMenu}>
-        <div className={classes.body}>
-          <LeftMenu />
-          <div className={classes.page}>
-            <div className={classes.subpage}>
-              <Routes path="/">
-                {route.map((r, index) => (
-                  <Route
-                    key={index}
-                    exact={r.exact}
-                    path={r.path}
-                    element={r.element}
-                  ></Route>
-                ))}
-              </Routes>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* <LeftMenu> */}
+      <Routes path="/">
+        {route.map((r, index) => (
+          <Route
+            key={index}
+            exact={r.exact}
+            path={r.path}
+            element={r.element}
+          ></Route>
+        ))}
+      </Routes>
+      {/* </LeftMenu> */}
     </div>
   );
 };

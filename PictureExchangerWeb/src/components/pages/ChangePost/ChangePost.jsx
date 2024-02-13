@@ -6,6 +6,7 @@ import Empty from "../../../views/Empty/Empty";
 import InputString from "../../../views/InputString/InputString";
 import InputBool from "../../../views/InputBool/InputBool";
 import Context from "../../../context/context";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const ChangePost = () => {
   // КОНСТАНТЫ
@@ -61,7 +62,7 @@ const ChangePost = () => {
   if (!baseParams) return <Empty />;
 
   return (
-    <div>
+    <LeftMenu>
       <h1>Изменение поста</h1>
       <InputString value={name} valueChange={nameChange} text="Название" />
       <InputBool
@@ -76,7 +77,7 @@ const ChangePost = () => {
       />
       <button onClick={change}>Изменить</button>
       <button onClick={cancelChanges}>Отменить изменения</button>
-    </div>
+    </LeftMenu>
   );
 };
 

@@ -11,6 +11,7 @@ import classes from "./Posts.module.css";
 import If from "../../../views/If/If";
 import Loader from "../../forms/Loader/Loader";
 import BigLoader from "../../forms/BigLoader/BigLoader";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -95,7 +96,7 @@ const Posts = () => {
   };
 
   return (
-    <div>
+    <LeftMenu>
       <InputSearch
         value={newParams.name}
         valueChange={newParamsNameChange}
@@ -124,7 +125,7 @@ const Posts = () => {
       <If value={isLoadingPosts || isLoadingPostsCount}>
         <BigLoader className={classes.loader} />
       </If>
-    </div>
+    </LeftMenu>
   );
 };
 

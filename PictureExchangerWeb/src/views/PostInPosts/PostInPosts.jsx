@@ -36,11 +36,13 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
 
   /** Забанить */
   const banned = (id) => {
+    if (isLoadingBanned || isLoadingUnbanned) return;
     fetchBanned(id);
   };
 
   /** Разбанить */
   const unbanned = (id) => {
+    if (isLoadingBanned || isLoadingUnbanned) return;
     fetchUnbanned(id);
   };
 

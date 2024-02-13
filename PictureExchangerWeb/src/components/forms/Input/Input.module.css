@@ -1,0 +1,63 @@
+.body {
+  position: relative;
+  display: flex;
+}
+
+.input {
+  flex: 1 0 auto;
+  transition: all 80ms;
+  background: #ffffff;
+  outline: 1px #dadce0 solid;
+  border: 0px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.input:focus {
+  outline: 2px #4177b5 solid;
+  border: 0px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.placeholder {
+  background: #ffffff;
+  padding: 3px;
+  left: 7px;
+  position: absolute;
+  font-size: 13px;
+  transition: all 150ms;
+  top: 50%;
+  transform: translate(0, -50%);
+  pointer-events: none;
+  color: #5f6368;
+}
+
+.placeholderFocus {
+  padding: 3px;
+  left: 7px;
+  background: #ffffff;
+  position: absolute;
+  font-size: 10px;
+  top: -11px;
+  transition: all 150ms;
+  pointer-events: none;
+  color: #5f6368;
+}
+
+.checkboxBody {
+  margin-top: 5px;
+  display: flex;
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
+.checkboxName {
+  padding-left: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  user-select: none;
+}

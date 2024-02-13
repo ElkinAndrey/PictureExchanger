@@ -13,6 +13,7 @@ import Policy from "../../../utils/policy";
 import Context from "../../../context/context";
 import RoleApi from "../../../api/roleApi";
 import Bool from "../../../views/Bool/Bool";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const User = () => {
   //#region КОНСТАНТЫ
@@ -214,7 +215,7 @@ const User = () => {
   if (!user) return <Empty />;
 
   return (
-    <div>
+    <LeftMenu>
       <h1>Пользователь</h1>
       <div>{user.name}</div>
       <div>{user.email}</div>
@@ -275,7 +276,7 @@ const User = () => {
           unbanned={unbannedPost}
         />
       ))}
-    </div>
+    </LeftMenu>
   );
 };
 

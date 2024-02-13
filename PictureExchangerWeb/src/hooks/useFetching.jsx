@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const useFetching = (callback) => {
   const [isLoading, setIsLoading] = useState(false); // Равно true, если данные пока, что получаются
-  const [error, setError] = useState(""); // Если возникнет ошибка
+  const [error, setError] = useState(null); // Если возникнет ошибка
 
   // Получение данных
   const fetching = async (...args) => {

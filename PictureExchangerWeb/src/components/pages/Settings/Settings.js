@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import SettingsApi from "../../../api/settingsApi";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const Settings = () => {
   const [settings, settingsChange] = useState();
@@ -15,7 +16,7 @@ const Settings = () => {
     fetchGetSettings();
   }, []);
   return (
-    <div>
+    <LeftMenu>
       {settings && (
         <div>
           <div>{`Id: ${settings.id}`}</div>
@@ -36,7 +37,7 @@ const Settings = () => {
           }`}</div>
         </div>
       )}
-    </div>
+    </LeftMenu>
   );
 };
 

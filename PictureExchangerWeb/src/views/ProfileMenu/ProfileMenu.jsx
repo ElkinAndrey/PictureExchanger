@@ -32,6 +32,11 @@ const ProfileMenu = () => {
     document.addEventListener("click", onClick);
   }, []);
 
+  const exit = () => {
+    if (isLoadingLogout) return;
+    fetchLogout();
+  };
+
   return (
     <div className={classes.body} ref={rootEl}>
       <img
@@ -59,7 +64,7 @@ const ProfileMenu = () => {
             />
             <div>Настройки</div>
           </Link>
-          <button className={classes.button} onClick={fetchLogout}>
+          <button className={classes.button} onClick={exit}>
             <img
               className={classes.buttonImage}
               src="/images/exit.png"

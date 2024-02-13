@@ -4,6 +4,7 @@ import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
 import Empty from "../../../views/Empty/Empty";
 import PostInPosts from "../../../views/PostInPosts/PostInPosts";
+import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 
 const Post = () => {
   // КОНСТАНТЫ
@@ -75,7 +76,7 @@ const Post = () => {
   if (!post) return <Empty />;
 
   return (
-    <div>
+    <LeftMenu>
       <h1>Пост</h1>
       <PostInPosts
         post={post}
@@ -84,7 +85,7 @@ const Post = () => {
         deletePost={deletePost}
         openable={false}
       />
-    </div>
+    </LeftMenu>
   );
 };
 

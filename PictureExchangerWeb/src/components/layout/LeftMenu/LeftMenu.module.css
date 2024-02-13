@@ -1,3 +1,31 @@
+.centeringMenu {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-grow: 3;
+  overflow-y: hidden;
+}
+
+.all {
+  margin: 10px 0px;
+  overflow-y: hidden;
+  max-height: 100%;
+  position: relative;
+  min-width: 900px;
+  max-width: 900px;
+  display: flex;
+}
+
+.page {
+  margin-left: 20px;
+  overflow-y: scroll;
+  flex: 1 0 auto;
+}
+
+.subpage {
+  margin-right: 15px;
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -23,4 +51,16 @@
   width: 17px;
   height: 17px;
   margin-right: 10px;
+}
+
+/* полоса прокрутки (скроллбар) */
+.all ::-webkit-scrollbar {
+  width: 10px; /* ширина для вертикального скролла */
+  height: 10px; /* высота для горизонтального скролла */
+}
+
+/* ползунок скроллбара */
+.all ::-webkit-scrollbar-thumb {
+  background-color: #d5d6db;
+  border-radius: 5px;
 }
