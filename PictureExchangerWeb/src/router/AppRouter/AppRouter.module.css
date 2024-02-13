@@ -1,0 +1,29 @@
+.main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.centeringMenu {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-grow: 3;
+  overflow: hidden;
+}
+
+.body {
+  margin: 10px 0px;
+  overflow: hidden;
+  max-height: 100%;
+  position: relative;
+  min-width: 900px;
+  max-width: 900px;
+  display: flex;
+}
+
+.page {
+    margin-left: 20px;
+  overflow-y: auto;
+  flex: 1 0 auto;
+}

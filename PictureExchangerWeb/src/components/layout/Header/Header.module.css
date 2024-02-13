@@ -1,6 +1,12 @@
 .body {
   background: #ffffff;
   display: flex;
+  justify-content: center;
+}
+
+.subBody {
+  width: 900px;
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }

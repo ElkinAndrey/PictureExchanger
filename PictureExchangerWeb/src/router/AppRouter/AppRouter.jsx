@@ -5,6 +5,7 @@ import Header from "../../components/layout/Header/Header";
 import Context from "../../context/context";
 import roles from "../../constants/roles";
 import LeftMenu from "../../components/layout/LeftMenu/LeftMenu";
+import classes from "./AppRouter.module.css";
 
 const AppRouter = () => {
   const { params } = useContext(Context);
@@ -21,18 +22,12 @@ const AppRouter = () => {
   }, [params]);
 
   return (
-    <div>
+    <div className={classes.main}>
       <Header />
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <div
-          style={{ width: "800px", display: "flex", justifyContent: "center" }}
-        >
+      <div className={classes.centeringMenu}>
+        <div className={classes.body}>
           <LeftMenu />
-          <div
-            style={{
-              flex: "1 0 auto",
-            }}
-          >
+          <div className={classes.page}>
             <Routes path="/">
               {route.map((r, index) => (
                 <Route

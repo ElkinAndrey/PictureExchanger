@@ -9,6 +9,7 @@ import Logo from "../../../views/Logo/Logo";
 import classes from "./Header.module.css";
 import ProfileMenu from "../../../views/ProfileMenu/ProfileMenu";
 import AuthMenu from "../../../views/AuthMenu/AuthMenu";
+import If from "../../../views/If/If";
 
 const Header = () => {
   const { params, paramsChange } = useContext(Context);
@@ -22,20 +23,15 @@ const Header = () => {
 
   return (
     <div className={classes.body}>
-      <Logo />
-      {Policy.isAuth() && <ProfileMenu />}
-      {Policy.isNotAuth() && <AuthMenu />}
-      {/* {Policy.isAuth() && <Link to={"/add"}>Добавить пост</Link>}
-      {Policy.isSuperManager(params.role) && (
-        <Link to={"/users"}>Список пользователей</Link>
-      )}
-      {Policy.isAuth() && <Link to={"/settings"}>Настройки</Link>}
-      {Policy.isNotAuth() && <Link to={"/register"}>Регистрация</Link>}
-      {Policy.isNotAuth() && <Link to={"/login"}>Вход</Link>}
-      {Policy.isAuth() && <button onClick={lgt}>Выйти</button>}
-      {params.name && <label>{`Имя: ${params.name};`}</label>}
-      {params.email && <label>{`Email: ${params.email};`}</label>}
-      {params.role && <label>{`Роль: ${params.role};`}</label>} */}
+      <div className={classes.subBody}>
+        <Logo />
+        <If value={Policy.isAuth()}>
+          <ProfileMenu />
+        </If>
+        <If value={Policy.isNotAuth()}>
+          <AuthMenu />
+        </If>
+      </div>
     </div>
   );
 };

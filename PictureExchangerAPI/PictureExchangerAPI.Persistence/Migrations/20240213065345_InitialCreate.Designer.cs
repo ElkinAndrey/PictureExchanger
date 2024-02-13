@@ -12,8 +12,8 @@ using PictureExchangerAPI.Persistence;
 namespace PictureExchangerAPI.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231228132114_Initial")]
-    partial class Initial
+    [Migration("20240213065345_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

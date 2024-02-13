@@ -1,12 +1,11 @@
 .body {
   position: relative;
-  margin-right: 2px;
 }
 
 .image {
   height: 30px;
   width: 30px;
-  padding: 5px;
+  padding: 5px 0px;
   display: flex;
   align-items: center;
   cursor: pointer;
