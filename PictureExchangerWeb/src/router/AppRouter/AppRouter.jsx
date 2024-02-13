@@ -28,16 +28,18 @@ const AppRouter = () => {
         <div className={classes.body}>
           <LeftMenu />
           <div className={classes.page}>
-            <Routes path="/">
-              {route.map((r, index) => (
-                <Route
-                  key={index}
-                  exact={r.exact}
-                  path={r.path}
-                  element={r.element}
-                ></Route>
-              ))}
-            </Routes>
+            <div className={classes.subpage}>
+              <Routes path="/">
+                {route.map((r, index) => (
+                  <Route
+                    key={index}
+                    exact={r.exact}
+                    path={r.path}
+                    element={r.element}
+                  ></Route>
+                ))}
+              </Routes>
+            </div>
           </div>
         </div>
       </div>

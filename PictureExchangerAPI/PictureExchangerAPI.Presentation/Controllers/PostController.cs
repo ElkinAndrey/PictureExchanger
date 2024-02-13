@@ -7,6 +7,7 @@ using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Presentation.DTO.Posts;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Functions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -120,10 +121,13 @@ namespace PictureExchangerAPI.Presentation.Controllers
             if (accessToken == null) return Ok();
 
             var userId = JWT.GetData(accessToken).Id;
-            var images = model.Files.Select(f => new DownloadedFile(
-                f.OpenReadStream(),
-                f.ContentType,
-                f.FileName));
+
+            IEnumerable<DownloadedFile>? images = null;
+            if (model.Files is not null)
+                model.Files.Select(f => new DownloadedFile(
+                    f.OpenReadStream(),
+                    f.ContentType,
+                    f.FileName));
 
             await _postRepository.AddAsync(userId, model.Name, model.IsPrivate, model.Tags, images);
 

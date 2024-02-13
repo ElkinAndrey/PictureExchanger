@@ -1,7 +1,7 @@
 import React from "react";
-import classes from "./Loader.module.css";
+import classes from "./BigLoader.module.css";
 
-const Loader = (params) => {
+const BigLoader = (params) => {
   return (
     <div {...params}>
       <div className={classes.customLoader}></div>
@@ -9,4 +9,4 @@ const Loader = (params) => {
   );
 };
 
-export default Loader;
+export default BigLoader;

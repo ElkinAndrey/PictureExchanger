@@ -1,0 +1,17 @@
+.search {
+  margin-bottom: 10px;
+}
+
+.paginationBar {
+  margin-bottom: 7px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+}
+
+.emptyList {
+  display: flex;
+  justify-content: center;
+}

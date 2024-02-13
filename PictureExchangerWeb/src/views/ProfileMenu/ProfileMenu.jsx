@@ -67,7 +67,7 @@ const ProfileMenu = () => {
             />
             <div>Выйти</div>
             <If value={isLoadingLogout}>
-              <Loader />
+              <Loader className={classes.loader} />
             </If>
           </button>
         </div>

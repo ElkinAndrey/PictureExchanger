@@ -6,6 +6,11 @@ import { Link } from "react-router-dom";
 import InputString from "../../../views/InputString/InputString";
 import Count from "../../../views/Count/Count";
 import PostInPosts from "../../../views/PostInPosts/PostInPosts";
+import InputSearch from "../../../views/InputSearch/InputSearch";
+import classes from "./Posts.module.css";
+import If from "../../../views/If/If";
+import Loader from "../../forms/Loader/Loader";
+import BigLoader from "../../forms/BigLoader/BigLoader";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -42,20 +47,6 @@ const Posts = () => {
     }
   );
 
-  /** Забанить пост */
-  const [fetchBanned, isLoadingBanned, errorBanned] = useFetching(
-    async (id) => {
-      await PostApi.banned(id);
-    }
-  );
-
-  /** Разбанить пост */
-  const [fetchUnbanned, isLoadingUnbanned, errorUnbanned] = useFetching(
-    async (id) => {
-      await PostApi.unbanned(id);
-    }
-  );
-
   // ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
@@ -69,7 +60,7 @@ const Posts = () => {
     params.start = (page - 1) * pageSize;
     params.length = pageSize;
     pageChange(page);
-    updateFetch(params);
+    fetchPosts(params);
     paramsChange({ ...params });
   };
 
@@ -90,27 +81,6 @@ const Posts = () => {
     updateFetch({ ...baseParams });
   };
 
-  /** Забанить */
-  const banned = (id) => {
-    fetchBanned(id);
-    let newPosts = posts.map((post) => {
-      if (post.id === id) post.isBanned = true;
-      return post;
-    });
-    postsChange(newPosts);
-  };
-
-  /** Разбанить */
-  const unbanned = (id) => {
-    fetchUnbanned(id);
-    postsChange(
-      posts.map((post) => {
-        if (post.id === id) post.isBanned = false;
-        return post;
-      })
-    );
-  };
-
   // ДЕЙСТВИЯ
 
   /** Действия при загрузке страницы */
@@ -126,26 +96,34 @@ const Posts = () => {
 
   return (
     <div>
-      <h1>Главная</h1>
-      <InputString value={newParams.name} valueChange={newParamsNameChange} />
-      <Count count={postsCount} />
-      <PaginationBar
-        min={1}
-        max={Math.ceil(postsCount / pageSize)}
-        page={page}
-        setPage={setPage}
-        centerCount={1}
+      <InputSearch
+        value={newParams.name}
+        valueChange={newParamsNameChange}
+        update={update}
+        reset={reset}
+        className={classes.search}
       />
-      <button onClick={update}>Обновить</button>
-      <button onClick={reset}>Сбросить</button>
-      {posts.map((post) => (
-        <PostInPosts
-          key={post.id}
-          post={post}
-          banned={banned}
-          unbanned={unbanned}
+      <If value={!isLoadingPostsCount}>
+        <PaginationBar
+          min={1}
+          max={Math.ceil(postsCount / pageSize)}
+          page={page}
+          setPage={setPage}
+          centerCount={1}
+          className={classes.paginationBar}
         />
-      ))}
+        <If value={postsCount === 0}>
+          <div className={classes.emptyList}>Список пуст</div>
+        </If>
+      </If>
+      <If value={!isLoadingPosts}>
+        {posts.map((post) => (
+          <PostInPosts key={post.id} post={post} />
+        ))}
+      </If>
+      <If value={isLoadingPosts || isLoadingPostsCount}>
+        <BigLoader className={classes.loader} />
+      </If>
     </div>
   );
 };

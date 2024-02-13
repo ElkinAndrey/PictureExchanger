@@ -81,8 +81,18 @@ const Missing = () => {
 };
 
 /**Панель пагинации */
-const PaginationBar = ({ min = 1, max, page, setPage, centerCount = 2 }) => {
-  if (centerCount * 2 + 4 < max - min) {
+const PaginationBar = ({
+  min = 1,
+  max,
+  page,
+  setPage,
+  centerCount = 2,
+  className,
+  style,
+}) => {
+  if (max === 0) {
+    return <></>;
+  } else if (centerCount * 2 + 4 < max - min) {
     let start = getStart(min, max, page, centerCount);
     let end = getEnd(start, min, page, centerCount);
     let center = getMas(start, end);
@@ -115,11 +125,13 @@ const PaginationBar = ({ min = 1, max, page, setPage, centerCount = 2 }) => {
     let center = getMas(min, max);
 
     return (
-      <Body page={page} setPage={setPage} min={min} max={max}>
-        {center.map((n) => (
-          <ButtonPage key={n} number={n} page={page} setPage={setPage} />
-        ))}
-      </Body>
+      <div className={className} style={style}>
+        <Body page={page} setPage={setPage} min={min} max={max}>
+          {center.map((n) => (
+            <ButtonPage key={n} number={n} page={page} setPage={setPage} />
+          ))}
+        </Body>
+      </div>
     );
   }
 };
