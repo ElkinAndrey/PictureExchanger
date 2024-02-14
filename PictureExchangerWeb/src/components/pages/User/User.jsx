@@ -14,6 +14,13 @@ import Context from "../../../context/context";
 import RoleApi from "../../../api/roleApi";
 import Bool from "../../../views/Bool/Bool";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
+import InputSearch from "../../../views/InputSearch/InputSearch";
+import classes from "./User.module.css";
+import Modal from "../../forms/Modal/Modal";
+import getOnlyDate from "../../../utils/getOnlyDate";
+import If from "../../../views/If/If";
+import Loader from "../../forms/Loader/Loader";
+import BigLoader from "../../forms/BigLoader/BigLoader";
 
 const User = () => {
   //#region КОНСТАНТЫ
@@ -212,13 +219,42 @@ const User = () => {
   //#endregion
 
   // Пока пользователь не пришел
-  if (!user) return <Empty />;
+  if (!user)
+    return (
+      <LeftMenu>
+        <BigLoader className={classes.loader} />
+      </LeftMenu>
+    );
 
   return (
     <LeftMenu>
-      <h1>Пользователь</h1>
-      <div>{user.name}</div>
-      <div>{user.email}</div>
+      <div className={classes.header}>
+        <div className={classes.userBody}>
+          <img
+            src="/images/profile.png"
+            alt=""
+            className={classes.userImages}
+          />
+          <div>
+            <div className={classes.name}>{user.name}</div>
+            <div className={classes.userInfo}>{`Email: ${user.email}`}</div>
+            <div className={classes.userInfo}>{`Дата регистрации: ${getOnlyDate(
+              user.registrationDate
+            )}`}</div>
+          </div>
+        </div>
+        <div>
+          <If value={user.isBanned}>
+            <img
+              className={classes.isBanned}
+              src="/images/banned.png"
+              alt=""
+              title="Пользователь забанен"
+            />
+          </If>
+        </div>
+      </div>
+      {/* <div>{user.email}</div>
       <div>{user.registrationDate}</div>
       {Policy.isManagerOrOwner(params.role, params.id, user.id) && (
         <>
@@ -236,9 +272,15 @@ const User = () => {
           banned={bannedUser}
           unbanned={unbannedUser}
         />
-      )}
-      <InputString value={newParams.name} valueChange={newParamsNameChange} />
-      <Count count={postsCount} />
+      )} */}
+
+      <InputSearch
+        value={newParams.name}
+        valueChange={newParamsNameChange}
+        update={update}
+        reset={reset}
+        className={classes.search}
+      />
       <PaginationBar
         min={1}
         max={Math.ceil(postsCount / pageSize)}
@@ -246,9 +288,7 @@ const User = () => {
         setPage={setPage}
         centerCount={1}
       />
-      <button onClick={update}>Обновить</button>
-      <button onClick={reset}>Сбросить</button>
-      <div>
+      {/* <div>
         {Policy.isSuperManager(params.role) &&
           Policy.firstRoleBigger(params.role, user.role) && (
             <button onClick={fetchGiveUser}>Выдать пользователя</button>
@@ -267,15 +307,23 @@ const User = () => {
           Policy.firstRoleBigger(params.role, user.role) && (
             <button onClick={fetchGiveAdmin}>Выдать администратора</button>
           )}
-      </div>
-      {posts.map((post) => (
-        <PostInPosts
-          key={post.id}
-          post={post}
-          banned={bannedPost}
-          unbanned={unbannedPost}
-        />
-      ))}
+      </div> */}
+      <If value={!isLoadingPosts}>
+        {posts.map((post) => (
+          <PostInPosts
+            key={post.id}
+            post={post}
+            banned={bannedPost}
+            unbanned={unbannedPost}
+          />
+        ))}
+      </If>
+      <If value={isLoadingPosts}>
+        <BigLoader className={classes.loader} />
+      </If>
+      <If value={posts.length === 0 && !isLoadingPosts}>
+        <div className={classes.emptyList}>Нет постов</div>
+      </If>
     </LeftMenu>
   );
 };
