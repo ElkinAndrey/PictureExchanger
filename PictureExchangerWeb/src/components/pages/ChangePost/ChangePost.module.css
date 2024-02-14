@@ -1,0 +1,65 @@
+.bigLoader {
+  display: flex;
+  justify-content: center;
+}
+
+.body {
+  background-color: #ffffff;
+  border: 1px solid #dce1e6;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.logo {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.inputName {
+  margin-bottom: 20px;
+}
+
+.inputTags {
+  margin-bottom: 10px;
+}
+
+.isPrivate {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.checkbox {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.isPrivateText {
+  font-size: 14px;
+  cursor: pointer;
+  padding-left: 5px;
+  user-select: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  text-align: center;
+  display: block;
+  background: #4177b5;
+  color: #ffffff;
+  padding: 9px 0px;
+  width: 90px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 13px;
+  border: 0px;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}

@@ -7,6 +7,10 @@ import InputString from "../../../views/InputString/InputString";
 import InputBool from "../../../views/InputBool/InputBool";
 import Context from "../../../context/context";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
+import classes from "./ChangePost.module.css";
+import Input from "../../forms/Input/Input";
+import Loader from "../../forms/Loader/Loader";
+import BigLoader from "../../forms/BigLoader/BigLoader";
 
 const ChangePost = () => {
   // КОНСТАНТЫ
@@ -48,7 +52,6 @@ const ChangePost = () => {
       isPrivate: isPrivate,
       tags: tags,
     });
-    navigate(`/users/${params.name}`);
   };
 
   /** Отменить изменения */
@@ -59,24 +62,56 @@ const ChangePost = () => {
   };
 
   // Если параметров нет
-  if (!baseParams) return <Empty />;
+  if (!baseParams)
+    return (
+      <LeftMenu>
+        <BigLoader className={classes.bigLoader} />
+      </LeftMenu>
+    );
 
   return (
     <LeftMenu>
-      <h1>Изменение поста</h1>
-      <InputString value={name} valueChange={nameChange} text="Название" />
-      <InputBool
-        value={isPrivate}
-        valueChange={isPrivateChange}
-        text="Сделать приватным"
-      />
-      <InputString
-        value={tags.join(",")}
-        valueChange={(v) => tagsChange(v.split(","))}
-        text="Теги"
-      />
-      <button onClick={change}>Изменить</button>
-      <button onClick={cancelChanges}>Отменить изменения</button>
+      <div className={classes.body}>
+        <div className={classes.logo}>Измененить пост</div>
+        <Input
+          value={name}
+          setValue={nameChange}
+          placeholder="Название"
+          className={classes.inputName}
+        />
+        <Input
+          value={tags.join(",")}
+          setValue={(v) => tagsChange(v.split(","))}
+          placeholder="Теги"
+          className={classes.inputTags}
+        />
+        <div className={classes.isPrivate}>
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={() => {
+              isPrivateChange(!isPrivate);
+            }}
+            className={classes.checkbox}
+          />
+          <div
+            onClick={() => {
+              isPrivateChange(!isPrivate);
+            }}
+            className={classes.isPrivateText}
+          >
+            Приватный
+          </div>
+        </div>
+        <div className={classes.buttons}>
+          <button className={classes.button} onClick={change}>
+            {isLoadingChangePost ? <Loader /> : "Сохранить"}
+          </button>
+          <button className={classes.button} onClick={cancelChanges}>
+            Отменить
+          </button>
+        </div>
+      </div>
     </LeftMenu>
   );
 };
