@@ -77,7 +77,6 @@ const Post = () => {
 
   return (
     <LeftMenu>
-      <h1>Пост</h1>
       <PostInPosts
         post={post}
         banned={banned}
