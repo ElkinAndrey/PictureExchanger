@@ -12,13 +12,17 @@
   margin-bottom: 18px;
 }
 
-.inputNameOrEmail {
+.inputName {
+  margin-bottom: 20px;
+}
+
+.inputEmail {
   margin-bottom: 20px;
 }
 
 .error {
-  font-size: 13px;
   margin-top: 5px;
+  font-size: 13px;
   color: #d93025;
 }
 
@@ -34,7 +38,7 @@
   background: #4177b5;
   color: #ffffff;
   padding: 9px 0px;
-  width: 90px;
+  width: 160px;
   border-radius: 5px;
   text-decoration: none;
   font-size: 13px;

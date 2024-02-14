@@ -4,6 +4,12 @@ import useFetching from "../../../hooks/useFetching";
 import AuthApi from "../../../api/authApi";
 import login from "../../../utils/login";
 import Context from "../../../context/context";
+import Center from "../../layout/Center/Center";
+import classes from "./Register.module.css";
+import Input from "../../forms/Input/Input";
+import Loader from "../../forms/Loader/Loader";
+import { Link } from "react-router-dom";
+import If from "../../../views/If/If";
 
 const Register = () => {
   // КОНСТАНТЫ
@@ -36,17 +42,42 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h1>Зарегистрироваться</h1>
-      <InputString value={name} valueChange={nameChange} text="Имя" />
-      <InputString value={email} valueChange={emailChange} text="Email" />
-      <InputString
-        value={password}
-        valueChange={passwordChange}
-        text="Пароль"
-      />
-      <button onClick={register}>Зарегистрироваться</button>
-    </div>
+    <Center>
+      <div className={classes.body}>
+        <div className={classes.logo}>Регистрация</div>
+        <Input
+          className={classes.inputName}
+          value={name}
+          setValue={nameChange}
+          placeholder="Имя"
+        />
+        <Input
+          className={classes.inputEmail}
+          value={email}
+          setValue={emailChange}
+          placeholder="Email"
+        />
+        <Input
+          className={classes.inputPassword}
+          value={password}
+          setValue={passwordChange}
+          placeholder="Пароль"
+          isPassword={true}
+        />
+        <If value={!!errorRegister}>
+          <div className={classes.error}>{errorRegister?.response?.data}</div>
+        </If>
+
+        <div className={classes.buttons}>
+          <button className={classes.button} onClick={register}>
+            {isLoadingRegister ? <Loader /> : <div>Зарегистрироваться</div>}
+          </button>
+          <Link className={classes.button} to="/" draggable="false">
+            На главную
+          </Link>
+        </div>
+      </div>
+    </Center>
   );
 };
 
