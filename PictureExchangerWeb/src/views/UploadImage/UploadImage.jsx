@@ -1,4 +1,5 @@
 import React from "react";
+import classes from "./UploadImage.module.css";
 
 const UploadImage = ({
   covers,
@@ -24,16 +25,7 @@ const UploadImage = ({
 
   return (
     <div>
-      <label
-        htmlFor="formIdCover"
-        style={{
-          background: "#EFEFEF",
-          border: "1px #767676 solid",
-          borderRadius: "2px",
-          padding: "0px 5px",
-          cursor: "pointer",
-        }}
-      >
+      <label htmlFor="formIdCover" className={classes.button}>
         <input
           name=""
           type="file"

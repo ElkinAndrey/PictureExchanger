@@ -1,0 +1,15 @@
+.button {
+  display: block;
+  height: 100%;
+  background: #4177b5;
+  color: #ffffff;
+  transition: background-color 150ms linear;
+  padding: 7px 0px;
+  width: 150px;
+  border-radius: 5px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 13px;
+  border: 0px;
+  cursor: pointer;
+}

@@ -122,9 +122,9 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             var userId = JWT.GetData(accessToken).Id;
 
-            IEnumerable<DownloadedFile>? images = null;
+            IEnumerable<DownloadedFile> images = new List<DownloadedFile>();
             if (model.Files is not null)
-                model.Files.Select(f => new DownloadedFile(
+                images = model.Files.Select(f => new DownloadedFile(
                     f.OpenReadStream(),
                     f.ContentType,
                     f.FileName));

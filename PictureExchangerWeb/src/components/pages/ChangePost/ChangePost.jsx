@@ -11,6 +11,7 @@ import classes from "./ChangePost.module.css";
 import Input from "../../forms/Input/Input";
 import Loader from "../../forms/Loader/Loader";
 import BigLoader from "../../forms/BigLoader/BigLoader";
+import Checkbox from "../../../views/Checkbox/Checkbox";
 
 const ChangePost = () => {
   // КОНСТАНТЫ
@@ -85,24 +86,12 @@ const ChangePost = () => {
           placeholder="Теги"
           className={classes.inputTags}
         />
-        <div className={classes.isPrivate}>
-          <input
-            type="checkbox"
-            checked={isPrivate}
-            onChange={() => {
-              isPrivateChange(!isPrivate);
-            }}
-            className={classes.checkbox}
-          />
-          <div
-            onClick={() => {
-              isPrivateChange(!isPrivate);
-            }}
-            className={classes.isPrivateText}
-          >
-            Приватный
-          </div>
-        </div>
+        <Checkbox
+          value={isPrivate}
+          setValue={isPrivateChange}
+          text={"Приватный"}
+          className={classes.checkbox}
+        />
         <div className={classes.buttons}>
           <button className={classes.button} onClick={change}>
             {isLoadingChangePost ? <Loader /> : "Сохранить"}

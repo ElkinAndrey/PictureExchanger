@@ -19,7 +19,10 @@
 .page {
   margin-left: 20px;
   overflow-y: scroll;
-  flex: 1 0 auto;
+
+  /* flex: 1 0 auto; */
+  /* position: relative; */
+  flex-grow: 1;
 }
 
 .subpage {
@@ -31,6 +34,7 @@
   flex-direction: column;
   max-width: 170px;
   min-width: 170px;
+  flex-grow: 0;
 }
 
 .button {

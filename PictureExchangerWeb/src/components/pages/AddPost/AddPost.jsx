@@ -1,16 +1,14 @@
 import React, { useContext, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
-import InputString from "../../../views/InputString/InputString";
-import InputBool from "../../../views/InputBool/InputBool";
-import Img from "../../../views/Img/Img";
-import UploadImage from "../../../views/UploadImage/UploadImage";
 import { useNavigate } from "react-router-dom";
 import Context from "../../../context/context";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
-
-const baseImage =
-  "data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==";
+import classes from "./AddPost.module.css";
+import Input from "../../forms/Input/Input";
+import Checkbox from "../../../views/Checkbox/Checkbox";
+import UploadImages from "../../../views/UploadImages/UploadImages";
+import Loader from "../../forms/Loader/Loader";
 
 const AddPost = () => {
   // КОНСТАНТЫ
@@ -21,9 +19,7 @@ const AddPost = () => {
   const [name, nameChange] = useState("");
   const [isPrivate, isPrivateChange] = useState(false);
   const [tags, tagsChange] = useState([]);
-  const [covers, setCovers] = useState([]);
-  const [coversSrc, setCoversSrc] = useState([]);
-  const [coversNotSelected, setCoversNotSelected] = useState(false);
+  const [images, setImages] = useState([]);
 
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
 
@@ -31,6 +27,7 @@ const AddPost = () => {
   const [fetchAddPost, isLoadingAddPost, errorAddPost] = useFetching(
     async (p) => {
       await PostApi.add(p);
+      navigate(`/users/${params.name}`);
     }
   );
 
@@ -40,46 +37,42 @@ const AddPost = () => {
       name: name,
       isPrivate: isPrivate,
       tags: tags,
-      files: covers,
+      files: images,
     });
-    navigate(`/users/${params.name}`);
   };
 
   return (
     <LeftMenu>
-      <h1>Добавление поста</h1>
-      <InputString value={name} valueChange={nameChange} text="Название" />
-      <InputBool
-        value={isPrivate}
-        valueChange={isPrivateChange}
-        text="Сделать приватным"
-      />
-      <InputString
-        value={tags.join(",")}
-        valueChange={(v) => tagsChange(v.split(","))}
-        text="Теги"
-      />
-      <div style={{ border: "3px black solid" }}>
-        <div>Картинки</div>
-        <div style={{ display: "inline-block" }}>
-          {coversSrc.map((coverSrc, index) => (
-            <Img
-              key={index}
-              hidden={baseImage === coverSrc ? true : false}
-              src={coverSrc}
-            />
-          ))}
-        </div>
-        <UploadImage
-          covers={covers}
-          setCovers={setCovers}
-          coversSrc={coversSrc}
-          setCoversSrc={setCoversSrc}
-          coversNotSelected={coversNotSelected}
-          setCoversNotSelected={setCoversNotSelected}
+      <div className={classes.body}>
+        <div className={classes.logo}>Добавить пост</div>
+        <Input
+          value={name}
+          setValue={nameChange}
+          placeholder="Название"
+          className={classes.input}
         />
+        <Input
+          value={tags.join(",")}
+          setValue={(v) => tagsChange(v.split(","))}
+          placeholder="Теги"
+          className={classes.input}
+        />
+        <Checkbox
+          value={isPrivate}
+          valueChange={isPrivateChange}
+          text="Сделать приватным"
+          className={classes.isPrivate}
+        />
+
+        <UploadImages
+          images={images}
+          setImages={setImages}
+          className={classes.images}
+        />
+        <button onClick={create} className={classes.add}>
+          {isLoadingAddPost ? <Loader /> : "Создать"}
+        </button>
       </div>
-      <button onClick={create}>Создать</button>
     </LeftMenu>
   );
 };
