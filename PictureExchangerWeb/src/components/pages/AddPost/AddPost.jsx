@@ -27,7 +27,7 @@ const AddPost = () => {
   const [fetchAddPost, isLoadingAddPost, errorAddPost] = useFetching(
     async (p) => {
       await PostApi.add(p);
-      navigate(`/users/${params.name}`);
+      navigate(`/users/${params?.name}`);
     }
   );
 

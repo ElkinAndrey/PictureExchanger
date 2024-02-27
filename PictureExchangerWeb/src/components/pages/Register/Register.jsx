@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import InputString from "../../../views/InputString/InputString";
 import useFetching from "../../../hooks/useFetching";
 import AuthApi from "../../../api/authApi";
 import login from "../../../utils/login";
@@ -13,7 +12,7 @@ import If from "../../../views/If/If";
 
 const Register = () => {
   // КОНСТАНТЫ
-  const { params, paramsChange } = useContext(Context);
+  const { paramsChange } = useContext(Context);
 
   // ПЕРЕМЕННЫЕ
   const [name, nameChange] = useState("");
@@ -26,7 +25,7 @@ const Register = () => {
   const [fetchRegister, isLoadingRegister, errorRegister] = useFetching(
     async (p) => {
       const response = await AuthApi.register(p);
-      login(response.data, params, paramsChange);
+      login(response.data, paramsChange);
     }
   );
 

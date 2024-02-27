@@ -1,11 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import useFetching from "../../../hooks/useFetching";
 import PostApi from "../../../api/postApi";
-import Empty from "../../../views/Empty/Empty";
-import InputString from "../../../views/InputString/InputString";
-import InputBool from "../../../views/InputBool/InputBool";
-import Context from "../../../context/context";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 import classes from "./ChangePost.module.css";
 import Input from "../../forms/Input/Input";
@@ -14,10 +10,6 @@ import BigLoader from "../../forms/BigLoader/BigLoader";
 import Checkbox from "../../../views/Checkbox/Checkbox";
 
 const ChangePost = () => {
-  // КОНСТАНТЫ
-  const { params } = useContext(Context); // Параметры из URL
-  const navigate = useNavigate(); // Функция перехода на другую страницу
-
   // ПЕРЕМЕННЫЕ
   const urlParams = useParams(); // Параметры из URL
   const [baseParams, baseParamsChange] = useState(null);

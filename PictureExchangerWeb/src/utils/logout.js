@@ -1,10 +1,6 @@
-const logout = (params, paramsChange, fetchLogout) => {
+const logout = (paramsChange, fetchLogout) => {
   window.localStorage.removeItem("jwt");
-  params.id = null;
-  params.name = null;
-  params.email = null;
-  params.role = null;
-  paramsChange({ ...params });
+  paramsChange({ id: null, name: null, email: null, role: null });
   fetchLogout();
 };
 

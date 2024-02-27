@@ -17,7 +17,7 @@ const LeftMenu = ({ children }) => {
             <div>Главная</div>
           </Link>
           <If value={Policy.isAuth()}>
-            <Link className={classes.button} to={`/users/${params.name}`}>
+            <Link className={classes.button} to={`/users/${params?.name}`}>
               <img className={classes.image} src="/images/myPage.png" alt="" />
               <div>Моя страница</div>
             </Link>
@@ -34,7 +34,7 @@ const LeftMenu = ({ children }) => {
               <div>Настройки</div>
             </Link>
           </If>
-          <If value={Policy.isSuperManager(params.role)}>
+          <If value={Policy.isSuperManager(params?.role)}>
             <Link className={classes.button} to={"/users"}>
               <img className={classes.image} src="/images/myPage.png" alt="" />
               <div>Пользователи</div>

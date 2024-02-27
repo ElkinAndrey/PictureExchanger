@@ -7,17 +7,11 @@ import Policy from "./utils/policy";
 
 function App() {
   // ПЕРЕМЕННЫЕ
-  const [params, paramsChange] = useState({
-    id: null,
-    name: null,
-    email: null,
-    password: null,
-  });
+  const [params, paramsChange] = useState(null);
 
   /** Действия при запуске приложения */
   useEffect(() => {
-    if (Policy.isAuth())
-      login(localStorage.getItem("jwt"), params, paramsChange);
+    if (Policy.isAuth()) login(localStorage.getItem("jwt"), paramsChange);
   }, []);
 
   return (

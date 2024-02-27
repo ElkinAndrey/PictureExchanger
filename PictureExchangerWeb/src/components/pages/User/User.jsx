@@ -14,7 +14,6 @@ import getOnlyDate from "../../../utils/getOnlyDate";
 import If from "../../../views/If/If";
 import BigLoader from "../../forms/BigLoader/BigLoader";
 import Policy from "../../../utils/policy";
-import IsBanned from "../../../views/IsBanned/IsBanned";
 import Loader from "../../forms/Loader/Loader";
 import DropDownMenu from "../../forms/DropDownMenu/DropDownMenu";
 import roles from "../../../constants/roles";
@@ -52,16 +51,16 @@ const User = () => {
 
   /** Получение постов пользователя */
   const [fetchPosts, isLoadingPosts, errorPosts] = useFetching(
-    async (name, params) => {
-      const response = await UserApi.getPostsByName(name, params);
+    async (name, p) => {
+      const response = await UserApi.getPostsByName(name, p);
       postsChange(response.data);
     }
   );
 
   /** Получение количества постов у пользователя*/
   const [fetchPostsCount, isLoadingPostsCount, errorPostsCount] = useFetching(
-    async (name, params) => {
-      const response = await UserApi.getPostsCountByName(name, params);
+    async (name, p) => {
+      const response = await UserApi.getPostsCountByName(name, p);
       postsCountChange(response.data);
     }
   );
@@ -135,9 +134,9 @@ const User = () => {
   //#region ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
-  const updatePostsFetch = (name, params) => {
-    fetchPosts(name, params);
-    fetchPostsCount(name, params);
+  const updatePostsFetch = (name, p) => {
+    fetchPosts(name, p);
+    fetchPostsCount(name, p);
   };
 
   /** Действия при установке страницы */
@@ -256,7 +255,7 @@ const User = () => {
               </If>
             </div>
             <div>
-              <If value={Policy.isAdmin(params.role)}>
+              <If value={Policy.isAdmin(params?.role)}>
                 <button
                   className={classes.banButton}
                   onClick={user.isBanned ? unbannedUser : bannedUser}
@@ -274,8 +273,8 @@ const User = () => {
             </div>
             <If
               value={
-                Policy.isSuperManager(params.role) &&
-                Policy.firstRoleBigger(params.role, user.role)
+                Policy.isSuperManager(params?.role) &&
+                Policy.firstRoleBigger(params?.role, user.role)
               }
             >
               <DropDownMenu text={"Роль"}>
@@ -297,7 +296,7 @@ const User = () => {
                     load={isLoadingGiveManager}
                     width="100%"
                   />
-                  <If value={Policy.isAdmin(params.role)}>
+                  <If value={Policy.isAdmin(params?.role)}>
                     <LoadButton
                       className={classes.roleButton}
                       text={"Суперменеджер"}
@@ -307,7 +306,7 @@ const User = () => {
                       width="100%"
                     />
                   </If>
-                  <If value={Policy.isSuperAdmin(params.role)}>
+                  <If value={Policy.isSuperAdmin(params?.role)}>
                     <LoadButton
                       className={classes.roleButton}
                       text={"Администратор"}

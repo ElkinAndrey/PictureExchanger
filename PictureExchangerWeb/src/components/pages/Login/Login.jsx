@@ -12,7 +12,7 @@ import Loader from "../../forms/Loader/Loader";
 
 const Login = () => {
   // КОНСТАНТЫ
-  const { params, paramsChange } = useContext(Context);
+  const { paramsChange } = useContext(Context);
 
   // ПЕРЕМЕННЫЕ
   const [nameOrEmail, nameOrEmailChange] = useState("");
@@ -23,7 +23,7 @@ const Login = () => {
   /** Зарегистрироваться */
   const [fetchLogin, isLoadingLogin, errorLogin] = useFetching(async (p) => {
     const response = await AuthApi.login(p);
-    login(response.data, params, paramsChange);
+    login(response.data, paramsChange);
   });
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ

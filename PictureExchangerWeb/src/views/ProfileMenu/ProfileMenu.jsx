@@ -16,7 +16,7 @@ const ProfileMenu = () => {
 
   const [fetchLogout, isLoadingLogout, errorLogout] = useFetching(async () => {
     await AuthApi.logout();
-    logout(params, paramsChange, () => {});
+    logout(paramsChange, () => {});
   });
 
   const open = () => {
@@ -48,11 +48,11 @@ const ProfileMenu = () => {
       <div className={isOpen ? classes.menuOpen : classes.menuClose}>
         <div className={classes.profileData}>
           <div className={classes.name}>
-            <label>{`${params.name ?? "Нет имени"} `}</label>
-            <label>{Policy.isManager(params.role) && `(${params.role})`}</label>
+            <label>{`${params?.name ?? "Нет имени"} `}</label>
+            <label>{Policy.isManager(params?.role) && `(${params?.role})`}</label>
           </div>
           <div className={classes.email}>
-            {params.email ?? "Нет электронной почты"}
+            {params?.email ?? "Нет электронной почты"}
           </div>
         </div>
         <div className={classes.buttons}>

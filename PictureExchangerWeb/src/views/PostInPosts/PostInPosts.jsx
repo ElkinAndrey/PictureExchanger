@@ -67,8 +67,8 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
         <div className={classes.secretButtons}>
           <If
             value={Policy.isManagerOrOwner(
-              params.role,
-              params.id,
+              params?.role,
+              params?.id,
               post.user.id
             )}
           >
@@ -91,7 +91,7 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
               </If>
             </div>
           </If>
-          <If value={Policy.isManager(params.role)}>
+          <If value={Policy.isManager(params?.role)}>
             <button
               className={classes.banButton}
               onClick={post.isBanned ? unbannedById : bannedById}
@@ -108,8 +108,8 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
           </If>
           <If
             value={Policy.isManagerOrOwner(
-              params.role,
-              params.id,
+              params?.role,
+              params?.id,
               post.user.id
             )}
           >
