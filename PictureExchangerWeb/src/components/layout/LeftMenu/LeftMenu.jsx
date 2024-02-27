@@ -25,6 +25,14 @@ const LeftMenu = ({ children }) => {
               <img className={classes.image} src="/images/add.png" alt="" />
               <div>Добавить пост</div>
             </Link>
+            <Link className={classes.button} to={"/settings"}>
+              <img
+                className={classes.image}
+                src="/images/settings.png"
+                alt=""
+              />
+              <div>Настройки</div>
+            </Link>
           </If>
           <If value={Policy.isSuperManager(params.role)}>
             <Link className={classes.button} to={"/users"}>

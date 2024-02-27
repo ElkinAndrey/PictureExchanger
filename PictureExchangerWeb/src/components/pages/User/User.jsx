@@ -4,23 +4,21 @@ import useFetching from "../../../hooks/useFetching";
 import UserApi from "../../../api/userApi";
 import PaginationBar from "../../forms/PaginationBar/PaginationBar";
 import PostApi from "../../../api/postApi";
-import IsBanned from "../../../views/IsBanned/IsBanned";
 import PostInPosts from "../../../views/PostInPosts/PostInPosts";
-import InputString from "../../../views/InputString/InputString";
-import Empty from "../../../views/Empty/Empty";
-import Count from "../../../views/Count/Count";
-import Policy from "../../../utils/policy";
 import Context from "../../../context/context";
 import RoleApi from "../../../api/roleApi";
-import Bool from "../../../views/Bool/Bool";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 import InputSearch from "../../../views/InputSearch/InputSearch";
 import classes from "./User.module.css";
-import Modal from "../../forms/Modal/Modal";
 import getOnlyDate from "../../../utils/getOnlyDate";
 import If from "../../../views/If/If";
-import Loader from "../../forms/Loader/Loader";
 import BigLoader from "../../forms/BigLoader/BigLoader";
+import Policy from "../../../utils/policy";
+import IsBanned from "../../../views/IsBanned/IsBanned";
+import Loader from "../../forms/Loader/Loader";
+import DropDownMenu from "../../forms/DropDownMenu/DropDownMenu";
+import roles from "../../../constants/roles";
+import LoadButton from "../../forms/LoadButton/LoadButton";
 
 const User = () => {
   //#region КОНСТАНТЫ
@@ -85,6 +83,7 @@ const User = () => {
   const [fetchBannedUser, isLoadingBannedUser, errorBannedUser] = useFetching(
     async (name) => {
       await UserApi.banned(name);
+      user.isBanned = true;
     }
   );
 
@@ -92,6 +91,7 @@ const User = () => {
   const [fetchUnbannedUser, isLoadingUnbannedUser, errorUnbannedUser] =
     useFetching(async (name) => {
       await UserApi.unbanned(name);
+      user.isBanned = false;
     });
   //#endregion
 
@@ -101,6 +101,7 @@ const User = () => {
   const [fetchGiveUser, isLoadingGiveUser, errorGiveUser] = useFetching(
     async () => {
       await RoleApi.giveUser(urlParams.name);
+      user.role = roles.user;
     }
   );
 
@@ -108,6 +109,7 @@ const User = () => {
   const [fetchGiveManager, isLoadingGiveManager, errorGiveManager] =
     useFetching(async () => {
       await RoleApi.giveManager(urlParams.name);
+      user.role = roles.manager;
     });
 
   /** Выдать роль суперменедрежа */
@@ -117,12 +119,14 @@ const User = () => {
     errorGiveSuperManager,
   ] = useFetching(async () => {
     await RoleApi.giveSuperManager(urlParams.name);
+    user.role = roles.superManager;
   });
 
   /** Выдать роль администратора */
   const [fetchGiveAdmin, isLoadingGiveAdmin, errorGiveAdmin] = useFetching(
     async () => {
       await RoleApi.giveAdmin(urlParams.name);
+      user.role = roles.admin;
     }
   );
 
@@ -186,15 +190,11 @@ const User = () => {
   /** Забанить */
   const bannedUser = () => {
     fetchBannedUser(user.name);
-    user.isBanned = true;
-    userChange({ ...user });
   };
 
   /** Разбанить */
   const unbannedUser = () => {
     fetchUnbannedUser(user.name);
-    user.isBanned = false;
-    userChange({ ...user });
   };
 
   //#endregion
@@ -244,36 +244,85 @@ const User = () => {
           </div>
         </div>
         <div>
-          <If value={user.isBanned}>
-            <img
-              className={classes.isBanned}
-              src="/images/banned.png"
-              alt=""
-              title="Пользователь забанен"
-            />
-          </If>
+          <div className={classes.headerButtons}>
+            <div>
+              <If value={user.isBanned}>
+                <img
+                  className={classes.isBanned}
+                  src="/images/banned.png"
+                  alt=""
+                  title="Пользователь забанен"
+                />
+              </If>
+            </div>
+            <div>
+              <If value={Policy.isAdmin(params.role)}>
+                <button
+                  className={classes.banButton}
+                  onClick={user.isBanned ? unbannedUser : bannedUser}
+                >
+                  <If value={!isLoadingBannedUser && !isLoadingUnbannedUser}>
+                    {user.isBanned ? "Разбанить" : "Забанить"}
+                  </If>
+                  <If value={isLoadingBannedUser || isLoadingUnbannedUser}>
+                    <div className={classes.loader}>
+                      <Loader color="#4177b5" />
+                    </div>
+                  </If>
+                </button>
+              </If>
+            </div>
+            <If
+              value={
+                Policy.isSuperManager(params.role) &&
+                Policy.firstRoleBigger(params.role, user.role)
+              }
+            >
+              <DropDownMenu text={"Роль"}>
+                <div>
+                  <div>{`Роль ${user.role}`}</div>
+                  <LoadButton
+                    className={classes.roleButton}
+                    text={"Пользователь"}
+                    onClick={fetchGiveUser}
+                    disabled={user.role === roles.user}
+                    load={isLoadingGiveUser}
+                    width="100%"
+                  />
+                  <LoadButton
+                    className={classes.roleButton}
+                    text={"Менеджер"}
+                    onClick={fetchGiveManager}
+                    disabled={user.role === roles.manager}
+                    load={isLoadingGiveManager}
+                    width="100%"
+                  />
+                  <If value={Policy.isAdmin(params.role)}>
+                    <LoadButton
+                      className={classes.roleButton}
+                      text={"Суперменеджер"}
+                      onClick={fetchGiveSuperManager}
+                      disabled={user.role === roles.superManager}
+                      load={isLoadingGiveSuperManager}
+                      width="100%"
+                    />
+                  </If>
+                  <If value={Policy.isSuperAdmin(params.role)}>
+                    <LoadButton
+                      className={classes.roleButton}
+                      text={"Администратор"}
+                      onClick={fetchGiveAdmin}
+                      disabled={user.role === roles.admin}
+                      load={isLoadingGiveAdmin}
+                      width="100%"
+                    />
+                  </If>
+                </div>
+              </DropDownMenu>
+            </If>
+          </div>
         </div>
       </div>
-      {/* <div>{user.email}</div>
-      <div>{user.registrationDate}</div>
-      {Policy.isManagerOrOwner(params.role, params.id, user.id) && (
-        <>
-          <Bool
-            value={user.isBanned}
-            trueText="Забанен"
-            fasleText="Не забанен"
-          />
-          <div>{user.role}</div>
-        </>
-      )}
-      {Policy.isAdmin(params.role) && (
-        <IsBanned
-          isBanned={user.isBanned}
-          banned={bannedUser}
-          unbanned={unbannedUser}
-        />
-      )} */}
-
       <InputSearch
         value={newParams.name}
         valueChange={newParamsNameChange}
@@ -288,26 +337,6 @@ const User = () => {
         setPage={setPage}
         centerCount={1}
       />
-      {/* <div>
-        {Policy.isSuperManager(params.role) &&
-          Policy.firstRoleBigger(params.role, user.role) && (
-            <button onClick={fetchGiveUser}>Выдать пользователя</button>
-          )}
-        {Policy.isSuperManager(params.role) &&
-          Policy.firstRoleBigger(params.role, user.role) && (
-            <button onClick={fetchGiveManager}>Выдать менеджера</button>
-          )}
-        {Policy.isAdmin(params.role) &&
-          Policy.firstRoleBigger(params.role, user.role) && (
-            <button onClick={fetchGiveSuperManager}>
-              Выдать суперменеджера
-            </button>
-          )}
-        {Policy.isSuperAdmin(params.role) &&
-          Policy.firstRoleBigger(params.role, user.role) && (
-            <button onClick={fetchGiveAdmin}>Выдать администратора</button>
-          )}
-      </div> */}
       <If value={!isLoadingPosts}>
         {posts.map((post) => (
           <PostInPosts

@@ -1,0 +1,22 @@
+.search {
+  margin-bottom: 10px;
+}
+
+.radioButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border: 1px #dce1e6 solid;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.paginationBar {
+  margin-bottom: 10px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+}

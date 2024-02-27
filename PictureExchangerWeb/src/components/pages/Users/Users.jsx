@@ -7,6 +7,25 @@ import InputString from "../../../views/InputString/InputString";
 import Count from "../../../views/Count/Count";
 import { Link } from "react-router-dom";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
+import InputSearch from "../../../views/InputSearch/InputSearch";
+import classes from "./Users.module.css";
+import RadioButtons from "../../../views/RadioButtons/RadioButtons";
+import UsersTable from "../../../views/UsersTable/UsersTable";
+import If from "../../../views/If/If";
+import Loader from "../../forms/Loader/Loader";
+import BigLoader from "../../forms/BigLoader/BigLoader";
+
+const sortValues = [
+  { value: "1", text: "Сортировка по имени" },
+  { value: "2", text: "Сортировка по дате регистрации" },
+  { value: "3", text: "Сортировка по дате бана" },
+];
+
+const filterValues = [
+  { value: "1", text: "Все" },
+  { value: "2", text: "Только забаненные" },
+  { value: "3", text: "Только не забаненные" },
+];
 
 const Users = () => {
   const pageSize = 4;
@@ -24,8 +43,6 @@ const Users = () => {
   const [page, pageChange] = useState(basePage); // Страница
   const [params, paramsChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
-  const [sortMode, sortModeChange] = useState("1");
-  const [filterMode, filterModeChange] = useState("1");
 
   const [fetchUsers, isLoadingUsers, errorUsers] = useFetching(async (p) => {
     const response = await UserApi.get(p);
@@ -86,9 +103,7 @@ const Users = () => {
     newParamsChange({ ...newParams });
   };
 
-  const setSortMode = (e) => {
-    let value = e.target.value;
-    sortModeChange(value);
+  const setSortMode = (value) => {
     if (value === "1") {
       newParams.isSortByRegistrationDate = false;
       newParams.isSortByBannedDate = false;
@@ -102,9 +117,7 @@ const Users = () => {
     newParamsChange({ ...newParams });
   };
 
-  const setFilterMode = (e) => {
-    let value = e.target.value;
-    filterModeChange(value);
+  const setFilterMode = (value) => {
     if (value === "1") newParams.isBanned = null;
     else if (value === "2") newParams.isBanned = true;
     else if (value === "3") newParams.isBanned = false;
@@ -113,120 +126,40 @@ const Users = () => {
 
   return (
     <LeftMenu>
-      <h1>Главная</h1>
-      <InputString value={newParams.name} valueChange={newParamsNameChange} />
-      <Count count={usersCount} />
-      <div>
-        <b>Сортировать</b>
-        <div>
-          <label>Сортировка по имени</label>
-          <input
-            type="radio"
-            name="radiosort"
-            value="1"
-            checked={sortMode === "1" ? true : false}
-            onChange={setSortMode}
-          />
-        </div>
-        <div>
-          <label>Сортировка по дате регистрации</label>
-          <input
-            type="radio"
-            name="radiosort"
-            value="2"
-            checked={sortMode === "2" ? true : false}
-            onChange={setSortMode}
-          />
-        </div>
-        <div>
-          <label>Сортировка по дате бана</label>
-          <input
-            type="radio"
-            name="radiosort"
-            value="3"
-            checked={sortMode === "3" ? true : false}
-            onChange={setSortMode}
-          />
-        </div>
+      <InputSearch
+        value={newParams.name}
+        valueChange={newParamsNameChange}
+        update={update}
+        reset={reset}
+        className={classes.search}
+      />
+      <div className={classes.radioButtons}>
+        <RadioButtons
+          text={"Сортировать"}
+          values={sortValues}
+          setValue={setSortMode}
+        />
+        <RadioButtons
+          text={"Фильтровать"}
+          values={filterValues}
+          setValue={setFilterMode}
+        />
       </div>
-      <div>
-        <b>Фильтрация</b>
-        <div>
-          <label>Все</label>
-          <input
-            type="radio"
-            name="radiofilter"
-            value="1"
-            checked={filterMode === "1" ? true : false}
-            onChange={setFilterMode}
-          />
-        </div>
-        <div>
-          <label>Только забаненные</label>
-          <input
-            type="radio"
-            name="radiofilter"
-            value="2"
-            checked={filterMode === "2" ? true : false}
-            onChange={setFilterMode}
-          />
-        </div>
-        <div>
-          <label>Только не забаненные</label>
-          <input
-            type="radio"
-            name="radiofilter"
-            value="3"
-            checked={filterMode === "3" ? true : false}
-            onChange={setFilterMode}
-          />
-        </div>
-      </div>
+
       <PaginationBar
         min={1}
         max={Math.ceil(usersCount / pageSize)}
         page={page}
         setPage={setPage}
         centerCount={1}
+        className={classes.paginationBar}
       />
-      <button onClick={update}>Обновить</button>
-      <button onClick={reset}>Сбросить</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Имя</th>
-            <th>Email</th>
-            <th>Дата регистрации</th>
-            <th>Роль</th>
-            <th>Забанен ли</th>
-            <th>Дата бана</th>
-            <th>Открыть</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.registrationDate}</td>
-              <td>{user.role}</td>
-              <td>
-                <Bool
-                  value={user.isBanned}
-                  trueText="Забанен"
-                  fasleText="Не забанен"
-                />
-              </td>
-              <td>{user.bannedDate}</td>
-              <td>
-                <Link to={`/users/${user.name}`}>Открыть</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <If value={!isLoadingUsers}>
+        <UsersTable users={users} />
+      </If>
+      <If value={isLoadingUsers || isLoadingUsersCount}>
+        <BigLoader className={classes.loader} />
+      </If>
     </LeftMenu>
   );
 };

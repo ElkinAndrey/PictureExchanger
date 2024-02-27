@@ -1,0 +1,33 @@
+.button {
+  position: relative;
+  border: 0px;
+  background: #4177b5;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 5px;
+  font-size: 13px;
+  margin-right: 10px;
+}
+
+.button:disabled {
+  background: #86a2c5;
+  color: #dce1e6;
+  cursor: default;
+}
+
+.textHidden {
+  opacity: 0;
+}
+
+.loader {
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 100;
+}

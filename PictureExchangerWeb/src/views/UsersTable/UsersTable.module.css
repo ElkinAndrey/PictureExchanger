@@ -1,0 +1,56 @@
+.body {
+  background: #ffffff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid #dce1e6;
+}
+
+.userBodyFirst {
+  border-top: 0px solid #dce1e6;
+}
+
+.userBody {
+  padding: 15px 0px;
+  display: flex;
+  border-top: 1px solid #dce1e6;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userInfo {
+  display: flex;
+  padding: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  cursor: pointer;
+  text-align: left;
+  color: #000000;
+  text-decoration: none;
+}
+
+.name {
+  font-size: 14px;
+}
+
+.image {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.dopInfo {
+  color: #818c99;
+  font-size: 11px;
+}
+
+.isBanned {
+  width: 120px;
+}
+
+.bannedDate {
+  color: #818c99;
+  font-size: 11px;
+}
+
+.isBannedText {
+  font-size: 14px;
+}

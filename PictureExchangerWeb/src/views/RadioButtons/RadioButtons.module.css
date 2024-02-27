@@ -1,0 +1,70 @@
+.body {
+  width: 300px;
+  position: relative;
+}
+
+.logo {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.selectedButton {
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #c6c6c6;
+  text-align: start;
+  white-space: nowrap; /* Запрещаем перенос строк */
+  overflow: hidden; /* Обрезаем все, что не помещается в область */
+  text-overflow: ellipsis; /* Добавляем многоточие */
+}
+
+.values {
+  left: 0px;
+  right: 0px;
+  margin-top: 8px;
+  position: absolute;
+  background-color: #ffffff;
+  transition: opacity 100ms linear, transform 100ms linear,
+    visibility 100ms linear;
+  z-index: 800;
+  border: 1px #c6c6c6 solid;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.valuesOpen {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.valuesClose {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.value {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  width: 100%;
+  text-align: start;
+  padding: 10px;
+  transition: 0.1s background-color;
+  word-break: break-all;
+}
+
+.value:hover {
+  background-color: #f5f6f8;
+}
+
+.selectedValue {
+  background: #edeef0;
+}
+
+.selectedValue:hover {
+  background-color: #edeef0;
+}

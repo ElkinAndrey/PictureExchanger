@@ -24,7 +24,6 @@ const AppRouter = () => {
   return (
     <div className={classes.main}>
       <Header />
-      {/* <LeftMenu> */}
       <Routes path="/">
         {route.map((r, index) => (
           <Route
@@ -35,7 +34,6 @@ const AppRouter = () => {
           ></Route>
         ))}
       </Routes>
-      {/* </LeftMenu> */}
     </div>
   );
 };
