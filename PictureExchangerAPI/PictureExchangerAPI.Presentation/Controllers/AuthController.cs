@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Presentation.DTO.Auth;
@@ -50,13 +51,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             var tokens = await _authService.RegisterAsync(model.Name, model.Email, model.Password, secretKey, ip, deviceData); // Получение пары токенов
 
-            var cookieOptions = new CookieOptions // Токен обновления записывается в куки
-            {
-                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
-                Secure = true,
-                SameSite = SameSiteMode.None, // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
-            };
+            var cookieOptions = GetCookieOptions(tokens.DateOfCreation);
             Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
 
             return Ok(tokens.AccessToken);
@@ -77,13 +72,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             var tokens = await _authService.LoginAsync(model.NameOrEmail, model.Password, secretKey, ip, deviceData); // Получение пары токенов
 
-            var cookieOptions = new CookieOptions // Токен обновления записывается в куки
-            {
-                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
-                Secure = true,
-                SameSite = SameSiteMode.None, // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan, // До какого числа будет жить токен
-            };
+            var cookieOptions = GetCookieOptions(tokens.DateOfCreation);
             Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
 
             return Ok(tokens.AccessToken);
@@ -102,13 +91,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
 
             await _authService.DeleteTokenAsync(refreshToken); // Удалить токен из базы дынных
 
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
-                Secure = true,
-                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-                Expires = DateTime.Now.Add(new TimeSpan(-1, 0, 0, 0)), // Время жизни куков (-1 для удаления)
-            };
+            var cookieOptions = GetCookieOptionsDelete();
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
 
             return Ok();
@@ -130,27 +113,57 @@ namespace PictureExchangerAPI.Presentation.Controllers
             string deviceData = HttpContext.Request.Headers["User-Agent"]!; // Данные об устройстве
 
             // Токен обновления записывается в куки
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
-                Secure = true,
-                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
-            };
 
             try
             {
                 var tokens = await _authService.RefreshTokenAsync(refreshToken, secretKey, ip, deviceData); // Получение пары токенов
-                cookieOptions.Expires = tokens.DateOfCreation + JwtLifetime.RefreshTimeSpan; // Время жизни куков (-1 для удаления)
+                var cookieOptions = GetCookieOptions(tokens.DateOfCreation);
                 Response.Cookies.Append("refreshToken", tokens.RefreshToken, cookieOptions);
 
                 return Ok(tokens.AccessToken);
             }
             catch (Exception ex)
             {
-                cookieOptions.Expires = DateTime.Now.Add(new TimeSpan(-1, 0, 0, 0)); // Время жизни куков (-1 для удаления)
+                var cookieOptions = GetCookieOptionsDelete();
                 Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Получить опции для куки
+        /// </summary>
+        /// <param name="dateOfCreation">Дата создания</param>
+        /// <returns>Опции для куки</returns>
+        private CookieOptions GetCookieOptions(DateTime dateOfCreation)
+        {
+            var timeSpan = JwtLifetime.RefreshTimeSpan;
+            var cookieOptions = new CookieOptions()
+            {
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
+                Secure = true,
+                SameSite = SameSiteMode.None, // Установите значение SameSite в зависимости от ваших требований безопасности
+                Expires = dateOfCreation + timeSpan, // До какого числа будет жить токен
+                MaxAge = timeSpan, // До какого числа будет жить токен
+            };
+            return cookieOptions;
+        }
+
+        /// <summary>
+        /// Получить опции для удаления куки
+        /// </summary>
+        /// <returns>Опции для удаления куки</returns>
+        private CookieOptions GetCookieOptionsDelete()
+        {
+            var timeSpan = new TimeSpan(-1, 0, 0, 0);
+            var cookieOptions = new CookieOptions()
+            {
+                HttpOnly = true, // Куки можно будет изменить только при помощи бекенда, а не при помощи JS
+                Secure = true,
+                SameSite = SameSiteMode.None,  // Установите значение SameSite в зависимости от ваших требований безопасности
+                Expires = DateTime.Now + timeSpan, // Время жизни куков (-1 для удаления)
+            };
+            return cookieOptions;
         }
     }
 }
