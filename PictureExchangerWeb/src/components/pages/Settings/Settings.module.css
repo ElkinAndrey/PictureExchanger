@@ -1,0 +1,40 @@
+.body {
+  padding: 20px;
+  border: 1px solid #dce1e6;
+  border-radius: 20px;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.logo {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 18px;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.container:hover {
+  background: #f5f6f7;
+}
+
+.containerImage {
+  display: flex;
+  align-items: center;
+}
+
+.containerImage img {
+  width: 22px;
+  height: 22px;
+  margin-right: 20px;
+}

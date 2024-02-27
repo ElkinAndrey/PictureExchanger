@@ -11,6 +11,7 @@ import If from "../If/If";
 import useFetching from "../../hooks/useFetching";
 import PostApi from "../../api/postApi";
 import Loader from "../../components/forms/Loader/Loader";
+import UserCell from "../UserCell/UserCell";
 
 const PostInPosts = ({ post, deletePost = null, openable = true }) => {
   // КОНСТАНТЫ
@@ -57,13 +58,7 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
   return (
     <div className={classes.body}>
       <div className={classes.header}>
-        <Link className={classes.userBody} to={`/users/${post.user.name}`}>
-          <img className={classes.userImage} src="/images/profile.png" alt="" />
-          <div>
-            <div className={classes.userName}>{post.user.name}</div>
-            <div className={classes.data}>{getOnlyDate(post.date)}</div>
-          </div>
-        </Link>
+        <UserCell name={post.user.name} date={getOnlyDate(post.date)} />
         <div className={classes.secretButtons}>
           <If
             value={Policy.isManagerOrOwner(
@@ -72,7 +67,7 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
               post.user.id
             )}
           >
-            <div>
+            <div className={classes.images}>
               <If value={post.isBanned}>
                 <img
                   className={classes.privateImage}
@@ -106,13 +101,7 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
               </If>
             </button>
           </If>
-          <If
-            value={Policy.isManagerOrOwner(
-              params?.role,
-              params?.id,
-              post.user.id
-            )}
-          >
+          <If value={Policy.isOwner(params?.id, post.user.id)}>
             <Link className={classes.change} to={`/${post.id}/change`}>
               Изменить
             </Link>

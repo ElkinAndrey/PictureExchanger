@@ -9,6 +9,10 @@ class Policy {
     return !!localStorage.getItem("jwt");
   }
 
+  static isOwner(userId, contentId) {
+    return !!userId && userId === contentId;
+  }
+
   static isManagerOrOwner(role, userId, contentId) {
     return this.isManager(role) || (!!userId && userId === contentId);
   }

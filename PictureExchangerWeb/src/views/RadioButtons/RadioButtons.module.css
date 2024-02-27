@@ -1,5 +1,5 @@
 .body {
-  width: 300px;
+  width: 280px;
   position: relative;
 }
 
@@ -15,9 +15,24 @@
   border-radius: 5px;
   border: 1px solid #c6c6c6;
   text-align: start;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selectedButtonText {
   white-space: nowrap; /* Запрещаем перенос строк */
   overflow: hidden; /* Обрезаем все, что не помещается в область */
   text-overflow: ellipsis; /* Добавляем многоточие */
+}
+
+.selectedButtonTriangle {
+  margin-left: 3px;
+  min-width: 6px;
+  height: 6px;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  transform: rotate(45deg) translateY(-1px);
 }
 
 .values {

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import SettingsApi from "../../../api/settingsApi";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
+import classes from "./Settings.module.css";
+import getDateTime from "../../../utils/getDateTime";
+import UserCell from "../../../views/UserCell/UserCell";
+import Switch from "../../../views/Switch/Switch";
 
 const Settings = () => {
   const [settings, settingsChange] = useState();
@@ -15,28 +19,59 @@ const Settings = () => {
   useEffect(() => {
     fetchGetSettings();
   }, []);
+
+  const Container = ({ name, text, src }) => {
+    return (
+      <button className={classes.container}>
+        <div className={classes.containerImage}>
+          <img className={classes.containerImage} src={src} alt="" />
+          <div>{name}</div>
+        </div>
+        <div>{text}</div>
+      </button>
+    );
+  };
+
   return (
     <LeftMenu>
-      {settings && (
-        <div>
-          <div>{`Id: ${settings.id}`}</div>
-          <div>{`Имя: ${settings.name}`}</div>
-          <div>{`Email: ${settings.email}`}</div>
-          <div>{`Роль: ${settings.role}`}</div>
-          <div>{`Дата регистрации: ${settings.registrationDate}`}</div>
-          <div>{`Забанен ли: ${
-            settings.isBanned
-              ? `Забанен (${settings.bannedDate})`
-              : "Не забанен"
-          }`}</div>
-          <div>{`Скрыт ли Email: ${
-            settings.isEmailHidden ? "Скрыт" : "Не скрыт"
-          }`}</div>
-          <div>{`Скрыта ли дата регистрации: ${
-            settings.isRegistrationDateHidden ? "Скрыта" : "Не скрыта"
-          }`}</div>
-        </div>
-      )}
+      <div className={classes.body}>
+        <div className={classes.logo}>Настройки</div>
+        <UserCell
+          name={settings?.name}
+          date={getDateTime(settings?.registrationDate)}
+          email={settings?.email}
+        />
+      </div>
+      <div className={classes.body}>
+        <Container
+          name={"Имя"}
+          text={settings?.name}
+          src="/images/profile.png"
+        />
+        <Container
+          name={"Email"}
+          text={settings?.email}
+          src="/images/email.png"
+        />
+        <Container name={"Роль"} text={settings?.role} src="/images/role.png" />
+      </div>
+      <div className={classes.body}>
+        <Container
+          name={"Скрыт ли Email"}
+          text={<Switch value={settings?.isEmailHidden} setValue={() => {}} />}
+          src="/images/hiddenEmail.png"
+        />
+        <Container
+          name={"Скрыта ли дата регистрации"}
+          text={
+            <Switch
+              value={settings?.isRegistrationDateHidden}
+              setValue={() => {}}
+            />
+          }
+          src="/images/hiddenDate.png"
+        />
+      </div>
     </LeftMenu>
   );
 };

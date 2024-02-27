@@ -11,6 +11,7 @@ const RadioButtons = ({ text, values = [], setValue }) => {
   const setSelected = (v) => {
     setValue(v.value);
     selectedChange(v);
+    close();
   };
 
   const open = () => isOpenChange(!isOpen);
@@ -31,24 +32,23 @@ const RadioButtons = ({ text, values = [], setValue }) => {
       <div className={classes.logo}>{text}</div>
       <div>
         <button className={classes.selectedButton} onClick={open}>
-          {selected.text}
+          <div className={classes.selectedButtonText}>{selected.text}</div>
+          <div className={classes.selectedButtonTriangle}></div>
         </button>
       </div>
       <div
-        className={
-          classes.values +
-          " " +
-          (isOpen ? classes.valuesOpen : classes.valuesClose)
-        }
+        className={[
+          classes.values,
+          isOpen ? classes.valuesOpen : classes.valuesClose,
+        ].join(" ")}
       >
         {values.map((v, index) => (
           <div key={index}>
             <button
-              className={
-                classes.value +
-                " " +
-                (v.value === selected.value ? classes.selectedValue : "")
-              }
+              className={[
+                classes.value,
+                v.value === selected.value && classes.selectedValue,
+              ].join(" ")}
               onClick={() => setSelected(v)}
             >
               <div>{v.text}</div>

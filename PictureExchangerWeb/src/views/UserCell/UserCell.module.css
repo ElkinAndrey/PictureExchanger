@@ -1,0 +1,25 @@
+.userInfo {
+  display: flex;
+  padding: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  cursor: pointer;
+  text-align: left;
+  color: #000000;
+  text-decoration: none;
+  align-items: center;
+}
+
+.name {
+  font-size: 14px;
+}
+
+.image {
+  height: 32px;
+  margin-right: 10px;
+}
+
+.dopInfo {
+  color: #818c99;
+  font-size: 11px;
+}
