@@ -7,68 +7,216 @@ import getDateTime from "../../../utils/getDateTime";
 import UserCell from "../../../views/UserCell/UserCell";
 import Switch from "../../../views/Switch/Switch";
 import Policy from "../../../utils/policy";
+import Modal from "../../forms/Modal/Modal";
+import Input from "../../forms/Input/Input";
+import LoadButton from "../../forms/LoadButton/LoadButton";
+
+const ContainerClick = ({ name, src, children, onClick = () => {} }) => {
+  return (
+    <div className={classes.containerClick} onClick={onClick}>
+      <div className={classes.containerImage}>
+        <img className={classes.containerImage} src={src} alt="" />
+        <div>{name}</div>
+      </div>
+      <div>{children}</div>
+    </div>
+  );
+};
+
+const Container = ({ name, src, children }) => {
+  return (
+    <div className={classes.container}>
+      <div className={classes.containerImage}>
+        <img className={classes.containerImage} src={src} alt="" />
+        <div>{name}</div>
+      </div>
+      <div>{children}</div>
+    </div>
+  );
+};
 
 const Settings = () => {
-  const [settings, settingsChange] = useState();
+  const [isOpenName, isOpenNameChange] = useState(false);
+  const [isOpenEmail, isOpenEmailChange] = useState(false);
+  const [isOpenPassword, isOpenPasswordChange] = useState(false);
+
+  const [settings, settingsChange] = useState({});
+  const [name, nameChange] = useState("");
+  const [email, emailChange] = useState("");
+  const [password, passwordChange] = useState("");
+  const [newPassword, newPasswordChange] = useState("");
 
   const [fetchGetSettings, isLoadingGetSettings, errorGetSettings] =
     useFetching(async () => {
       const response = await SettingsApi.get();
+      const data = response.data;
+      nameChange(data.name);
+      emailChange(data.email);
       settingsChange(response.data);
+    });
+
+  const [
+    fetchChangeIsEmailHidden,
+    isLoadingChangeIsEmailHidden,
+    errorChangeIsEmailHidden,
+  ] = useFetching(async (value) => {
+    await SettingsApi.changeParams({
+      isEmailHidden: value,
+      isRegistrationDateHidden: null,
+    });
+    settings.isEmailHidden = value;
+    settingsChange({ ...settings });
+  });
+
+  const [
+    fetchChangeIsRegistrationDateHidden,
+    isLoadingChangeIsRegistrationDateHidden,
+    errorChangeIsRegistrationDateHidden,
+  ] = useFetching(async (value) => {
+    await SettingsApi.changeParams({
+      isEmailHidden: null,
+      isRegistrationDateHidden: value,
+    });
+    settings.isRegistrationDateHidden = value;
+    settingsChange({ ...settings });
+  });
+
+  const [fetchChangeEmail, isLoadingChangeEmail, errorChangeEmail] =
+    useFetching(async () => {
+      await SettingsApi.changeEmail(email);
+      settings.email = email;
+      settingsChange({ ...settings });
+      isOpenEmailChange(false);
+    });
+
+  const [fetchChangeName, isLoadingChangeName, errorChangeName] = useFetching(
+    async () => {
+      await SettingsApi.changeName(name);
+      settings.name = name;
+      settingsChange({ ...settings });
+      isOpenNameChange(false);
+    }
+  );
+
+  const [fetchChangePassword, isLoadingChangePassword, errorChangePassword] =
+    useFetching(async () => {
+      await SettingsApi.changePassword(password, newPassword);
+      isOpenPasswordChange(false);
     });
 
   useEffect(() => {
     fetchGetSettings();
   }, []);
 
-  const Container = ({ name, children, src }) => {
-    return (
-      <button className={classes.container}>
-        <div className={classes.containerImage}>
-          <img className={classes.containerImage} src={src} alt="" />
-          <div>{name}</div>
-        </div>
-        <div>{children}</div>
-      </button>
-    );
-  };
-
   return (
     <LeftMenu>
       <div className={classes.body}>
         <div className={classes.logo}>Настройки</div>
         <UserCell
-          name={settings?.name}
-          date={getDateTime(settings?.registrationDate)}
-          email={settings?.email}
-          role={Policy.isManager(settings?.role) ? settings?.role : null}
+          name={settings.name}
+          date={getDateTime(settings.registrationDate)}
+          email={settings.email}
+          role={Policy.isManager(settings.role) ? settings.role : null}
         />
       </div>
       <div className={classes.body}>
-        <Container name={"Имя"} src="/images/profile.png">
-          {settings?.name}
-        </Container>
-        <Container name={"Email"} src="/images/email.png">
-          {settings?.email}
-        </Container>
-        <Container name={"Пароль"} src="/images/email.png"></Container>
+        <ContainerClick
+          name={"Имя"}
+          src="/images/profile.png"
+          onClick={() => isOpenNameChange(true)}
+        >
+          {settings.name}
+        </ContainerClick>
+        <ContainerClick
+          name={"Email"}
+          src="/images/email.png"
+          onClick={() => isOpenEmailChange(true)}
+        >
+          {settings.email}
+        </ContainerClick>
+        <ContainerClick
+          name={"Пароль"}
+          src="/images/email.png"
+          onClick={() => isOpenPasswordChange(true)}
+        ></ContainerClick>
       </div>
       <div className={classes.body}>
-        <Container
-          name={"Скрыт ли Email"}
-          text={<Switch value={settings?.isEmailHidden} setValue={() => {}} />}
-          src="/images/hiddenEmail.png"
-        />
+        <Container name={"Скрыт ли Email"} src="/images/hiddenEmail.png">
+          <Switch
+            value={settings.isEmailHidden}
+            setValue={fetchChangeIsEmailHidden}
+            load={isLoadingChangeIsEmailHidden}
+          />
+        </Container>
         <Container
           name={"Скрыта ли дата регистрации"}
-          text={
-            <Switch
-              value={settings?.isRegistrationDateHidden}
-              setValue={() => {}}
-            />
-          }
           src="/images/hiddenDate.png"
-        />
+        >
+          <Switch
+            value={settings.isRegistrationDateHidden}
+            setValue={fetchChangeIsRegistrationDateHidden}
+            load={isLoadingChangeIsRegistrationDateHidden}
+          />
+        </Container>
+
+        <Modal active={isOpenName} setActive={isOpenNameChange}>
+          <div className={classes.modal}>
+            <div className={classes.modalLogo}>Редактирование имени</div>
+            <Input
+              value={name}
+              setValue={nameChange}
+              placeholder="Новое имя"
+              className={classes.modalInput}
+            />
+            <LoadButton
+              text="Изменить"
+              onClick={fetchChangeName}
+              load={isLoadingChangeName}
+            />
+          </div>
+        </Modal>
+        <Modal active={isOpenEmail} setActive={isOpenEmailChange}>
+          <div className={classes.modal}>
+            <div className={classes.modalLogo}>
+              Редактирование электронной почты
+            </div>
+            <Input
+              value={email}
+              setValue={emailChange}
+              placeholder="Новый Email"
+              className={classes.modalInput}
+            />
+            <LoadButton
+              text="Изменить"
+              onClick={fetchChangeEmail}
+              load={isLoadingChangeEmail}
+            />
+          </div>
+        </Modal>
+        <Modal active={isOpenPassword} setActive={isOpenPasswordChange}>
+          <div className={classes.modal}>
+            <div className={classes.modalLogo}>Редактирование пароля</div>
+            <Input
+              value={password}
+              setValue={passwordChange}
+              placeholder="Старый пароль"
+              className={classes.modalInput}
+              isPassword={true}
+            />
+            <Input
+              value={newPassword}
+              setValue={newPasswordChange}
+              placeholder="Новый пароль"
+              className={classes.modalInput}
+              isPassword={true}
+            />
+            <LoadButton
+              text="Изменить"
+              onClick={fetchChangePassword}
+              load={isLoadingChangePassword}
+            />
+          </div>
+        </Modal>
       </div>
     </LeftMenu>
   );

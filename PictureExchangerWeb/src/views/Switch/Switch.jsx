@@ -1,10 +1,14 @@
 import React from "react";
 import classes from "./Switch.module.css";
+import Loader from "../../components/forms/Loader/Loader";
+import If from "../If/If";
 
-const Switch = ({ value, setValue }) => {
+const Switch = ({ value = null, setValue, load = false }) => {
   const click = () => {
     setValue(!value);
   };
+
+  if (value === null) return <></>;
 
   return (
     <button
@@ -19,7 +23,15 @@ const Switch = ({ value, setValue }) => {
           classes.lever,
           value ? classes.leverTrue : classes.leverFalse,
         ].join(" ")}
-      ></div>
+      >
+        <If value={load}>
+          <Loader
+            color={value ? "#40a7e3" : "#8a8a8a"}
+            width="11px"
+            border="2px"
+          />
+        </If>
+      </div>
     </button>
   );
 };
