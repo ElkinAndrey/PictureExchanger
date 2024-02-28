@@ -12,63 +12,74 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// </summary>
         /// <param name="name">Имя пользователя</param>
         /// <returns>Пользователь</returns>
-        public Task<User> GetByNameAsync(string name);
+        Task<User> GetByNameAsync(string name);
 
         /// <summary>
         /// Получить пользователя по id
         /// </summary>
         /// <param name="Id">Id пользователя</param>
         /// <returns>Пользователь</returns>
-        public Task<User> GetByIdAsync(Guid id);
+        Task<User> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Изменить пользователя по id с проверкой пароля
-        /// </summary>
-        /// <param name="id">Id пользователя</param>
-        /// <param name="currentPassword">Текущий пароль пользователя</param>
-        /// <param name="newName">Новое имя пользователя</param>
-        /// <param name="email">Электронная почта пользователя</param>
-        /// <param name="isBanned">Забанен ли</param>
-        /// <param name="role">Новая роль</param>
-        /// <param name="roleChanger">Роль, водающего пользователя</param>
-        /// <param name="isEmailHidden">Скрыт ли Email</param>
-        /// <param name="isRegistrationDateHidden">Скрыта ли дата регистрации</param>
-        /// <param name="isRegistrationDateHidden">Скрыта ли дата регистрации</param>
-        /// <param name="password">Новый пароль пользователя</param>
-        public Task ChangeByIdWithCheckingPasswordAsync(
-            Guid id,
-            string currentPassword,
-            string? newName = null,
-            string? email = null,
-            bool? isBanned = null,
-            string? role = null,
-            string? roleChanger = null,
-            bool? isEmailHidden = null,
-            bool? isRegistrationDateHidden = null,
-            string? password = null);
-
-        /// <summary>
-        /// Изменить пользователя по имени
+        /// Будет ли забанен пользователь
         /// </summary>
         /// <param name="name">Имя пользователя</param>
-        /// <param name="newName">Новое имя пользователя</param>
-        /// <param name="email">Электронная почта пользователя</param>
-        /// <param name="isBanned">Забанен ли</param>
+        /// <param name="isBanned">true - пользователь будет забанен; fasle - пользователь будет разбанен</param>
+        Task BanUserByName(
+            string name,
+            bool isBanned);
+
+        /// <summary>
+        /// Поменять роль у человека (роль выдающего должна быть больше роли принимающего)
+        /// </summary>
+        /// <param name="name">Имя человека</param>
         /// <param name="role">Новая роль</param>
-        /// <param name="roleChanger">Роль, водающего пользователя</param>
+        /// <param name="roleChanger">Роль выдающего</param>
+        Task ChangeRoleByNameAsync(
+            string name,
+            string role,
+            string roleChanger);
+
+        /// <summary>
+        /// Поменять пароль по id
+        /// </summary>
+        /// <param name="id">Id пользователя</param>
+        /// <param name="password">Старый пароль</param>
+        /// <param name="newPassword">Новый пароль</param>
+        Task ChangePasswordById(
+            Guid id,
+            string password,
+            string newPassword);
+
+        /// <summary>
+        /// Поменять имя по id
+        /// </summary>
+        /// <param name="id">Id пользователя</param>
+        /// <param name="name">Новое имя</param>
+        Task ChangeNameById(
+            Guid id,
+            string name);
+
+        /// <summary>
+        /// Поменять электронную почту по id
+        /// </summary>
+        /// <param name="id">Id пользователя</param>
+        /// <param name="email">Новая электронная почта</param>
+        Task ChangeEmailById(
+            Guid id,
+            string email);
+
+        /// <summary>
+        /// Поменять параметры аккаунта по id
+        /// </summary>
+        /// <param name="id">Id пользователя</param>
         /// <param name="isEmailHidden">Скрыт ли Email</param>
         /// <param name="isRegistrationDateHidden">Скрыта ли дата регистрации</param>
-        /// <param name="password">Новый пароль пользователя</param>
-        public Task ChangeByNameAsync(
-            string name,
-            string? newName = null,
-            string? email = null,
-            bool? isBanned = null,
-            string? role = null,
-            string? roleChanger = null,
+        Task ChangeById(
+            Guid id,
             bool? isEmailHidden = null,
-            bool? isRegistrationDateHidden = null,
-            string? password = null);
+            bool? isRegistrationDateHidden = null);
 
         /// <summary>
         /// Получить список пользователей
@@ -80,7 +91,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="isSortByRegistrationDate">Сортировать по дате регистрации</param>
         /// <param name="isSortByBannedDate">Сортировать по дате бана</param>
         /// <returns>Список пользователей</returns>
-        public Task<List<User>> GetAsync(
+        Task<List<User>> GetAsync(
             int start,
             int length,
             string name,
@@ -96,7 +107,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="isSortByRegistrationDate">Сортировать по дате регистрации</param>
         /// <param name="isSortByBannedDate">Сортировать по дате бана</param>
         /// <returns>Количество пользователей</returns>
-        public Task<int> GetCountAsync(
+        Task<int> GetCountAsync(
             string name,
             bool isSortByRegistrationDate,
             bool isSortByBannedDate,

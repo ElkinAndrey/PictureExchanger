@@ -6,6 +6,7 @@ using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Service.Functions;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -26,108 +27,6 @@ namespace PictureExchangerAPI.Service.Services
         public UserService(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        public async Task ChangeByIdWithCheckingPasswordAsync(
-            Guid id,
-            string currentPassword,
-            string? newName = null,
-            string? email = null,
-            bool? isBanned = null,
-            string? role = null,
-            string? roleChanger = null,
-            bool? isEmailHidden = null,
-            bool? isRegistrationDateHidden = null,
-            string? password = null)
-        {
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Id == id);
-
-            if (user is null) throw new UserNotFoundException();
-            if (!Password.VerifyPassword(currentPassword, user.PasswordHash, user.PasswordSalt)) throw new WrongPasswordException();
-
-            await ChangeUserAsync(
-                user,
-                newName,
-                email,
-                isBanned,
-                role,
-                roleChanger,
-                isEmailHidden,
-                isRegistrationDateHidden,
-                password);
-        }
-
-        public async Task ChangeByNameAsync(
-            string name,
-            string? newName = null,
-            string? email = null,
-            bool? isBanned = null,
-            string? role = null,
-            string? roleChanger = null,
-            bool? isEmailHidden = null,
-            bool? isRegistrationDateHidden = null,
-            string? password = null)
-        {
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Name == name);
-
-            if (user is null) throw new UserNotFoundException(name);
-
-            await ChangeUserAsync(
-                user,
-                newName,
-                email,
-                isBanned,
-                role,
-                roleChanger,
-                isEmailHidden,
-                isRegistrationDateHidden,
-                password);
-        }
-
-        private async Task ChangeUserAsync(
-            User user,
-            string? newName = null,
-            string? email = null,
-            bool? isBanned = null,
-            string? role = null,
-            string? roleChanger = null,
-            bool? isEmailHidden = null,
-            bool? isRegistrationDateHidden = null,
-            string? password = null)
-        {
-            if (newName is not null) user.Name = (string)newName; // Изменение имени
-            if (email is not null) user.Email = (string)email; // Изменение приватности
-            if (isBanned is not null) // Изменение бана
-            {
-                user.IsBanned = (bool)isBanned;
-                if ((bool)isBanned)
-                    user.BannedDate = DateTime.Now;
-                else
-                    user.BannedDate = null;
-            }
-            if (role is not null)
-            {
-                if (roleChanger is null) throw new RoleChangerNotShownException();
-                if (!Roles.FirstRoleBigger(roleChanger, user.Role.Name)) throw new ThereAreNotEnoughRightsToIssueRoleException();
-                var newRole = await _context.Roles
-                    .FirstOrDefaultAsync(r => r.Name == role);
-                if (newRole is null) throw new RoleNotFoundException();
-                user.Role = newRole;
-            }
-            if (isEmailHidden is not null) user.IsEmailHidden = (bool)isEmailHidden;
-            if (isRegistrationDateHidden is not null) user.IsRegistrationDateHidden = (bool)isRegistrationDateHidden;
-            if (password is not null)
-            {
-                var hashAndSalt = Password.CreatePassword(password); // Сгенерировать хэш и соль пароля
-                user.PasswordHash = hashAndSalt.PasswordHash;
-                user.PasswordSalt = hashAndSalt.PasswordSalt;
-            }
-
-            _context.SaveChanges();
         }
 
         public async Task<List<User>> GetAsync(
@@ -200,6 +99,99 @@ namespace PictureExchangerAPI.Service.Services
             if (user is null) throw new UserNotFoundException();
 
             return user;
+        }
+
+        public async Task ChangeRoleByNameAsync(
+            string name,
+            string role,
+            string roleChanger)
+        {
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Name == name);
+
+            if (user is null) throw new UserNotFoundException(name);
+
+            if (roleChanger is null) throw new RoleChangerNotShownException();
+            if (!Roles.FirstRoleBigger(roleChanger, user.Role.Name)) throw new ThereAreNotEnoughRightsToIssueRoleException();
+            var newRole = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Name == role);
+            if (newRole is null) throw new RoleNotFoundException();
+            user.Role = newRole;
+
+            _context.SaveChanges();
+        }
+
+        public async Task BanUserByName(string name, bool isBanned)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Name == name);
+
+            if (user is null) throw new UserNotFoundException(name);
+
+            user.IsBanned = isBanned;
+            user.BannedDate = isBanned ? DateTime.Now : null;
+
+            _context.SaveChanges();
+        }
+
+        public async Task ChangePasswordById(Guid id, string password, string newPassword)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user is null)
+                throw new UserNotFoundException();
+            if (!Password.VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
+                throw new WrongPasswordException(); // Если пароль введен неверно, то выдать исключение
+
+            var hashAndSalt = Password.CreatePassword(newPassword); // Сгенерировать хэш и соль пароля
+            user.PasswordHash = hashAndSalt.PasswordHash;
+            user.PasswordSalt = hashAndSalt.PasswordSalt;
+
+            _context.SaveChanges();
+        }
+
+        public async Task ChangeNameById(Guid id, string name)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user is null) throw new UserNotFoundException();
+
+            user.Name = name;
+
+            _context.SaveChanges();
+        }
+
+        public async Task ChangeEmailById(Guid id, string email)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user is null) throw new UserNotFoundException();
+
+            user.Email = email;
+
+            _context.SaveChanges();
+        }
+
+        public async Task ChangeById(
+            Guid id,
+            bool? isEmailHidden = null,
+            bool? isRegistrationDateHidden = null)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user is null) throw new UserNotFoundException();
+
+            if (isEmailHidden is not null)
+                user.IsEmailHidden = (bool)isEmailHidden;
+            if (isRegistrationDateHidden is not null)
+                user.IsRegistrationDateHidden = (bool)isRegistrationDateHidden;
+
+            _context.SaveChanges();
         }
     }
 }

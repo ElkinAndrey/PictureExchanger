@@ -17,7 +17,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="ip">IP адрес</param>
         /// <param name="deviceData">Данные о девайсе</param>
         /// <returns>Пара токенов</returns>
-        public Task<PairOfTokens> RegisterAsync(
+        Task<PairOfTokens> RegisterAsync(
             string name,
             string email,
             string password,
@@ -34,7 +34,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="ip">IP адрес</param>
         /// <param name="deviceData">Данные о девайсе</param>
         /// <returns>Пара токенов</returns>
-        public Task<PairOfTokens> LoginAsync(
+        Task<PairOfTokens> LoginAsync(
             string nameOrEmail,
             string password,
             string secretKey,
@@ -45,7 +45,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// Удалить токен обновления из базы данных
         /// </summary>
         /// <param name="token">Токен</param>
-        public Task DeleteTokenAsync(string token);
+        Task DeleteTokenAsync(string token);
 
         /// <summary>
         /// Обновить токен
@@ -55,7 +55,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="ip">IP адрес</param>
         /// <param name="deviceData">Данные о девайсе</param>  
         /// <returns>Пара токенов</returns>
-        public Task<PairOfTokens> RefreshTokenAsync(
+        Task<PairOfTokens> RefreshTokenAsync(
             string token,
             string secretKey,
             string ip,

@@ -16,7 +16,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="postName">Часть имени поста</param>
         /// <param name="userName">Имя человека</param>
         /// <returns>Список постов</returns>
-        public Task<List<Post>> GetAsync(
+        Task<List<Post>> GetAsync(
             int start,
             int length,
             string postName,
@@ -28,7 +28,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="postName">Часть имени поста</param>
         /// <param name="userName">Имя человека</param>
         /// <returns>Количество постов</returns>
-        public Task<int> GetCountAsync(
+        Task<int> GetCountAsync(
             string postName,
             string? userName = null);
         
@@ -37,7 +37,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// </summary>
         /// <param name="id">Id поста</param>
         /// <returns>Пост</returns>
-        public Task<Post> GetByIdAsync(Guid id);
+        Task<Post> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Добавить пост
@@ -47,7 +47,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="isPrivate">Приватный ли</param>
         /// <param name="tags">Список тэгов</param>
         /// <param name="images">Список картинок</param>
-        public Task AddAsync(
+        Task AddAsync(
             Guid userId,
             string name,
             bool isPrivate,
@@ -63,7 +63,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="isBanned">Забанен ли</param>
         /// <param name="tags">Тэги поста</param>
         /// <param name="userId">Id пользователя</param>
-        public Task ChangeAsync(
+        Task ChangeAsync(
             Guid postId,
             string? name = null,
             bool? isPrivate = null,
@@ -76,7 +76,7 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// </summary>
         /// <param name="postId">Id поста</param>
         /// <param name="userId">Id пользователя</param>
-        public Task DeleteAsync(
+        Task DeleteAsync(
             Guid postId,
             Guid? userId = null);
     }

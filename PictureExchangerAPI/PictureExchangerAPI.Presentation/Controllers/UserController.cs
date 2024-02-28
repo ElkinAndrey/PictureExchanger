@@ -163,7 +163,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{name}/banned")]
         public async Task<IActionResult> Banned(string name)
         {
-            await _userService.ChangeByNameAsync(name, null, null, true);
+            await _userService.BanUserByName(name, true);
             return Ok();
         }
 
@@ -176,7 +176,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPut("{name}/unbanned")]
         public async Task<IActionResult> Unbanned(string name)
         {
-            await _userService.ChangeByNameAsync(name, null, null, false);
+            await _userService.BanUserByName(name, false);
             return Ok();
         }
     }

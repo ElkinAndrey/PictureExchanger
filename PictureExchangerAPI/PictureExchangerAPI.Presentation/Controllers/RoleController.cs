@@ -37,7 +37,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public async Task<IActionResult> GiveUser(string name)
         {
             var roleChanger = await GetRoleJWT();
-            await _userService.ChangeByNameAsync(name, null, null, null, Roles.User, roleChanger);
+            await _userService.ChangeRoleByNameAsync(name, Roles.User, roleChanger ?? "");
             return Ok();
         }
 
@@ -50,7 +50,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public async Task<IActionResult> GiveManager(string name)
         {
             var roleChanger = await GetRoleJWT();
-            await _userService.ChangeByNameAsync(name, null, null, null, Roles.Manager, roleChanger);
+            await _userService.ChangeRoleByNameAsync(name, Roles.Manager, roleChanger ?? "");
             return Ok();
         }
 
@@ -63,7 +63,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public async Task<IActionResult> GiveSuperManager(string name)
         {
             var roleChanger = await GetRoleJWT();
-            await _userService.ChangeByNameAsync(name, null, null, null, Roles.SuperManager, roleChanger);
+            await _userService.ChangeRoleByNameAsync(name, Roles.SuperManager, roleChanger ?? "");
             return Ok();
         }
 
@@ -76,7 +76,7 @@ namespace PictureExchangerAPI.Presentation.Controllers
         public async Task<IActionResult> GiveAdmin(string name)
         {
             var roleChanger = await GetRoleJWT();
-            await _userService.ChangeByNameAsync(name, null, null, null, Roles.Admin, roleChanger);
+            await _userService.ChangeRoleByNameAsync(name, Roles.Admin, roleChanger ?? "");
             return Ok();
         }
 
