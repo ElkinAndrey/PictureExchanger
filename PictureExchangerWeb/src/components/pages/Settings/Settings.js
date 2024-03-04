@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import SettingsApi from "../../../api/settingsApi";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
@@ -10,8 +10,9 @@ import Policy from "../../../utils/policy";
 import Modal from "../../forms/Modal/Modal";
 import Input from "../../forms/Input/Input";
 import LoadButton from "../../forms/LoadButton/LoadButton";
+import Context from "../../../context/context";
 
-const ContainerClick = ({ name, src, children, onClick = () => {} }) => {
+const ContainerClick = ({ name, src, children, onClick }) => {
   return (
     <div className={classes.containerClick} onClick={onClick}>
       <div className={classes.containerImage}>
@@ -36,6 +37,9 @@ const Container = ({ name, src, children }) => {
 };
 
 const Settings = () => {
+  // КОНСТАНТЫ
+  const { params, paramsChange } = useContext(Context);
+
   const [isOpenName, isOpenNameChange] = useState(false);
   const [isOpenEmail, isOpenEmailChange] = useState(false);
   const [isOpenPassword, isOpenPasswordChange] = useState(false);
@@ -84,17 +88,21 @@ const Settings = () => {
   const [fetchChangeEmail, isLoadingChangeEmail, errorChangeEmail] =
     useFetching(async () => {
       await SettingsApi.changeEmail(email);
+      isOpenEmailChange(false);
       settings.email = email;
       settingsChange({ ...settings });
-      isOpenEmailChange(false);
+      params.email = email;
+      paramsChange(params);
     });
 
   const [fetchChangeName, isLoadingChangeName, errorChangeName] = useFetching(
     async () => {
       await SettingsApi.changeName(name);
+      isOpenNameChange(false);
       settings.name = name;
       settingsChange({ ...settings });
-      isOpenNameChange(false);
+      params.name = name;
+      paramsChange(params);
     }
   );
 
@@ -175,6 +183,7 @@ const Settings = () => {
             />
           </div>
         </Modal>
+
         <Modal active={isOpenEmail} setActive={isOpenEmailChange}>
           <div className={classes.modal}>
             <div className={classes.modalLogo}>
@@ -193,6 +202,7 @@ const Settings = () => {
             />
           </div>
         </Modal>
+
         <Modal active={isOpenPassword} setActive={isOpenPasswordChange}>
           <div className={classes.modal}>
             <div className={classes.modalLogo}>Редактирование пароля</div>
