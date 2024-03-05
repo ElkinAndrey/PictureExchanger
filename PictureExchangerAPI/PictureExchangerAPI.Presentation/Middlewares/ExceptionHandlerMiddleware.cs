@@ -67,6 +67,13 @@ namespace PictureExchangerAPI.Presentation.Middlewares
             if (exception is UserWithThisNameExistsException)
                 return CreateError(context, 409, exception);
 
+            if (exception is MisspelledNameException)
+                return CreateError(context, 422, exception);
+            if (exception is MisspelledEmailException)
+                return CreateError(context, 422, exception);
+            if (exception is MisspelledPasswordException)
+                return CreateError(context, 422, exception);
+
             return CreateError(context, 500, exception);
         }
 

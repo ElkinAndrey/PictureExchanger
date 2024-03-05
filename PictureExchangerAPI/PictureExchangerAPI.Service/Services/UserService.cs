@@ -6,7 +6,6 @@ using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Service.Functions;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace PictureExchangerAPI.Service.Services
 {
@@ -137,6 +136,8 @@ namespace PictureExchangerAPI.Service.Services
 
         public async Task ChangePasswordById(Guid id, string password, string newPassword)
         {
+            CheckCorrect.Password(password);
+
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -154,6 +155,8 @@ namespace PictureExchangerAPI.Service.Services
 
         public async Task ChangeNameById(Guid id, string name)
         {
+            CheckCorrect.Name(name);
+
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -166,6 +169,8 @@ namespace PictureExchangerAPI.Service.Services
 
         public async Task ChangeEmailById(Guid id, string email)
         {
+            CheckCorrect.Email(email);
+
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
 

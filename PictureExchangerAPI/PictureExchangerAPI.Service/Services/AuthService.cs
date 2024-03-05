@@ -86,6 +86,10 @@ namespace PictureExchangerAPI.Service.Services
             string ip = "",
             string deviceData = "")
         {
+            CheckCorrect.Name(name);
+            CheckCorrect.Email(email);
+            CheckCorrect.Password(password);
+
             var id = Guid.NewGuid();
             var isThereSuchName = await  _userRepository.IsThereSuchNameAsync(name);
             var isThereSuchEmail = await  _userRepository.IsThereSuchEmailAsync(name);

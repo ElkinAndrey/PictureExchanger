@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetching from "../../hooks/useFetching";
 import UserApi from "../../api/userApi";
-import PostApi from "../../api/postApi";
 import PostInPosts from "../../widgets/PostInPosts/PostInPosts";
 import Context from "../../context/context";
 import RoleApi from "../../api/roleApi";
@@ -32,7 +31,7 @@ const User = () => {
   //#region ПЕРЕМЕННЫЕ
 
   const urlParams = useParams(); // Параметры из URL
-  const [user, userChange] = useState(null); // Пользователь
+  const [user, userChange] = useState({}); // Пользователь
   const [posts, postsChange] = useState([]); // Посты
   const [postsCount, postsCountChange] = useState([]); // Количество постов
   const [page, pageChange] = useState(basePage); // Страница
@@ -64,19 +63,6 @@ const User = () => {
       postsCountChange(response.data);
     }
   );
-
-  /** Забанить пост */
-  const [fetchBannedPost, isLoadingBannedPost, errorBannedPost] = useFetching(
-    async (id) => {
-      await PostApi.banned(id);
-    }
-  );
-
-  /** Разбанить пост */
-  const [fetchUnbannedPost, isLoadingUnbannedPost, errorUnbannedPost] =
-    useFetching(async (id) => {
-      await PostApi.unbanned(id);
-    });
 
   /** Забанить пользователя */
   const [fetchBannedUser, isLoadingBannedUser, errorBannedUser] = useFetching(
@@ -166,27 +152,6 @@ const User = () => {
   };
 
   /** Забанить */
-  const bannedPost = (id) => {
-    fetchBannedPost(id);
-    let newPosts = posts.map((post) => {
-      if (post.id === id) post.isBanned = true;
-      return post;
-    });
-    postsChange(newPosts);
-  };
-
-  /** Разбанить */
-  const unbannedPost = (id) => {
-    fetchUnbannedPost(id);
-    postsChange(
-      posts.map((post) => {
-        if (post.id === id) post.isBanned = false;
-        return post;
-      })
-    );
-  };
-
-  /** Забанить */
   const bannedUser = () => {
     fetchBannedUser(user.name);
   };
@@ -218,7 +183,7 @@ const User = () => {
   //#endregion
 
   // Пока пользователь не пришел
-  if (!user)
+  if (isLoadingUser)
     return (
       <LeftMenu>
         <Loader
@@ -337,12 +302,7 @@ const User = () => {
       />
       <If value={!isLoadingPosts}>
         {posts.map((post) => (
-          <PostInPosts
-            key={post.id}
-            post={post}
-            banned={bannedPost}
-            unbanned={unbannedPost}
-          />
+          <PostInPosts key={post.id} post={post} />
         ))}
       </If>
       <If value={isLoadingPosts}>
