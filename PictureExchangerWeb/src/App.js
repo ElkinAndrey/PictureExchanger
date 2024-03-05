@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Context from "./context/context";
 import authService from "./utils/AuthService";
 
-function App() {
+const App = () => {
   // ПЕРЕМЕННЫЕ
   const [params, paramsChange] = useState(null);
   const value = {
@@ -25,6 +25,6 @@ function App() {
       </BrowserRouter>
     </Context.Provider>
   );
-}
+};
 
 export default App;

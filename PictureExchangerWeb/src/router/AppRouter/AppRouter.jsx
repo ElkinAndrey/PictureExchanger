@@ -1,20 +1,21 @@
 import React, { useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Header from "../../components/layout/Header/Header";
 import Context from "../../context/context";
 import roles from "../../constants/roles";
 import classes from "./AppRouter.module.css";
-import Posts from "../../components/pages/Posts/Posts";
-import User from "../../components/pages/User/User";
-import Post from "../../components/pages/Post/Post";
-import ChangePost from "../../components/pages/ChangePost/ChangePost";
-import AddPost from "../../components/pages/AddPost/AddPost";
-import Users from "../../components/pages/Users/Users";
-import Settings from "../../components/pages/Settings/Settings";
-import Register from "../../components/pages/Register/Register";
-import Login from "../../components/pages/Login/Login";
-import If from "../../views/If/If";
+import Posts from "../../pages/Posts/Posts";
+import User from "../../pages/User/User";
+import Post from "../../pages/Post/Post";
+import ChangePost from "../../pages/ChangePost/ChangePost";
+import AddPost from "../../pages/AddPost/AddPost";
+import Users from "../../pages/Users/Users";
+import Settings from "../../pages/Settings/Settings";
+import Register from "../../pages/Register/Register";
+import Login from "../../pages/Login/Login";
+import If from "../../shared/If/If";
+import Header from "../../layout/Header/Header";
 
+/** Роутер */
 const AppRouter = () => {
   const { params } = useContext(Context);
 

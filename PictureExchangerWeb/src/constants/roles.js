@@ -1,3 +1,4 @@
+/** Роли */
 const roles = {
   user: "User",
   manager: "Manager",
