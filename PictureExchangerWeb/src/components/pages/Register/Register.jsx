@@ -1,19 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import AuthApi from "../../../api/authApi";
-import login from "../../../utils/login";
-import Context from "../../../context/context";
 import Center from "../../layout/Center/Center";
 import classes from "./Register.module.css";
 import Input from "../../forms/Input/Input";
 import Loader from "../../forms/Loader/Loader";
 import { Link } from "react-router-dom";
 import If from "../../../views/If/If";
+import authService from "../../../utils/AuthService";
 
 const Register = () => {
-  // КОНСТАНТЫ
-  const { paramsChange } = useContext(Context);
-
   // ПЕРЕМЕННЫЕ
   const [name, nameChange] = useState("");
   const [email, emailChange] = useState("");
@@ -25,7 +21,7 @@ const Register = () => {
   const [fetchRegister, isLoadingRegister, errorRegister] = useFetching(
     async (p) => {
       const response = await AuthApi.register(p);
-      login(response.data, paramsChange);
+      authService.login(response.data);
     }
   );
 

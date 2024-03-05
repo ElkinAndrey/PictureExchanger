@@ -1,3 +1,6 @@
+import isEmpty from "./isEmpty";
+
+/** Клэймы */
 const claimTypes = {
   actor: "http://schemas.xmlsoap.org/ws/2009/09/identity/claims/actor",
   postalCode:
@@ -84,10 +87,19 @@ const claimTypes = {
     "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/x500distinguishedname",
 };
 
+/** Пустой результат */
+const baseResult = {
+  id: null,
+  name: null,
+  email: null,
+  role: null,
+};
+
+/** Получить данные из JWT токена */
 const parseJwt = (token) => {
-  var base64Url = token.split(".")[1];
-  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  var jsonPayload = decodeURIComponent(
+  let base64Url = token.split(".")[1];
+  let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  let jsonPayload = decodeURIComponent(
     window
       .atob(base64)
       .split("")
@@ -97,13 +109,46 @@ const parseJwt = (token) => {
       .join("")
   );
   let claims = JSON.parse(jsonPayload);
-  let result = {
-    id: claims[claimTypes.nameIdentifier],
-    name: claims[claimTypes.name],
-    email: claims[claimTypes.email],
-    role: claims[claimTypes.role],
-  };
+
+  const result = { ...baseResult };
+  result.id = claims[claimTypes.nameIdentifier];
+  result.name = claims[claimTypes.name];
+  result.email = claims[claimTypes.email];
+  result.role = claims[claimTypes.role];
+
   return result;
 };
 
-export default parseJwt;
+/** Имя токена */
+const tokenName = "jwt";
+
+/** Сервис для работы с авторизацией */
+class AuthService {
+  constructor() {
+    this.setParams = () => {};
+    this.fetchLogout = () => {};
+  }
+
+  setParamsChange(newSetParams) {
+    this.setParams = newSetParams;
+  }
+
+  login(jwt) {
+    let newParams = { ...baseResult };
+    if (!isEmpty(jwt)) {
+      localStorage.setItem(tokenName, jwt ?? "");
+      newParams = parseJwt(jwt);
+    }
+    this.setParams(newParams);
+  }
+
+  logout() {
+    localStorage.removeItem(tokenName);
+    this.setParams({ ...baseResult });
+  }
+}
+
+/** Объект для работы с авторизацией */
+const authService = new AuthService();
+
+export default authService;

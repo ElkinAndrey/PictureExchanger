@@ -3,20 +3,20 @@ import Context from "../../context/context";
 import Policy from "../../utils/policy";
 import classes from "./ProfileMenu.module.css";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import logout from "../../utils/logout";
 import useFetching from "../../hooks/useFetching";
 import AuthApi from "../../api/authApi";
 import Loader from "../../components/forms/Loader/Loader";
 import If from "../If/If";
+import authService from "../../utils/AuthService";
 
 const ProfileMenu = () => {
   const rootEl = useRef(null);
   const [isOpen, isOpenChange] = useState(false);
-  const { params, paramsChange } = useContext(Context);
+  const { params } = useContext(Context);
 
   const [fetchLogout, isLoadingLogout, errorLogout] = useFetching(async () => {
     await AuthApi.logout();
-    logout(paramsChange, () => {});
+    authService.logout();
   });
 
   const open = () => {
@@ -49,7 +49,9 @@ const ProfileMenu = () => {
         <div className={classes.profileData}>
           <div className={classes.name}>
             <label>{`${params?.name ?? "Нет имени"} `}</label>
-            <label>{Policy.isManager(params?.role) && `(${params?.role})`}</label>
+            <label>
+              {Policy.isManager(params?.role) && `(${params?.role})`}
+            </label>
           </div>
           <div className={classes.email}>
             {params?.email ?? "Нет электронной почты"}

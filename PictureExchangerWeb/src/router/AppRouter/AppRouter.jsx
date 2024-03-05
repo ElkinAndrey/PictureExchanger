@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "../../components/layout/Header/Header";
 import Context from "../../context/context";
 import roles from "../../constants/roles";
@@ -31,8 +31,6 @@ const AppRouter = () => {
       params?.role === roles.superAdmin;
     return condition ? <Users /> : <Nav />;
   };
-
-  console.log(params)
 
   return (
     <div className={classes.main}>

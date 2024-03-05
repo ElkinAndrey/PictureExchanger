@@ -1,19 +1,15 @@
-import React, { useContext, useState } from "react";
-import Context from "../../../context/context";
+import React, { useState } from "react";
 import useFetching from "../../../hooks/useFetching";
 import AuthApi from "../../../api/authApi";
-import login from "../../../utils/login";
 import Input from "../../forms/Input/Input";
 import classes from "./Login.module.css";
 import { Link } from "react-router-dom";
 import Center from "../../layout/Center/Center";
 import If from "../../../views/If/If";
 import Loader from "../../forms/Loader/Loader";
+import authService from "../../../utils/AuthService";
 
 const Login = () => {
-  // КОНСТАНТЫ
-  const { paramsChange } = useContext(Context);
-
   // ПЕРЕМЕННЫЕ
   const [nameOrEmail, nameOrEmailChange] = useState("");
   const [password, passwordChange] = useState("");
@@ -23,7 +19,7 @@ const Login = () => {
   /** Зарегистрироваться */
   const [fetchLogin, isLoadingLogin, errorLogin] = useFetching(async (p) => {
     const response = await AuthApi.login(p);
-    login(response.data, paramsChange);
+    authService.login(response.data);
   });
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
