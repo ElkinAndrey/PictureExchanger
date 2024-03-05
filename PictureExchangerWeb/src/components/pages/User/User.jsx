@@ -236,10 +236,14 @@ const User = () => {
           />
           <div>
             <div className={classes.name}>{user.name}</div>
-            <div className={classes.userInfo}>{`Email: ${user.email}`}</div>
-            <div className={classes.userInfo}>{`Дата регистрации: ${getOnlyDate(
-              user.registrationDate
-            )}`}</div>
+            <div className={classes.userInfo}>
+              {user.email !== null ? `Email: ${user.email}` : ``}
+            </div>
+            <div className={classes.userInfo}>
+              {user.registrationDate !== null
+                ? `Дата регистрации: ${getOnlyDate(user.registrationDate)}`
+                : ``}
+            </div>
           </div>
         </div>
         <div>

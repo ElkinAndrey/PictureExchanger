@@ -20,7 +20,7 @@ class UserApi {
 
   /** Получить пользователя по имени */
   static async getByName(name) {
-    const response = await axios.get(`${URL}/${name}`);
+    const response = await $api.get(`${URL}/${name}`);
     return response;
   }
 

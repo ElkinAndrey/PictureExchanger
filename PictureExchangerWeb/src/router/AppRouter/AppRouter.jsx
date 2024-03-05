@@ -32,6 +32,8 @@ const AppRouter = () => {
     return condition ? <Users /> : <Nav />;
   };
 
+  console.log(params)
+
   return (
     <div className={classes.main}>
       <Header />

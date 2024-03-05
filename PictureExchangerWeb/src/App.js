@@ -12,6 +12,13 @@ function App() {
   /** Действия при запуске приложения */
   useEffect(() => {
     if (Policy.isAuth()) login(localStorage.getItem("jwt"), paramsChange);
+    else
+      paramsChange({
+        id: "",
+        name: "",
+        email: "",
+        role: "",
+      });
   }, []);
 
   return (

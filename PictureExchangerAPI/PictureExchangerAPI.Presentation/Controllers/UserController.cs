@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PictureExchangerAPI.Domain.Constants;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Presentation.DTO.User;
 using PictureExchangerAPI.Service.Abstractions;
+using PictureExchangerAPI.Service.Functions;
+using System.Data;
+using System.Xml.Linq;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -93,13 +97,18 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-            var user = await _userService.GetByNameAsync(name);
+            var userTask = _userService.GetByNameAsync(name);
+            var userJwtTask = GetRoleAndId();
+            var user = await userTask;
+            var userJwt = await userJwtTask;
+            var showHidden = userJwt is not null 
+                && (userJwt?.Role != Roles.User || userJwt?.Id == user.Id);
             var responce = new
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email,
-                RegistrationDate = user.RegistrationDate,
+                Email = showHidden || !user.IsEmailHidden ? user.Email : null,
+                RegistrationDate = showHidden || !user.IsRegistrationDateHidden ? (DateTime?)user.RegistrationDate : null,
                 Role = user.Role.Name,
                 IsBanned = user.IsBanned,
                 BannedDate = user.BannedDate,
@@ -178,6 +187,19 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             await _userService.BanUserByName(name, false);
             return Ok();
+        }
+
+        /// <summary>
+        /// Получить роль пользователя из JWT
+        /// </summary>
+        /// <returns></returns>
+        private async Task<(Guid Id, string Role)?> GetRoleAndId()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return null;
+            var data = JWT.GetData(accessToken);
+            (Guid Id, string Role) user = (data.Id, data.Role);
+            return user;
         }
     }
 }
