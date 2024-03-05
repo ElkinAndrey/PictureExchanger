@@ -8,6 +8,8 @@ import authService from "../../utils/AuthService";
 import If from "../../shared/If/If";
 import Loader from "../../shared/Loader/Loader";
 import Input from "../../shared/Input/Input";
+import LoadButton from "../../shared/LoadButton/LoadButton";
+import LinkButton from "../../shared/LinkButton/LinkButton";
 
 /** Страница с входом в аккаунт */
 const Login = () => {
@@ -57,12 +59,8 @@ const Login = () => {
         </If>
 
         <div className={classes.buttons}>
-          <button className={classes.button} onClick={log}>
-            {isLoadingLogin ? <Loader /> : <div>Войти</div>}
-          </button>
-          <Link className={classes.button} to="/" draggable="false">
-            На главную
-          </Link>
+          <LoadButton text={"Войти"} onClick={log} load={isLoadingLogin} />
+          <LinkButton to={"/"} text={"На главную"} />
         </div>
       </div>
     </Center>

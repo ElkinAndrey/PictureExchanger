@@ -1,17 +1,14 @@
 import React from "react";
 import classes from "./AuthMenu.module.css";
 import { Link } from "react-router-dom";
+import LinkButton from "../../shared/LinkButton/LinkButton";
 
 /** Меню сверху для авторизации */
 const AuthMenu = () => {
   return (
-    <div>
-      <Link className={classes.login} to={"/login"}>
-        Вход
-      </Link>
-      <Link className={classes.register} to={"/register"}>
-        Регистрация
-      </Link>
+    <div className={classes.body}>
+      <LinkButton text={"Вход"} to={"/login"} className={classes.login} />
+      <LinkButton text={"Регистрация"} to={"/register"} />
     </div>
   );
 };

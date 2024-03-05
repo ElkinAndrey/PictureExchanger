@@ -86,6 +86,7 @@ namespace PictureExchangerAPI.Service.Services
             string ip = "",
             string deviceData = "")
         {
+            var id = Guid.NewGuid();
             var isThereSuchName = await  _userRepository.IsThereSuchNameAsync(name);
             var isThereSuchEmail = await  _userRepository.IsThereSuchEmailAsync(name);
             if (isThereSuchName) throw new UserWithThisNameExistsException(); // Если такое имя занято, то выдать исключение
@@ -94,10 +95,10 @@ namespace PictureExchangerAPI.Service.Services
             var role = await _userRepository.GetRoleByName(Roles.User); // Получить роль пользователя из базы данных
             if (role is null) role = new Role { Id = Guid.NewGuid(), Name = Roles.User }; // Если роли пользователя нет в базе данных, то добавить
             var hashAndSalt = Password.CreatePassword(password); // Сгенерировать хэш и соль пароля
-            var tokens = GenerateTokens(Guid.NewGuid(), name, email, role.Name, secretKey); // Сгенерировать пару токенов
+            var tokens = GenerateTokens(id, name, email, role.Name, secretKey); // Сгенерировать пару токенов
             var user = new User // Создать пользователя
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 Name = name,
                 Email = email,
                 PasswordHash = hashAndSalt.PasswordHash,

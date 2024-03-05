@@ -27,11 +27,8 @@ $api.interceptors.response.use(
         const response = await AuthApi.refresh();
         if (response) localStorage.setItem("jwt", response.data);
         return $api.request(originalRequest);
-      } catch (e) {
-        console.log("1");
-      }
+      } catch (e) {}
     }
-    console.log("2");
     throw error;
   }
 );

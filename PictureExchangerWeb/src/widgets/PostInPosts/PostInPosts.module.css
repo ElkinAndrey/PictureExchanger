@@ -46,7 +46,6 @@
 .privateImage {
   width: 25px;
   height: 25px;
-  margin-right: 10px;
 }
 
 .secretButtons {
@@ -55,68 +54,15 @@
 }
 
 .banButton {
-  border: 0px;
-  background: #ebf2fa;
-  color: #3770b1;
-  transition: background-color 150ms linear;
-  cursor: pointer;
-  padding: 7px 0px;
-  width: 100px;
-  border-radius: 5px;
-  font-size: 13px;
-  margin-right: 10px;
-}
-
-.banButton:hover {
-  background: #dfeaf6;
+  margin-left: 10px;
 }
 
 .change {
-  background: #ebf2fa;
-  color: #3770b1;
-  transition: background-color 150ms linear;
-  padding: 7px 0px;
-  width: 100px;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 13px;
-  margin-right: 10px;
-}
-
-.change:hover {
-  background: #dfeaf6;
-}
-
-.openButton {
-  display: block;
-  background: #4177b5;
-  color: #ffffff;
-  transition: background-color 150ms linear;
-  padding: 7px 0px;
-  width: 100px;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 13px;
+  margin-left: 10px;
 }
 
 .info {
   margin-bottom: 10px;
-}
-
-.deleteButton {
-  background: #4177b5;
-  color: #ffffff;
-  transition: background-color 150ms linear;
-  padding: 7px 0px;
-  width: 100px;
-  border-radius: 5px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 13px;
-  border: 0px;
-  cursor: pointer;
 }
 
 .loader {
@@ -126,4 +72,8 @@
 
 .images {
   display: flex;
+}
+
+.deleteButton {
+  margin-left: 10px;
 }

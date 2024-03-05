@@ -1,5 +1,6 @@
 import React from "react";
 import classes from "./InputSearch.module.css";
+import LoadButton from "../LoadButton/LoadButton";
 
 /** Поле для ввода строки поиска */
 const InputSearch = ({
@@ -22,12 +23,16 @@ const InputSearch = ({
             valueChange(e.target.value);
           }}
         />
-        <button className={classes.button} onClick={update}>
-          Обновить
-        </button>
-        <button className={classes.button} onClick={reset}>
-          Сбросить
-        </button>
+        <LoadButton
+          text={"Обновить"}
+          onClick={update}
+          className={classes.button}
+        />
+        <LoadButton
+          text={"Сбросить"}
+          onClick={reset}
+          className={classes.button}
+        />
       </div>
     </div>
   );

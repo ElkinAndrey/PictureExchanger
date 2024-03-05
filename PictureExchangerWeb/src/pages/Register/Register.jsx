@@ -8,6 +8,8 @@ import authService from "../../utils/AuthService";
 import If from "../../shared/If/If";
 import Loader from "../../shared/Loader/Loader";
 import Input from "../../shared/Input/Input";
+import LoadButton from "../../shared/LoadButton/LoadButton";
+import LinkButton from "../../shared/LinkButton/LinkButton";
 
 /** Страница регистрации */
 const Register = () => {
@@ -65,12 +67,12 @@ const Register = () => {
         </If>
 
         <div className={classes.buttons}>
-          <button className={classes.button} onClick={register}>
-            {isLoadingRegister ? <Loader /> : <div>Зарегистрироваться</div>}
-          </button>
-          <Link className={classes.button} to="/" draggable="false">
-            На главную
-          </Link>
+          <LoadButton
+            text={"Зарегистрироваться"}
+            onClick={register}
+            load={isLoadingRegister}
+          />
+          <LinkButton to={"/"} text={"На главную"} />
         </div>
       </div>
     </Center>

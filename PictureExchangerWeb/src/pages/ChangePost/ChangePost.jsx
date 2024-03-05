@@ -7,6 +7,7 @@ import classes from "./ChangePost.module.css";
 import Checkbox from "../../shared/Checkbox/Checkbox";
 import Loader from "../../shared/Loader/Loader";
 import Input from "../../shared/Input/Input";
+import LoadButton from "../../shared/LoadButton/LoadButton";
 
 /** Страница с изменением поста */
 const ChangePost = () => {
@@ -90,12 +91,12 @@ const ChangePost = () => {
           className={classes.checkbox}
         />
         <div className={classes.buttons}>
-          <button className={classes.button} onClick={change}>
-            {isLoadingChangePost ? <Loader /> : "Сохранить"}
-          </button>
-          <button className={classes.button} onClick={cancelChanges}>
-            Отменить
-          </button>
+          <LoadButton
+            text={"Сохранить"}
+            onClick={change}
+            load={isLoadingChangePost}
+          />
+          <LoadButton text={"Отменить"} onClick={cancelChanges} />
         </div>
       </div>
     </LeftMenu>

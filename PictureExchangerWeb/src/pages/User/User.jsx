@@ -253,33 +253,23 @@ const User = () => {
         </div>
         <div>
           <div className={classes.headerButtons}>
-            <div>
-              <If value={user.isBanned}>
-                <img
-                  className={classes.isBanned}
-                  src="/images/banned.png"
-                  alt=""
-                  title="Пользователь забанен"
-                />
-              </If>
-            </div>
-            <div>
-              <If value={Policy.isAdmin(params?.role)}>
-                <button
-                  className={classes.banButton}
-                  onClick={user.isBanned ? unbannedUser : bannedUser}
-                >
-                  <If value={!isLoadingBannedUser && !isLoadingUnbannedUser}>
-                    {user.isBanned ? "Разбанить" : "Забанить"}
-                  </If>
-                  <If value={isLoadingBannedUser || isLoadingUnbannedUser}>
-                    <div className={classes.loader}>
-                      <Loader color="#4177b5" />
-                    </div>
-                  </If>
-                </button>
-              </If>
-            </div>
+            <If value={user.isBanned}>
+              <img
+                className={classes.isBanned}
+                src="/images/banned.png"
+                alt=""
+                title="Пользователь забанен"
+              />
+            </If>
+            <If value={Policy.isAdmin(params?.role)}>
+              <LoadButton
+                text={user.isBanned ? "Разбанить" : "Забанить"}
+                onClick={user.isBanned ? unbannedUser : bannedUser}
+                load={isLoadingBannedUser || isLoadingUnbannedUser}
+                width={"120px"}
+                className={classes.banButton}
+              />
+            </If>
             <If
               value={
                 Policy.isSuperManager(params?.role) &&

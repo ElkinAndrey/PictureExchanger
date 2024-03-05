@@ -9,6 +9,7 @@ import UploadImages from "../../widgets/UploadImages/UploadImages";
 import Loader from "../../shared/Loader/Loader";
 import Input from "../../shared/Input/Input";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
+import LoadButton from "../../shared/LoadButton/LoadButton";
 
 /** Страница с добавлением поста */
 const AddPost = () => {
@@ -64,15 +65,12 @@ const AddPost = () => {
           text="Сделать приватным"
           className={classes.isPrivate}
         />
-
         <UploadImages
           images={images}
           setImages={setImages}
           className={classes.images}
         />
-        <button onClick={create} className={classes.add}>
-          {isLoadingAddPost ? <Loader /> : "Создать"}
-        </button>
+        <LoadButton text={"Создать"} onClick={create} load={isLoadingAddPost} />
       </div>
     </LeftMenu>
   );

@@ -1,4 +1,4 @@
-.bigLoader {
+.loader {
   display: flex;
   justify-content: center;
 }
@@ -30,21 +30,4 @@
 .buttons {
   display: flex;
   justify-content: space-between;
-}
-
-.button {
-  text-align: center;
-  display: block;
-  background: #4177b5;
-  color: #ffffff;
-  padding: 9px 0px;
-  width: 90px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 13px;
-  border: 0px;
-  user-select: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
 }

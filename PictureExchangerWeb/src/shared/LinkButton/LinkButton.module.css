@@ -1,0 +1,16 @@
+.body {
+  display: flex;
+}
+
+.button {
+  border: 0px;
+  background: #4177b5;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 5px;
+  font-size: 13px;
+  text-decoration: none;
+  color: #ffffff;
+  margin: 0px;
+}

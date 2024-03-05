@@ -10,13 +10,16 @@ import UserCell from "../UserCell/UserCell";
 import Join from "../../shared/Join/Join";
 import If from "../../shared/If/If";
 import Empty from "../../shared/Empty/Empty";
-import Loader from "../../shared/Loader/Loader";
 import ImageSlider from "../../shared/ImageSlider/ImageSlider";
+import LoadButton from "../../shared/LoadButton/LoadButton";
+import LinkButton from "../../shared/LinkButton/LinkButton";
+import { useNavigate } from "react-router-dom";
 
 /** Пост */
-const PostInPosts = ({ post, deletePost = null, openable = true }) => {
+const PostInPosts = ({ post, isDeleted = false, openable = true }) => {
   // КОНСТАНТЫ
   const { params } = useContext(Context);
+  const navigate = useNavigate(); // Функция перехода на другую страницу
 
   //ФУНКЦИИ
 
@@ -36,23 +39,25 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
     }
   );
 
+  /** Удалить пост */
+  const [fetchDeletePost, isLoadingDeletePost, errorDeletePost] = useFetching(
+    async () => {
+      await PostApi.delete(post.id);
+      navigate("/");
+    }
+  );
+
   /** Забанить */
-  const banned = (id) => {
+  const banned = () => {
     if (isLoadingBanned || isLoadingUnbanned) return;
-    fetchBanned(id);
+    fetchBanned(post.id);
   };
 
   /** Разбанить */
-  const unbanned = (id) => {
+  const unbanned = () => {
     if (isLoadingBanned || isLoadingUnbanned) return;
-    fetchUnbanned(id);
+    fetchUnbanned(post.id);
   };
-
-  /** Забанить по Id */
-  const bannedById = () => banned(post.id);
-
-  /** Разбанить по Id */
-  const unbannedById = () => unbanned(post.id);
 
   if (!post) return <Empty />;
 
@@ -88,28 +93,27 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
             </div>
           </If>
           <If value={Policy.isManager(params?.role)}>
-            <button
+            <LoadButton
+              text={post.isBanned ? "Разбанить" : "Забанить"}
+              onClick={post.isBanned ? unbanned : banned}
+              load={isLoadingBanned || isLoadingUnbanned}
+              width="120px"
               className={classes.banButton}
-              onClick={post.isBanned ? unbannedById : bannedById}
-            >
-              <If value={!isLoadingBanned && !isLoadingUnbanned}>
-                {post.isBanned ? "Разбанить" : "Забанить"}
-              </If>
-              <If value={isLoadingBanned || isLoadingUnbanned}>
-                <div className={classes.loader}>
-                  <Loader />
-                </div>
-              </If>
-            </button>
+            />
           </If>
           <If value={Policy.isOwner(params?.id, post.user.id)}>
-            <Link className={classes.change} to={`/${post.id}/change`}>
-              Изменить
-            </Link>
-            <If value={deletePost}>
-              <button className={classes.deleteButton} onClick={deletePost}>
-                Удалить
-              </button>
+            <LinkButton
+              text={"Изменить"}
+              to={`/${post.id}/change`}
+              className={classes.change}
+            />
+            <If value={isDeleted}>
+              <LoadButton
+                text={"Удалить"}
+                onClick={fetchDeletePost}
+                load={isLoadingDeletePost}
+                className={classes.deleteButton}
+              />
             </If>
           </If>
         </div>
@@ -122,9 +126,7 @@ const PostInPosts = ({ post, deletePost = null, openable = true }) => {
       </div>
 
       <If value={openable}>
-        <Link className={classes.openButton} to={`/${post.id}`}>
-          Открыть
-        </Link>
+        <LinkButton text={"Открыть"} to={`/${post.id}`} />
       </If>
     </div>
   );
