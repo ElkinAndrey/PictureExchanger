@@ -10,7 +10,6 @@ import LoadButton from "../../shared/LoadButton/LoadButton";
 import LinkButton from "../../shared/LinkButton/LinkButton";
 import Context from "../../context/context";
 import serverNotRespondingError from "../../constants/serverNotRespondingError";
-import notificationStatus from "../../constants/notificationStatus";
 
 /** Страница регистрации */
 const Register = () => {
@@ -36,6 +35,7 @@ const Register = () => {
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
   const [fetchReg, loadReg, errorReg] = useFetching(registerCallback);
 
+  // ЭФФЕКТЫ
   useEffect(() => {
     if (errorReg !== null && errorReg?.response === undefined)
       addNotification(serverNotRespondingError);
