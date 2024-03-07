@@ -169,7 +169,7 @@ const User = () => {
   useEffect(() => {
     fetchUser(urlParams.name);
     updatePostsFetch(urlParams.name, paramsSearch);
-  }, []);
+  }, [urlParams]);
 
   //#endregion
 

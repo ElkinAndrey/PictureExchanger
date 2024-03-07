@@ -27,7 +27,7 @@ const Post = () => {
   /** Действия при загрузке страницы */
   useEffect(() => {
     fetchPost(params.postId);
-  }, []);
+  }, [params]);
 
   // Пока пост не пришел
   if (!post) return <Empty />;
