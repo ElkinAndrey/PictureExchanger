@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import useFetching from "../../hooks/useFetching";
 import PostApi from "../../api/postApi";
 import PostInPosts from "../../widgets/PostInPosts/PostInPosts";
@@ -8,6 +8,8 @@ import InputSearch from "../../shared/InputSearch/InputSearch";
 import If from "../../shared/If/If";
 import Loader from "../../shared/Loader/Loader";
 import PaginationBar from "../../shared/PaginationBar/PaginationBar";
+import Context from "../../context/context";
+import notificationStatus from "../../constants/notificationStatus";
 
 /** Количество книг на странице */
 const pageSize = 4;
@@ -18,8 +20,23 @@ const basePage = 1;
 /** Параметры поиска по умолчанию */
 const baseParams = { start: 0, length: pageSize, name: "" };
 
+const postsNotification = {
+  title: "Ошибка",
+  text: "Сервер не отвечает. Не удалось получить посты.",
+  status: notificationStatus.error,
+};
+
+const countNotification = {
+  title: "Ошибка",
+  text: "Сервер не отвечает. Не удалось получить количество постов.",
+  status: notificationStatus.error,
+};
+
 /** Страница с постами */
 const Posts = () => {
+  // КОНСТАНТЫ
+  const { addNotification } = useContext(Context);
+
   // ПЕРЕМЕННЫЕ
   const [posts, postsChange] = useState([]); // Посты
   const [postsCount, postsCountChange] = useState([]); // Количество постов
@@ -27,30 +44,26 @@ const Posts = () => {
   const [params, paramsChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
+  const postsCallback = async (params) => {
+    const response = await PostApi.get(params);
+    postsChange(response.data);
+  };
+
+  const countCallback = async (params) => {
+    const response = await PostApi.count(params);
+    postsCountChange(response.data);
+  };
+
   // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
-
-  /** Получение постов */
-  const [fetchPosts, isLoadingPosts, errorPosts] = useFetching(
-    async (params) => {
-      const response = await PostApi.get(params);
-      postsChange(response.data);
-    }
-  );
-
-  /** Получение количества постов */
-  const [fetchPostsCount, isLoadingPostsCount, errorPostsCount] = useFetching(
-    async (params) => {
-      const response = await PostApi.count(params);
-      postsCountChange(response.data);
-    }
-  );
+  const [fetchPosts, loadPosts, errorPosts] = useFetching(postsCallback);
+  const [fetchCount, loadCount, errorCount] = useFetching(countCallback);
 
   // ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
   const updateFetch = (params) => {
     fetchPosts(params);
-    fetchPostsCount(params);
+    fetchCount(params);
   };
 
   /** Действия при установке страницы */
@@ -79,12 +92,20 @@ const Posts = () => {
     updateFetch({ ...baseParams });
   };
 
-  // ДЕЙСТВИЯ
-
-  /** Действия при загрузке страницы */
+  // ЭФФЕКТЫ
   useEffect(() => {
     updateFetch(params);
   }, []);
+
+  useEffect(() => {
+    if (errorPosts !== null && errorPosts?.response === undefined)
+      addNotification(postsNotification);
+  }, [errorPosts]);
+
+  useEffect(() => {
+    if (errorCount !== null && errorCount?.response === undefined)
+      addNotification(countNotification);
+  }, [errorCount]);
 
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
   const newParamsNameChange = (value) => {
@@ -101,7 +122,7 @@ const Posts = () => {
         reset={reset}
         className={classes.search}
       />
-      <If value={!isLoadingPostsCount}>
+      <If value={!loadCount}>
         <PaginationBar
           min={1}
           max={Math.ceil(postsCount / pageSize)}
@@ -110,16 +131,16 @@ const Posts = () => {
           centerCount={1}
           className={classes.paginationBar}
         />
-        <If value={postsCount === 0}>
+        <If value={posts.length === 0}>
           <div className={classes.emptyList}>Список пуст</div>
         </If>
       </If>
-      <If value={!isLoadingPosts}>
+      <If value={!loadPosts}>
         {posts.map((post) => (
           <PostInPosts key={post.id} post={post} />
         ))}
       </If>
-      <If value={isLoadingPosts || isLoadingPostsCount}>
+      <If value={loadPosts || loadCount}>
         <Loader
           className={classes.loader}
           color={"#4177b5"}
