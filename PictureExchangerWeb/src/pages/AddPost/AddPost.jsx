@@ -6,9 +6,7 @@ import Context from "../../context/context";
 import classes from "./AddPost.module.css";
 import Checkbox from "../../shared/Checkbox/Checkbox";
 import UploadImages from "../../widgets/UploadImages/UploadImages";
-import Loader from "../../shared/Loader/Loader";
 import Input from "../../shared/Input/Input";
-import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 import LoadButton from "../../shared/LoadButton/LoadButton";
 
 /** Страница с добавлением поста */
@@ -44,35 +42,33 @@ const AddPost = () => {
   };
 
   return (
-    <LeftMenu>
-      <div className={classes.body}>
-        <div className={classes.logo}>Добавить пост</div>
-        <Input
-          value={name}
-          setValue={nameChange}
-          placeholder="Название"
-          className={classes.input}
-        />
-        <Input
-          value={tags.join(",")}
-          setValue={(v) => tagsChange(v.split(","))}
-          placeholder="Теги"
-          className={classes.input}
-        />
-        <Checkbox
-          value={isPrivate}
-          valueChange={isPrivateChange}
-          text="Сделать приватным"
-          className={classes.isPrivate}
-        />
-        <UploadImages
-          images={images}
-          setImages={setImages}
-          className={classes.images}
-        />
-        <LoadButton text={"Создать"} onClick={create} load={isLoadingAddPost} />
-      </div>
-    </LeftMenu>
+    <div className={classes.body}>
+      <div className={classes.logo}>Добавить пост</div>
+      <Input
+        value={name}
+        setValue={nameChange}
+        placeholder="Название"
+        className={classes.input}
+      />
+      <Input
+        value={tags.join(",")}
+        setValue={(v) => tagsChange(v.split(","))}
+        placeholder="Теги"
+        className={classes.input}
+      />
+      <Checkbox
+        value={isPrivate}
+        valueChange={isPrivateChange}
+        text="Сделать приватным"
+        className={classes.isPrivate}
+      />
+      <UploadImages
+        images={images}
+        setImages={setImages}
+        className={classes.images}
+      />
+      <LoadButton text={"Создать"} onClick={create} load={isLoadingAddPost} />
+    </div>
   );
 };
 

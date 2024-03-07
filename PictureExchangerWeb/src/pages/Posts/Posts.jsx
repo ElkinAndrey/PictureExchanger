@@ -114,7 +114,7 @@ const Posts = () => {
   };
 
   return (
-    <LeftMenu>
+    <div>
       <InputSearch
         value={newParams.name}
         valueChange={newParamsNameChange}
@@ -148,7 +148,7 @@ const Posts = () => {
           thickness={"4px"}
         />
       </If>
-    </LeftMenu>
+    </div>
   );
 };
 

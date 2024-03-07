@@ -1,0 +1,12 @@
+.loader {
+  display: flex;
+  justify-content: center;
+}
+
+.errorPostNotFound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff3347;
+  font-size: 20px;
+}

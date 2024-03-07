@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetching from "../../hooks/useFetching";
 import PostApi from "../../api/postApi";
-import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 import classes from "./ChangePost.module.css";
 import Checkbox from "../../shared/Checkbox/Checkbox";
 import Loader from "../../shared/Loader/Loader";
@@ -58,48 +57,44 @@ const ChangePost = () => {
   // Если параметров нет
   if (!baseParams)
     return (
-      <LeftMenu>
-        <Loader
-          className={classes.loader}
-          color={"#4177b5"}
-          width={"50px"}
-          thickness={"4px"}
-        />
-      </LeftMenu>
+      <Loader
+        className={classes.loader}
+        color={"#4177b5"}
+        width={"50px"}
+        thickness={"4px"}
+      />
     );
 
   return (
-    <LeftMenu>
-      <div className={classes.body}>
-        <div className={classes.logo}>Измененить пост</div>
-        <Input
-          value={name}
-          setValue={nameChange}
-          placeholder="Название"
-          className={classes.inputName}
+    <div className={classes.body}>
+      <div className={classes.logo}>Измененить пост</div>
+      <Input
+        value={name}
+        setValue={nameChange}
+        placeholder="Название"
+        className={classes.inputName}
+      />
+      <Input
+        value={tags.join(",")}
+        setValue={(v) => tagsChange(v.split(","))}
+        placeholder="Теги"
+        className={classes.inputTags}
+      />
+      <Checkbox
+        value={isPrivate}
+        setValue={isPrivateChange}
+        text={"Приватный"}
+        className={classes.checkbox}
+      />
+      <div className={classes.buttons}>
+        <LoadButton
+          text={"Сохранить"}
+          onClick={change}
+          load={isLoadingChangePost}
         />
-        <Input
-          value={tags.join(",")}
-          setValue={(v) => tagsChange(v.split(","))}
-          placeholder="Теги"
-          className={classes.inputTags}
-        />
-        <Checkbox
-          value={isPrivate}
-          setValue={isPrivateChange}
-          text={"Приватный"}
-          className={classes.checkbox}
-        />
-        <div className={classes.buttons}>
-          <LoadButton
-            text={"Сохранить"}
-            onClick={change}
-            load={isLoadingChangePost}
-          />
-          <LoadButton text={"Отменить"} onClick={cancelChanges} />
-        </div>
+        <LoadButton text={"Отменить"} onClick={cancelChanges} />
       </div>
-    </LeftMenu>
+    </div>
   );
 };
 

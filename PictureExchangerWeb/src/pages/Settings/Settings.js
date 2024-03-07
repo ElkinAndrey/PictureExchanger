@@ -120,7 +120,7 @@ const Settings = () => {
   }, []);
 
   return (
-    <LeftMenu>
+    <div>
       <div className={classes.body}>
         <div className={classes.logo}>Настройки</div>
         <UserCell
@@ -231,7 +231,7 @@ const Settings = () => {
           </div>
         </Modal>
       </div>
-    </LeftMenu>
+    </div>
   );
 };
 

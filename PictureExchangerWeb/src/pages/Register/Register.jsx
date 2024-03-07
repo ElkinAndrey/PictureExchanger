@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import useFetching from "../../hooks/useFetching";
 import AuthApi from "../../api/authApi";
-import Center from "../../layout/Center/Center";
 import classes from "./Register.module.css";
 import authService from "../../utils/AuthService";
 import If from "../../shared/If/If";
@@ -42,41 +41,39 @@ const Register = () => {
   }, [errorReg]);
 
   return (
-    <Center>
-      <div className={classes.body}>
-        <div className={classes.logo}>Регистрация</div>
-        <Input
-          className={classes.inputName}
-          value={name}
-          setValue={nameChange}
-          placeholder="Имя"
+    <div className={classes.body}>
+      <div className={classes.logo}>Регистрация</div>
+      <Input
+        className={classes.inputName}
+        value={name}
+        setValue={nameChange}
+        placeholder="Имя"
+      />
+      <Input
+        className={classes.inputEmail}
+        value={email}
+        setValue={emailChange}
+        placeholder="Email"
+      />
+      <Input
+        className={classes.inputPassword}
+        value={password}
+        setValue={passwordChange}
+        placeholder="Пароль"
+        isPassword={true}
+      />
+      <If value={!!errorReg}>
+        <div className={classes.error}>{errorReg?.response?.data}</div>
+      </If>
+      <div className={classes.buttons}>
+        <LoadButton
+          text={"Зарегистрироваться"}
+          onClick={fetchReg}
+          load={loadReg}
         />
-        <Input
-          className={classes.inputEmail}
-          value={email}
-          setValue={emailChange}
-          placeholder="Email"
-        />
-        <Input
-          className={classes.inputPassword}
-          value={password}
-          setValue={passwordChange}
-          placeholder="Пароль"
-          isPassword={true}
-        />
-        <If value={!!errorReg}>
-          <div className={classes.error}>{errorReg?.response?.data}</div>
-        </If>
-        <div className={classes.buttons}>
-          <LoadButton
-            text={"Зарегистрироваться"}
-            onClick={fetchReg}
-            load={loadReg}
-          />
-          <LinkButton to={"/"} text={"На главную"} />
-        </div>
+        <LinkButton to={"/"} text={"На главную"} />
       </div>
-    </Center>
+    </div>
   );
 };
 

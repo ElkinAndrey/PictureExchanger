@@ -17,19 +17,16 @@ import Loader from "../../shared/Loader/Loader";
 import PaginationBar from "../../shared/PaginationBar/PaginationBar";
 import LoadButton from "../../shared/LoadButton/LoadButton";
 
+const pageSize = 4;
+const basePage = 1;
+const baseParams = { start: 0, length: pageSize, name: "" };
+
 /** Страница пользователя */
 const User = () => {
-  //#region КОНСТАНТЫ
-
-  const pageSize = 4;
-  const basePage = 1;
-  const baseParams = { start: 0, length: pageSize, name: "" };
+  // КОНСТАНТЫ
   const { params } = useContext(Context);
 
-  //#endregion
-
-  //#region ПЕРЕМЕННЫЕ
-
+  // ПЕРЕМЕННЫЕ
   const urlParams = useParams(); // Параметры из URL
   const [user, userChange] = useState({}); // Пользователь
   const [posts, postsChange] = useState([]); // Посты
@@ -38,94 +35,76 @@ const User = () => {
   const [paramsSearch, paramsSearchChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
-  //#endregion
-
-  //#region ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
-
-  /** Получение пользователя по имени */
-  const [fetchUser, isLoadingUser, errorUser] = useFetching(async (name) => {
+  // КОЛБЭКИ
+  const userCallback = async (name) => {
     const response = await UserApi.getByName(name);
     userChange(response.data);
-  });
+  };
 
-  /** Получение постов пользователя */
-  const [fetchPosts, isLoadingPosts, errorPosts] = useFetching(
-    async (name, p) => {
-      const response = await UserApi.getPostsByName(name, p);
-      postsChange(response.data);
-    }
-  );
+  const postsCallback = async (name, p) => {
+    const response = await UserApi.getPostsByName(name, p);
+    postsChange(response.data);
+  };
 
-  /** Получение количества постов у пользователя*/
-  const [fetchPostsCount, isLoadingPostsCount, errorPostsCount] = useFetching(
-    async (name, p) => {
-      const response = await UserApi.getPostsCountByName(name, p);
-      postsCountChange(response.data);
-    }
-  );
+  const postsCountCallback = async (name, p) => {
+    const response = await UserApi.getPostsCountByName(name, p);
+    postsCountChange(response.data);
+  };
 
-  /** Забанить пользователя */
-  const [fetchBannedUser, isLoadingBannedUser, errorBannedUser] = useFetching(
-    async (name) => {
-      await UserApi.banned(name);
-      user.isBanned = true;
-    }
-  );
+  const bannedUserCallback = async (name) => {
+    await UserApi.banned(name);
+    user.isBanned = true;
+  };
 
-  /** Разбанить пользователя */
-  const [fetchUnbannedUser, isLoadingUnbannedUser, errorUnbannedUser] =
-    useFetching(async (name) => {
-      await UserApi.unbanned(name);
-      user.isBanned = false;
-    });
-  //#endregion
+  const unbannedUserCallback = async (name) => {
+    await UserApi.unbanned(name);
+    user.isBanned = false;
+  };
 
-  //#region ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ (РАБОТА С РОЛЯМИ)
+  const giveUserCallback = async () => {
+    await RoleApi.giveUser(urlParams.name);
+    user.role = roles.user;
+  };
 
-  /** Выдать роль пользователя */
-  const [fetchGiveUser, isLoadingGiveUser, errorGiveUser] = useFetching(
-    async () => {
-      await RoleApi.giveUser(urlParams.name);
-      user.role = roles.user;
-    }
-  );
+  const giveManagerCallback = async () => {
+    await RoleApi.giveManager(urlParams.name);
+    user.role = roles.manager;
+  };
 
-  /** Выдать роль менедрежа */
-  const [fetchGiveManager, isLoadingGiveManager, errorGiveManager] =
-    useFetching(async () => {
-      await RoleApi.giveManager(urlParams.name);
-      user.role = roles.manager;
-    });
-
-  /** Выдать роль суперменедрежа */
-  const [
-    fetchGiveSuperManager,
-    isLoadingGiveSuperManager,
-    errorGiveSuperManager,
-  ] = useFetching(async () => {
+  const giveSuperManagerCallback = async () => {
     await RoleApi.giveSuperManager(urlParams.name);
     user.role = roles.superManager;
-  });
+  };
 
-  /** Выдать роль администратора */
-  const [fetchGiveAdmin, isLoadingGiveAdmin, errorGiveAdmin] = useFetching(
-    async () => {
-      await RoleApi.giveAdmin(urlParams.name);
-      user.role = roles.admin;
-    }
-  );
+  const giveAdminCallback = async () => {
+    await RoleApi.giveAdmin(urlParams.name);
+    user.role = roles.admin;
+  };
 
-  //#endregion
+  // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
+  const [fetchUser, isLoadingUser, errorUser] = useFetching(userCallback);
+  const [fetchPosts, isLoadingPosts, errorPosts] = useFetching(postsCallback);
+  const [fetchPostsCount, isLoadingPostsCount, errorPostsCount] =
+    useFetching(postsCountCallback);
+  const [fetchBannedUser, isLoadingBannedUser, errorBannedUser] =
+    useFetching(bannedUserCallback);
+  const [fetchUnbannedUser, isLoadingUnbannedUser, errorUnbannedUser] =
+    useFetching(unbannedUserCallback);
+  const [fetchGiveUser, isLoadingGiveUser, errorGiveUser] =
+    useFetching(giveUserCallback);
+  const [fetchGiveManager, isLoadingGiveManager, errorGiveManager] =
+    useFetching(giveManagerCallback);
+  const [fetchGiveSuperManag, isLoadingGiveSuperManag, errorGiveSuperManag] =
+    useFetching(giveSuperManagerCallback);
+  const [fetchGiveAdmin, isLoadingGiveAdmin, errorGiveAdmin] =
+    useFetching(giveAdminCallback);
 
-  //#region ФУНКЦИИ
-
-  /** Загрузить все данные на страницу заново */
+  // ФУНКЦИИ
   const updatePostsFetch = (name, p) => {
     fetchPosts(name, p);
     fetchPostsCount(name, p);
   };
 
-  /** Действия при установке страницы */
   const setPage = (page) => {
     paramsSearch.start = (page - 1) * pageSize;
     paramsSearch.length = pageSize;
@@ -134,7 +113,6 @@ const User = () => {
     paramsSearchChange({ ...paramsSearch });
   };
 
-  /** Обновить параметры поиска */
   const update = () => {
     newParams.start = (basePage - 1) * pageSize;
     newParams.length = pageSize;
@@ -143,7 +121,6 @@ const User = () => {
     updatePostsFetch(urlParams.name, newParams);
   };
 
-  /** Установить параметры поиска по умолчанию */
   const reset = () => {
     pageChange(basePage);
     paramsSearchChange({ ...baseParams });
@@ -151,52 +128,37 @@ const User = () => {
     updatePostsFetch(urlParams.name, { ...baseParams });
   };
 
-  /** Забанить */
   const bannedUser = () => {
     fetchBannedUser(user.name);
   };
 
-  /** Разбанить */
   const unbannedUser = () => {
     fetchUnbannedUser(user.name);
   };
 
-  //#endregion
-
-  //#region ДЕЙСТВИЯ
-
-  /** Действия при загрузке страницы */
   useEffect(() => {
     fetchUser(urlParams.name);
     updatePostsFetch(urlParams.name, paramsSearch);
-  }, [urlParams]);
-
-  //#endregion
-
-  //#region ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+  }, [urlParams.name]);
 
   const newParamsNameChange = (value) => {
     newParams.name = value;
     newParamsChange({ ...newParams });
   };
 
-  //#endregion
-
   // Пока пользователь не пришел
   if (isLoadingUser)
     return (
-      <LeftMenu>
-        <Loader
-          className={classes.loader}
-          color={"#4177b5"}
-          width={"50px"}
-          thickness={"4px"}
-        />
-      </LeftMenu>
+      <Loader
+        className={classes.loader}
+        color={"#4177b5"}
+        width={"50px"}
+        thickness={"4px"}
+      />
     );
 
   return (
-    <LeftMenu>
+    <div>
       <div className={classes.header}>
         <div className={classes.userBody}>
           <img
@@ -264,9 +226,9 @@ const User = () => {
                     <LoadButton
                       className={classes.roleButton}
                       text={"Суперменеджер"}
-                      onClick={fetchGiveSuperManager}
+                      onClick={fetchGiveSuperManag}
                       disabled={user.role === roles.superManager}
-                      load={isLoadingGiveSuperManager}
+                      load={isLoadingGiveSuperManag}
                       width="100%"
                     />
                   </If>
@@ -316,7 +278,7 @@ const User = () => {
       <If value={posts.length === 0 && !isLoadingPosts}>
         <div className={classes.emptyList}>Нет постов</div>
       </If>
-    </LeftMenu>
+    </div>
   );
 };
 

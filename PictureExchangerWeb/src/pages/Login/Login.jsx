@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import useFetching from "../../hooks/useFetching";
 import AuthApi from "../../api/authApi";
 import classes from "./Login.module.css";
-import Center from "../../layout/Center/Center";
 import authService from "../../utils/AuthService";
 import If from "../../shared/If/If";
 import Input from "../../shared/Input/Input";
@@ -39,35 +38,29 @@ const Login = () => {
   }, [errorLogin]);
 
   return (
-    <Center>
-      <div className={classes.body}>
-        <div className={classes.logo}>Войти</div>
-        <Input
-          className={classes.inputNameOrEmail}
-          value={nameOrEmail}
-          setValue={nameOrEmailChange}
-          placeholder="Имя или Email"
-        />
-        <Input
-          className={classes.inputPassword}
-          value={password}
-          setValue={passwordChange}
-          placeholder="Пароль"
-          isPassword={true}
-        />
-        <If value={!!errorLogin}>
-          <div className={classes.error}>{errorLogin?.response?.data}</div>
-        </If>
-        <div className={classes.buttons}>
-          <LoadButton
-            text={"Войти"}
-            onClick={fetchLogin}
-            load={isLoadingLogin}
-          />
-          <LinkButton to={"/"} text={"На главную"} />
-        </div>
+    <div className={classes.body}>
+      <div className={classes.logo}>Войти</div>
+      <Input
+        className={classes.inputNameOrEmail}
+        value={nameOrEmail}
+        setValue={nameOrEmailChange}
+        placeholder="Имя или Email"
+      />
+      <Input
+        className={classes.inputPassword}
+        value={password}
+        setValue={passwordChange}
+        placeholder="Пароль"
+        isPassword={true}
+      />
+      <If value={!!errorLogin}>
+        <div className={classes.error}>{errorLogin?.response?.data}</div>
+      </If>
+      <div className={classes.buttons}>
+        <LoadButton text={"Войти"} onClick={fetchLogin} load={isLoadingLogin} />
+        <LinkButton to={"/"} text={"На главную"} />
       </div>
-    </Center>
+    </div>
   );
 };
 

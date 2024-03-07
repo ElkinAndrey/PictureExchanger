@@ -123,7 +123,7 @@ const Users = () => {
   };
 
   return (
-    <LeftMenu>
+    <div>
       <InputSearch
         value={newParams.name}
         valueChange={newParamsNameChange}
@@ -143,7 +143,6 @@ const Users = () => {
           setValue={setFilterMode}
         />
       </div>
-
       <PaginationBar
         min={1}
         max={Math.ceil(usersCount / pageSize)}
@@ -163,7 +162,7 @@ const Users = () => {
           thickness={"4px"}
         />
       </If>
-    </LeftMenu>
+    </div>
   );
 };
 
