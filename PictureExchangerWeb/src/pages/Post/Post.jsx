@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import useFetching from "../../hooks/useFetching";
 import PostApi from "../../api/postApi";
 import PostInPosts from "../../widgets/PostInPosts/PostInPosts";
-import LeftMenu from "../../layout/LeftMenu/LeftMenu";
-import If from "../../shared/If/If";
 import Loader from "../../shared/Loader/Loader";
 import classes from "./Post.module.css";
 import Context from "../../context/context";
@@ -51,7 +49,7 @@ const Post = () => {
   // Если пост не найден
   if (errorPost?.response !== undefined)
     return <div className={classes.errorPostNotFound}>Пост не найден</div>;
-    
+
   return <PostInPosts post={post} isDeleted={true} openable={false} />;
 };
 

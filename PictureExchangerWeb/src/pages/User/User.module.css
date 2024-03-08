@@ -4,42 +4,6 @@
   justify-content: center;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  background-color: #ffffff;
-  border: 1px solid #dce1e6;
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 5px;
-}
-
-.userBody {
-  display: flex;
-  align-items: center;
-}
-
-.name {
-  font-size: 36px;
-}
-
-.userImages {
-  width: 80px;
-  height: 80px;
-  margin-right: 20px;
-}
-
-.userInfo {
-  font-size: 12px;
-  color: #818c99;
-}
-
-.isBanned {
-  width: 25px;
-  height: 25px;
-  margin-right: 10px;
-}
-
 .search {
   margin-bottom: 5px;
 }
@@ -49,11 +13,10 @@
   margin-top: 20px;
 }
 
-.headerButtons {
+.errorUserNotFound {
   display: flex;
   align-items: center;
-}
-
-.roleButton {
-  margin-top: 5px;
+  justify-content: center;
+  color: #ff3347;
+  font-size: 20px;
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./DropDownMenu.module.css";
+import LoadButton from "../LoadButton/LoadButton";
 
 /** Выпадающее меню */
-const DropDownMenu = ({ text, children }) => {
+const DropDownMenu = ({ text, children, ...props }) => {
   const rootEl = useRef(null);
   const [isOpen, isOpenChange] = useState(false);
 
@@ -20,12 +21,12 @@ const DropDownMenu = ({ text, children }) => {
   }, []);
 
   return (
-    <div ref={rootEl} className={classes.body}>
-      <button onClick={open} className={classes.button}>
-        {text}
-      </button>
-      <div className={isOpen ? classes.menuOpen : classes.menuClose}>
-        {children}
+    <div {...props}>
+      <div ref={rootEl} className={classes.body}>
+        <LoadButton text={text} onClick={open} />
+        <div className={isOpen ? classes.menuOpen : classes.menuClose}>
+          {children}
+        </div>
       </div>
     </div>
   );

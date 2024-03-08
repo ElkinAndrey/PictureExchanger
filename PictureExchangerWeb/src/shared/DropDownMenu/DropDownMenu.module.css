@@ -35,22 +35,3 @@
   opacity: 0;
   transform: translateY(5px);
 }
-
-.button {
-  padding: 5px 0px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border: 0px;
-  background: #ebf2fa;
-  color: #3770b1;
-  transition: background-color 150ms linear;
-  cursor: pointer;
-  padding: 7px 20px;
-  border-radius: 5px;
-  font-size: 13px;
-}
-
-.button:hover {
-  background: #dfeaf6;
-}

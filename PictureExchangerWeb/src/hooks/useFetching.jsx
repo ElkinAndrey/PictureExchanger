@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const useFetching = (callback) => {
-  const [isLoading, setIsLoading] = useState(false); // Равно true, если данные пока, что получаются
+const useFetching = (callback, startLoader = false) => {
+  const [isLoading, setIsLoading] = useState(startLoader); // Равно true, если данные пока, что получаются
   const [error, setError] = useState(null); // Если возникнет ошибка
 
   // Получение данных
