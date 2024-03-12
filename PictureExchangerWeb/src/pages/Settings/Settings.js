@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import useFetching from "../../hooks/useFetching";
 import SettingsApi from "../../api/settingsApi";
-import LeftMenu from "../../layout/LeftMenu/LeftMenu";
 import classes from "./Settings.module.css";
 import getDateTime from "../../utils/getDateTime";
 import UserCell from "../../widgets/UserCell/UserCell";
@@ -11,6 +10,8 @@ import Switch from "../../shared/Switch/Switch";
 import Input from "../../shared/Input/Input";
 import Modal from "../../shared/Modal/Modal";
 import LoadButton from "../../shared/LoadButton/LoadButton";
+import Loader from "../../shared/Loader/Loader";
+import notificationStatus from "../../constants/notificationStatus";
 
 /** Контейнер, на который можно нажать */
 const ContainerClick = ({ name, src, children, onClick }) => {
@@ -41,6 +42,7 @@ const Container = ({ name, src, children }) => {
 /** Страница настроек */
 const Settings = () => {
   // КОНСТАНТЫ
+  const { addNotification } = useContext(Context);
   const { params, paramsChange } = useContext(Context);
 
   const [isOpenName, isOpenNameChange] = useState(false);
@@ -53,71 +55,149 @@ const Settings = () => {
   const [password, passwordChange] = useState("");
   const [newPassword, newPasswordChange] = useState("");
 
-  const [fetchGetSettings, isLoadingGetSettings, errorGetSettings] =
-    useFetching(async () => {
-      const response = await SettingsApi.get();
-      const data = response.data;
-      nameChange(data.name);
-      emailChange(data.email);
-      settingsChange(response.data);
-    });
+  // КОЛБЭКИ
+  const getSettingsCallback = async () => {
+    const response = await SettingsApi.get();
+    const data = response.data;
+    nameChange(data.name);
+    emailChange(data.email);
+    settingsChange(response.data);
+  };
 
-  const [
-    fetchChangeIsEmailHidden,
-    isLoadingChangeIsEmailHidden,
-    errorChangeIsEmailHidden,
-  ] = useFetching(async (value) => {
+  const changeEmailHiddenCallback = async (value) => {
     await SettingsApi.changeParams({
       isEmailHidden: value,
       isRegistrationDateHidden: null,
     });
     settings.isEmailHidden = value;
     settingsChange({ ...settings });
-  });
+  };
 
-  const [
-    fetchChangeIsRegistrationDateHidden,
-    isLoadingChangeIsRegistrationDateHidden,
-    errorChangeIsRegistrationDateHidden,
-  ] = useFetching(async (value) => {
+  const changeRegDateHiddenCallback = async (value) => {
     await SettingsApi.changeParams({
       isEmailHidden: null,
       isRegistrationDateHidden: value,
     });
     settings.isRegistrationDateHidden = value;
     settingsChange({ ...settings });
-  });
+  };
 
-  const [fetchChangeEmail, isLoadingChangeEmail, errorChangeEmail] =
-    useFetching(async () => {
-      await SettingsApi.changeEmail(email);
-      isOpenEmailChange(false);
-      settings.email = email;
-      settingsChange({ ...settings });
-      params.email = email;
-      paramsChange(params);
-    });
+  const changeEmailCallback = async () => {
+    await SettingsApi.changeEmail(email);
+    isOpenEmailChange(false);
+    settings.email = email;
+    settingsChange({ ...settings });
+    params.email = email;
+    paramsChange(params);
+  };
 
-  const [fetchChangeName, isLoadingChangeName, errorChangeName] = useFetching(
-    async () => {
-      await SettingsApi.changeName(name);
-      isOpenNameChange(false);
-      settings.name = name;
-      settingsChange({ ...settings });
-      params.name = name;
-      paramsChange(params);
-    }
-  );
+  const changeNameCallback = async () => {
+    await SettingsApi.changeName(name);
+    isOpenNameChange(false);
+    settings.name = name;
+    settingsChange({ ...settings });
+    params.name = name;
+    paramsChange(params);
+  };
 
-  const [fetchChangePassword, isLoadingChangePassword, errorChangePassword] =
-    useFetching(async () => {
-      await SettingsApi.changePassword(password, newPassword);
-      isOpenPasswordChange(false);
-    });
+  const changePasswordCallback = async () => {
+    await SettingsApi.changePassword(password, newPassword);
+    isOpenPasswordChange(false);
+  };
 
+  // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
+  const [fetchGetSettings, loadGetSettings, errorGetSettings] =
+    useFetching(getSettingsCallback);
+  const [
+    fetchChangeEmailHidden,
+    loadChangeEmailHidden,
+    errorChangeEmailHidden,
+  ] = useFetching(changeEmailHiddenCallback);
+  const [
+    fetchChangeRegDateHidden,
+    loadChangeRegDateHidden,
+    errorChangeRegDateHidden,
+  ] = useFetching(changeRegDateHiddenCallback);
+  const [fetchChangeEmail, loadChangeEmail, errorChangeEmail] =
+    useFetching(changeEmailCallback);
+  const [fetchChangeName, loadChangeName, errorChangeName] =
+    useFetching(changeNameCallback);
+  const [fetchChangePassword, loadChangePassword, errorChangePassword] =
+    useFetching(changePasswordCallback);
+
+  // ФУНКЦИИ
+  const addNotif = (error, baseText) => {
+    if (error === null) return;
+    if (error?.response === undefined)
+      addNotification({
+        title: "Ошибка",
+        text: baseText,
+        status: notificationStatus.error,
+      });
+    else
+      addNotification({
+        title: "Ошибка",
+        text: error?.response?.data,
+        status: notificationStatus?.error,
+      });
+  };
+
+  // ЭФФЕКТЫ
   useEffect(() => {
     fetchGetSettings();
   }, []);
+
+  useEffect(() => {
+    addNotif(
+      errorGetSettings,
+      "Сервер не отвечает. Не удалось получить данные аккаунта."
+    );
+  }, [errorGetSettings]);
+
+  useEffect(() => {
+    addNotif(
+      errorChangeEmailHidden,
+      "Сервер не отвечает. Не удалось изменить скрытие электронной почты."
+    );
+  }, [errorChangeEmailHidden]);
+
+  useEffect(() => {
+    addNotif(
+      errorChangeRegDateHidden,
+      "Сервер не отвечает. Не удалось изменить скрытие даты регистрации."
+    );
+  }, [errorChangeRegDateHidden]);
+
+  useEffect(() => {
+    addNotif(
+      errorChangeEmail,
+      "Сервер не отвечает. Не удалось изменить электронную почту."
+    );
+  }, [errorChangeEmail]);
+
+  useEffect(() => {
+    addNotif(errorChangeName, "Сервер не отвечает. Не удалось изменить имя.");
+  }, [errorChangeName]);
+
+  useEffect(() => {
+    addNotif(
+      errorChangePassword,
+      "Сервер не отвечает. Не удалось изменить имя."
+    );
+  }, [errorChangePassword]);
+
+  // При загрузке настроек
+  if (loadGetSettings)
+    return (
+      <Loader
+        className={classes.loader}
+        color={"#4177b5"}
+        width={"50px"}
+        thickness={"4px"}
+      />
+    );
+
+  if (errorGetSettings !== null) return <></>;
 
   return (
     <div>
@@ -155,8 +235,8 @@ const Settings = () => {
         <Container name={"Скрыт ли Email"} src="/images/hiddenEmail.png">
           <Switch
             value={settings.isEmailHidden}
-            setValue={fetchChangeIsEmailHidden}
-            load={isLoadingChangeIsEmailHidden}
+            setValue={fetchChangeEmailHidden}
+            load={loadChangeEmailHidden}
           />
         </Container>
         <Container
@@ -165,8 +245,8 @@ const Settings = () => {
         >
           <Switch
             value={settings.isRegistrationDateHidden}
-            setValue={fetchChangeIsRegistrationDateHidden}
-            load={isLoadingChangeIsRegistrationDateHidden}
+            setValue={fetchChangeRegDateHidden}
+            load={loadChangeRegDateHidden}
           />
         </Container>
 
@@ -182,7 +262,7 @@ const Settings = () => {
             <LoadButton
               text="Изменить"
               onClick={fetchChangeName}
-              load={isLoadingChangeName}
+              load={loadChangeName}
             />
           </div>
         </Modal>
@@ -201,7 +281,7 @@ const Settings = () => {
             <LoadButton
               text="Изменить"
               onClick={fetchChangeEmail}
-              load={isLoadingChangeEmail}
+              load={loadChangeEmail}
             />
           </div>
         </Modal>
@@ -226,7 +306,7 @@ const Settings = () => {
             <LoadButton
               text="Изменить"
               onClick={fetchChangePassword}
-              load={isLoadingChangePassword}
+              load={loadChangePassword}
             />
           </div>
         </Modal>

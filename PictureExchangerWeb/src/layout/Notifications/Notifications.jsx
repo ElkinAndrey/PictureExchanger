@@ -10,10 +10,20 @@ const messageStyle = {
   border: "2px solid #e7e8ec",
 };
 
+const successfulStyle = {
+  border: "2px solid #49cc90",
+};
+
 const Notifications = ({ notifications, notificationsChange }) => {
   const del = (notification) => {
     const newNotifications = notifications.filter((n) => n !== notification);
     notificationsChange(newNotifications);
+  };
+
+  const getStyle = (status) => {
+    if (status === notificationStatus.error) return errorStyle;
+    if (status === notificationStatus.successful) return successfulStyle;
+    return messageStyle;
   };
 
   return (
@@ -22,11 +32,7 @@ const Notifications = ({ notifications, notificationsChange }) => {
         <div
           className={classes.notification}
           key={notification.id}
-          style={
-            notification.status === notificationStatus.error
-              ? errorStyle
-              : messageStyle
-          }
+          style={getStyle(notification.status)}
         >
           <div className={classes.content}>
             <div className={classes.title}>{notification.title}</div>

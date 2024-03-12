@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import UserApi from "../../api/userApi";
 import useFetching from "../../hooks/useFetching";
 import LeftMenu from "../../layout/LeftMenu/LeftMenu";
@@ -9,6 +9,8 @@ import If from "../../shared/If/If";
 import RadioButtons from "../../shared/RadioButtons/RadioButtons";
 import Loader from "../../shared/Loader/Loader";
 import PaginationBar from "../../shared/PaginationBar/PaginationBar";
+import notificationStatus from "../../constants/notificationStatus";
+import Context from "../../context/context";
 
 /** Значения для сортировки */
 const sortValues = [
@@ -24,42 +26,60 @@ const filterValues = [
   { value: "3", text: "Только не забаненные" },
 ];
 
+const usersNotification = {
+  title: "Ошибка",
+  text: "Сервер не отвечает. Не удалось получить пользователей.",
+  status: notificationStatus.error,
+};
+
+const countNotification = {
+  title: "Ошибка",
+  text: "Сервер не отвечает. Не удалось получить количество пользователей.",
+  status: notificationStatus.error,
+};
+
+const pageSize = 4;
+const basePage = 1;
+const baseParams = {
+  start: 0,
+  length: pageSize,
+  name: "",
+  isBanned: null,
+  isSortByRegistrationDate: false,
+  isSortByBannedDate: false,
+};
+
 /** Страница с пользователями */
 const Users = () => {
-  const pageSize = 4;
-  const basePage = 1;
-  const baseParams = {
-    start: 0,
-    length: pageSize,
-    name: "",
-    isBanned: null,
-    isSortByRegistrationDate: false,
-    isSortByBannedDate: false,
-  };
+  // КОНСТАНТЫ
+  const { addNotification } = useContext(Context);
+
   const [users, usersChange] = useState([]);
   const [usersCount, usersCountChange] = useState([]); // Количество постов
   const [page, pageChange] = useState(basePage); // Страница
   const [params, paramsChange] = useState({ ...baseParams }); // Параметры плучения постов
   const [newParams, newParamsChange] = useState({ ...baseParams }); // Новые параметры получения постов
 
-  const [fetchUsers, isLoadingUsers, errorUsers] = useFetching(async (p) => {
+  const usersCallback = async (p) => {
     const response = await UserApi.get(p);
     usersChange(response.data);
-  });
+  };
 
-  const [fetchUsersCount, isLoadingUsersCount, errorUsersCount] = useFetching(
-    async (p) => {
-      const response = await UserApi.getCount(p);
-      usersCountChange(response.data);
-    }
-  );
+  const countCallback = async (p) => {
+    const response = await UserApi.getCount(p);
+    usersCountChange(response.data);
+  };
+
+  // ОТПРАВКА И ПОЛУЧЕНИЕ ДАННЫХ
+  const [fetchUsers, isLoadingUsers, errorUsers] = useFetching(usersCallback);
+  const [fetchCount, loadCount, errorCount] = useFetching(countCallback);
 
   // ФУНКЦИИ
 
   /** Загрузить все данные на страницу заново */
   const updateFetch = (params) => {
     fetchUsers(params);
-    fetchUsersCount(params);
+    fetchCount(params);
   };
 
   /** Действия при установке страницы */
@@ -88,13 +108,6 @@ const Users = () => {
     updateFetch({ ...baseParams });
   };
 
-  // ДЕЙСТВИЯ
-
-  /** Действия при загрузке страницы */
-  useEffect(() => {
-    updateFetch(params);
-  }, []);
-
   // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
   const newParamsNameChange = (value) => {
     newParams.name = value;
@@ -121,6 +134,21 @@ const Users = () => {
     else if (value === "3") newParams.isBanned = false;
     newParamsChange({ ...newParams });
   };
+
+  // ДЕЙСТВИЯ
+  useEffect(() => {
+    updateFetch(params);
+  }, []);
+
+  useEffect(() => {
+    if (errorUsers !== null && errorUsers?.response === undefined)
+      addNotification(usersNotification);
+  }, [errorUsers]);
+
+  useEffect(() => {
+    if (errorCount !== null && errorCount?.response === undefined)
+      addNotification(countNotification);
+  }, [errorCount]);
 
   return (
     <div>
@@ -151,10 +179,10 @@ const Users = () => {
         centerCount={1}
         className={classes.paginationBar}
       />
-      <If value={!isLoadingUsers}>
+      <If value={!isLoadingUsers && errorUsers === null}>
         <UsersTable users={users} />
       </If>
-      <If value={isLoadingUsers || isLoadingUsersCount}>
+      <If value={isLoadingUsers || loadCount}>
         <Loader
           className={classes.loader}
           color={"#4177b5"}

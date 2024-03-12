@@ -9,6 +9,7 @@ import LoadButton from "../../shared/LoadButton/LoadButton";
 import LinkButton from "../../shared/LinkButton/LinkButton";
 import Context from "../../context/context";
 import serverNotRespondingError from "../../constants/serverNotRespondingError";
+import notificationStatus from "../../constants/notificationStatus";
 
 /** Страница регистрации */
 const Register = () => {
@@ -28,6 +29,11 @@ const Register = () => {
       password: password,
     };
     const response = await AuthApi.register(params);
+    addNotification({
+      title: "Регистрация",
+      text: "Вы успешно зарегистрировались",
+      status: notificationStatus.successful,
+    });
     authService.login(response.data);
   };
 
