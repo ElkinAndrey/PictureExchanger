@@ -41,7 +41,6 @@ const AppRouter = () => {
       <Nav />
     );
 
-  console.log(1);
   return (
     <div className={classes.main}>
       <Header />

@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Minio;
 using PictureExchangerAPI.Domain.Entities;
 using PictureExchangerAPI.Persistence;
+using PictureExchangerAPI.Persistence.Abstractions;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Service.Exceptions;
+using System;
 
 namespace PictureExchangerAPI.Service.Repositories
 {
@@ -18,12 +21,18 @@ namespace PictureExchangerAPI.Service.Repositories
         private readonly ApplicationDbContext _context;
 
         /// <summary>
+        /// Сервис взаимодействия с файлами
+        /// </summary>
+        private readonly IFileRepository _fileService;
+
+        /// <summary>
         /// Репозиторий с постами
         /// </summary>
         /// <param name="context">Контекст базы данных</param>
-        public PostService(ApplicationDbContext context)
+        public PostService(ApplicationDbContext context, IFileRepository fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task AddAsync(
@@ -35,18 +44,28 @@ namespace PictureExchangerAPI.Service.Repositories
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
-
             if (user is null) throw new UserNotFoundException();
-
             if (images is null) images = new List<DownloadedFile>();
-            var imgs = images.Select((i, num) => new Domain.Entities.Image
-            {
-                Number = num,
-                СontentType = i.ContentType,
-                Name = i.FileDownloadName,
-            }).ToList();
-
             if (tags is null) tags = new List<string>();
+
+            Guid id = Guid.NewGuid();
+
+            int imageNumber = 1;
+            var imgs = new List<Domain.Entities.Image>();
+            var tasks = new List<Task>();
+            foreach(var image in images)
+            {
+                var img = new Domain.Entities.Image
+                {
+                    Number = imageNumber,
+                    СontentType = image.ContentType,
+                    Name = image.FileDownloadName,
+                };
+                imgs.Add(img);
+                tasks.Add(_fileService.AddPostImageAsync(id, imageNumber, image.Stream, image.ContentType));
+                ++imageNumber;
+            }
+
             var tgs = tags.Select((t, num) => new Tag
             {
                 Number = num,
@@ -55,7 +74,7 @@ namespace PictureExchangerAPI.Service.Repositories
 
             var post = new Post
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 Name = name,
                 DateOfCreation = DateTime.Now,
                 IsPrivate = isPrivate,
@@ -65,8 +84,14 @@ namespace PictureExchangerAPI.Service.Repositories
                 UserId = userId,
             };
 
-            await _context.Posts.AddAsync(post);
-            await _context.SaveChangesAsync();
+            async Task Add(){
+                await _context.Posts.AddAsync(post);
+                await _context.SaveChangesAsync();
+            }
+            tasks.Add(Add());
+            await Task.WhenAll(tasks);
+            var a = "1";
+            await Console.Out.WriteLineAsync(a);
         }
 
         public async Task ChangeAsync(
@@ -112,20 +137,25 @@ namespace PictureExchangerAPI.Service.Repositories
         {
             var post = await _context.Posts
                 .FirstOrDefaultAsync(t => t.Id == postId);
+            if (post is null) return;
 
-            if (post is not null)
+            if (userId is not null) // Если указан пользователь поста
             {
-                if (userId is not null) // Если указан пользователь поста
-                {
-                    var user = await _context.Users // Ищем пользователя
-                        .FirstOrDefaultAsync(u => u.Id == userId);
-                    if (user is null) throw new UserNotFoundException(); // Если пользователь не найден, то выдать ошибку
-                    if (user.Id != post.UserId) throw new UserDoesNotHaveRightsToEditPostException(); // Если пост написал другой человек, то выдать ошибку
-                }
-
-                _context.Posts.Remove(post);
-                _context.SaveChanges();
+                var user = await _context.Users // Ищем пользователя
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) throw new UserNotFoundException(); // Если пользователь не найден, то выдать ошибку
+                if (user.Id != post.UserId) throw new UserDoesNotHaveRightsToEditPostException(); // Если пост написал другой человек, то выдать ошибку
             }
+
+            async Task Remove()
+            {
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
+
+            var removeTask = Remove();
+            var imageTask = _fileService.DeletePostImagesAsync(post.Id);
+            await Task.WhenAll(removeTask, imageTask);
         }
 
         public async Task<List<Post>> GetAsync(

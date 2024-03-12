@@ -7,7 +7,7 @@ using PictureExchangerAPI.Service.DTO;
 using PictureExchangerAPI.Presentation.DTO.Posts;
 using PictureExchangerAPI.Service.Abstractions;
 using PictureExchangerAPI.Service.Functions;
-using System.Diagnostics.CodeAnalysis;
+using PictureExchangerAPI.Persistence.Abstractions;
 
 namespace PictureExchangerAPI.Presentation.Controllers
 {
@@ -19,6 +19,11 @@ namespace PictureExchangerAPI.Presentation.Controllers
     public class PostController : ControllerBase
     {
         /// <summary>
+        /// Сервис для работы с файлами
+        /// </summary>
+        private readonly IFileRepository _fileService;
+
+        /// <summary>
         /// Репозиторий для работы с постами
         /// </summary>
         private readonly IPostService _postRepository;
@@ -26,11 +31,12 @@ namespace PictureExchangerAPI.Presentation.Controllers
         /// <summary>
         /// Контроллер для работы с авторизацией
         /// </summary>
-        /// <param name="configuration">Конфигурации</param>
         /// <param name="postRepository">Репозиторий для работы с постами</param>
-        public PostController(IPostService postRepository)
+        /// <param name="fileService">Сервис для работы с файлами</param>
+        public PostController(IPostService postRepository, IFileRepository fileService)
         {
             _postRepository = postRepository;
+            _fileService = fileService;
         }
 
         /// <summary>
@@ -181,8 +187,8 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpGet("{id}/{number}")]
         public async Task<IActionResult> GetImage(Guid id, int number)
         {
-            var image = new FileStream($"HelpFiles\\picture.png", FileMode.Open, FileAccess.Read, FileShare.Read);
-            return File(image, "image/png");
+            var url = await _fileService.GetPostImageUrlAsync(id, number);
+            return Redirect(url);
         }
 
         /// <summary>
