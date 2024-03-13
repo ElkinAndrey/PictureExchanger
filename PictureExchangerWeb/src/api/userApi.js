@@ -26,13 +26,13 @@ class UserApi {
 
   /** Получить посты пользователя по имени */
   static async getPostsByName(name, params) {
-    const response = await axios.post(`${URL}/${name}/posts`, params);
+    const response = await $api.post(`${URL}/${name}/posts`, params);
     return response;
   }
 
   /** Получить количество постов у пользователя по имени */
   static async getPostsCountByName(name, params) {
-    const response = await axios.post(`${URL}/${name}/posts/count`, params);
+    const response = await $api.post(`${URL}/${name}/posts/count`, params);
     return response;
   }
 

@@ -8,13 +8,13 @@ const URL = `${defaultURL}/posts`;
 class PostApi {
   /** Получить посты */
   static async get(params) {
-    const response = await axios.post(`${URL}`, params);
+    const response = await $api.post(`${URL}`, params);
     return response;
   }
 
   /** Получить количество постов */
   static async count(params) {
-    const response = await axios.post(`${URL}/count`, params);
+    const response = await $api.post(`${URL}/count`, params);
     return response;
   }
 

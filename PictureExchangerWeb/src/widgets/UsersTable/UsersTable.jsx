@@ -3,6 +3,7 @@ import getDateTime from "../../utils/getDateTime";
 import classes from "./UsersTable.module.css";
 import UserCell from "../UserCell/UserCell";
 import Bool from "../../shared/Bool/Bool";
+import getRoleName from "../../utils/getRoleName";
 
 /** Пользователь в таблице */
 const User = ({ user, index }) => {
@@ -13,7 +14,7 @@ const User = ({ user, index }) => {
     >
       <UserCell
         name={user.name}
-        role={user.role}
+        role={getRoleName(user.role)}
         date={getDateTime(user.registrationDate)}
         email={user.email}
       />

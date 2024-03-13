@@ -48,7 +48,10 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Get(GetPostsDto model)
         {
-            List<Post> posts = await _postRepository.GetAsync(model.start, model.length, model.name);
+            var role = await GetUserRole();
+            bool hideBanned = role is null || role == Roles.User;
+            bool hidePrivate = role is null || role == Roles.User;
+            List<Post> posts = await _postRepository.GetAsync(model.start, model.length, model.name, hideBanned, hidePrivate);
             var response = posts.Select(p => new
             {
                 Id = p.Id,
@@ -79,7 +82,10 @@ namespace PictureExchangerAPI.Presentation.Controllers
         [HttpPost("count")]
         public async Task<IActionResult> Count(GetPostsCountDto model)
         {
-            var count = await _postRepository.GetCountAsync(model.name);
+            var role = await GetUserRole();
+            bool hideBanned = role is null || role == Roles.User;
+            bool hidePrivate = role is null || role == Roles.User;
+            var count = await _postRepository.GetCountAsync(model.name, hideBanned, hidePrivate);
             return Ok(count);
         }
 
@@ -215,6 +221,18 @@ namespace PictureExchangerAPI.Presentation.Controllers
         {
             await _postRepository.ChangeAsync(id, null, null, false, null, null);
             return Ok();
+        }
+
+        /// <summary>
+        /// Получить Id пользователя из JWT
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string?> GetUserRole()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            if (accessToken == null) return null;
+            var role = JWT.GetData(accessToken).Role;
+            return role;
         }
     }
 }

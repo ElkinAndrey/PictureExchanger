@@ -53,7 +53,7 @@ namespace PictureExchangerAPI.Service.Repositories
             int imageNumber = 1;
             var imgs = new List<Domain.Entities.Image>();
             var tasks = new List<Task>();
-            foreach(var image in images)
+            foreach (var image in images)
             {
                 var img = new Domain.Entities.Image
                 {
@@ -84,7 +84,8 @@ namespace PictureExchangerAPI.Service.Repositories
                 UserId = userId,
             };
 
-            async Task Add(){
+            async Task Add()
+            {
                 await _context.Posts.AddAsync(post);
                 await _context.SaveChangesAsync();
             }
@@ -162,17 +163,21 @@ namespace PictureExchangerAPI.Service.Repositories
             int start,
             int length,
             string postName,
+            bool hideBanned = false,
+            bool hidePrivate = false,
             string? userName = null)
         {
             return await Task.Run(() =>
             {
                 var posts = _context.Posts
-                    .Include(p=>p.User)
-                    .Include(p=>p.Tags)
-                    .Include(p=>p.Images)
-                    .Where(p => 
-                        p.Name.Contains(postName) && 
-                        (userName == null || p.User.Name == userName))
+                    .Include(p => p.User)
+                    .Include(p => p.Tags)
+                    .Include(p => p.Images)
+                    .Where(p =>
+                        p.Name.Contains(postName) &&
+                        (userName == null || p.User.Name == userName) &&
+                        (!hideBanned || !p.IsBanned) &&
+                        (!hidePrivate || !p.IsPrivate))
                     .OrderByDescending(p => p.DateOfCreation)
                     .Skip(start)
                     .Take(length);
@@ -196,6 +201,8 @@ namespace PictureExchangerAPI.Service.Repositories
 
         public async Task<int> GetCountAsync(
             string postName,
+            bool hideBanned = false,
+            bool hidePrivate = false,
             string? userName = null)
         {
             return await Task.Run(() =>
@@ -203,7 +210,9 @@ namespace PictureExchangerAPI.Service.Repositories
                 var count = _context.Posts
                     .Where(p =>
                         p.Name.Contains(postName) &&
-                        (userName == null || p.User.Name == userName))
+                        (userName == null || p.User.Name == userName) &&
+                        (!hideBanned || !p.IsBanned) &&
+                        (!hidePrivate || !p.IsPrivate))
                     .Count();
 
                 return count;

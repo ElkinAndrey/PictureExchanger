@@ -14,22 +14,30 @@ namespace PictureExchangerAPI.Service.Abstractions
         /// <param name="start">Начало отчета</param>
         /// <param name="length">Длина среза</param>
         /// <param name="postName">Часть имени поста</param>
+        /// <param name="hideBanned">Скрыты ли забаненые посты</param>
+        /// <param name="hidePrivate">Скрыты ли приватные посты</param>
         /// <param name="userName">Имя человека</param>
         /// <returns>Список постов</returns>
         Task<List<Post>> GetAsync(
             int start,
             int length,
             string postName,
+            bool hideBanned = false,
+            bool hidePrivate = false,
             string? userName = null);
 
         /// <summary>
         /// Получить количество постов
         /// </summary>
         /// <param name="postName">Часть имени поста</param>
+        /// <param name="hideBanned">Скрыты ли забаненые посты</param>
+        /// <param name="hidePrivate">Скрыты ли приватные посты</param>
         /// <param name="userName">Имя человека</param>
         /// <returns>Количество постов</returns>
         Task<int> GetCountAsync(
             string postName,
+            bool hideBanned = false,
+            bool hidePrivate = false,
             string? userName = null);
         
         /// <summary>
