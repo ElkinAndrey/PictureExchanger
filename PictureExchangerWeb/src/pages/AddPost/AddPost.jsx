@@ -57,7 +57,7 @@ const AddPost = () => {
     }
     addNotification({
       title: "Ошибка",
-      text: errorAddPost?.response,
+      text: errorAddPost?.response.data,
       status: notificationStatus.error,
     });
   }, [errorAddPost]);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Context from "../../context/context";
 import roles from "../../constants/roles";
@@ -22,11 +22,12 @@ const center = (children) => <Center>{children}</Center>;
 
 const leftMenu = (children) => <LeftMenu>{children}</LeftMenu>;
 
+const Nav = () => <Navigate to="/" />;
+
 /** Роутер */
 const AppRouter = () => {
   const { params, notifications, notificationsChange } = useContext(Context);
 
-  const Nav = () => <Navigate to="/" />;
   const RouteRegister = !params?.role ? center(<Register />) : <Nav />;
   const RouteLogin = !params?.role ? center(<Login />) : <Nav />;
   const RouteChangePost = params?.role ? leftMenu(<ChangePost />) : <Nav />;

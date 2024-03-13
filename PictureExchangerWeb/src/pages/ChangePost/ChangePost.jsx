@@ -9,12 +9,14 @@ import Input from "../../shared/Input/Input";
 import LoadButton from "../../shared/LoadButton/LoadButton";
 import Context from "../../context/context";
 import notificationStatus from "../../constants/notificationStatus";
+import { useNavigate } from "react-router-dom";
 
 /** Страница с изменением поста */
 const ChangePost = () => {
   // КОНСТАНТЫ
-  const { addNotification } = useContext(Context); // Параметры из URL
+  const { params, addNotification } = useContext(Context); // Параметры из URL
   const urlParams = useParams(); // Параметры из URL
+  const navigate = useNavigate(); // Функция перехода на другую страницу
 
   // ПЕРЕМЕННЫЕ
   const [baseParams, baseParamsChange] = useState(null);
@@ -25,6 +27,7 @@ const ChangePost = () => {
   // КОЛБЭКИ
   const getPostCallback = async () => {
     let response = await PostApi.getById(urlParams.postId);
+    if (params.id !== response.data.user.id) navigate("/");
     baseParamsChange({ ...response.data });
     nameChange(response.data.name);
     isPrivateChange(response.data.isPrivate);
@@ -72,7 +75,7 @@ const ChangePost = () => {
     }
     addNotification({
       title: "Ошибка",
-      text: errorChangePost?.response,
+      text: errorChangePost?.response.data,
       status: notificationStatus.error,
     });
   }, [errorChangePost]);
@@ -90,7 +93,7 @@ const ChangePost = () => {
     }
     addNotification({
       title: "Ошибка",
-      text: errorGetPost?.response,
+      text: errorGetPost?.response.data,
       status: notificationStatus.error,
     });
   }, [errorGetPost]);

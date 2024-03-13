@@ -8,35 +8,55 @@ import AuthApi from "../../api/authApi";
 import authService from "../../utils/AuthService";
 import If from "../../shared/If/If";
 import Loader from "../../shared/Loader/Loader";
+import serverNotRespondingError from "../../constants/serverNotRespondingError";
+import notificationStatus from "../../constants/notificationStatus";
+import getRoleName from "../../utils/getRoleName";
 
 /** Выпадающее меню с параметрами аккаунта */
 const ProfileMenu = () => {
+  // КОНСТАНТЫ
   const rootEl = useRef(null);
-  const [isOpen, isOpenChange] = useState(false);
+  const { addNotification } = useContext(Context); // Параметры из URL
   const { params } = useContext(Context);
 
-  const [fetchLogout, isLoadingLogout, errorLogout] = useFetching(async () => {
+  // ПЕРЕМЕННЫЕ
+  const [isOpen, isOpenChange] = useState(false);
+
+  // КОЛБЭКИ
+  const logoutCallback = async () => {
     await AuthApi.logout();
     authService.logout();
-  });
-
-  const open = () => {
-    isOpenChange(!isOpen);
   };
 
-  const close = () => {
-    isOpenChange(false);
+  const [fetchLogout, isLoadingLogout, errorLogout] =
+    useFetching(logoutCallback);
+
+  //ФУНКЦИИ
+  const open = () => isOpenChange(!isOpen);
+  const close = () => isOpenChange(false);
+  const exit = () => {
+    if (isLoadingLogout) return;
+    fetchLogout();
   };
 
+  // ЭФФЕКТЫ
   useEffect(() => {
     const onClick = (e) => rootEl.current?.contains(e.target) || close();
     document.addEventListener("click", onClick);
   }, []);
 
-  const exit = () => {
-    if (isLoadingLogout) return;
-    fetchLogout();
-  };
+  useEffect(() => {
+    if (errorLogout === null) return;
+    if (errorLogout?.response === undefined) {
+      addNotification(serverNotRespondingError);
+      return;
+    }
+    addNotification({
+      title: "Ошибка",
+      text: errorLogout?.response,
+      status: notificationStatus.error,
+    });
+  }, [errorLogout]);
 
   return (
     <div className={classes.body} ref={rootEl}>
@@ -51,7 +71,8 @@ const ProfileMenu = () => {
           <div className={classes.name}>
             <label>{`${params?.name ?? "Нет имени"} `}</label>
             <label>
-              {Policy.isManager(params?.role) && `(${params?.role})`}
+              {Policy.isManager(params?.role) &&
+                `(${getRoleName(params?.role)})`}
             </label>
           </div>
           <div className={classes.email}>
